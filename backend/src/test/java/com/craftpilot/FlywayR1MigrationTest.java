@@ -23,15 +23,17 @@ class FlywayR1MigrationTest {
     @Test
     void emptyDatabaseAppliesV1ThenV2() {
         var flyway = flyway();
-        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(2);
+        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(3);
         var jdbc = jdbc();
         assertThat(tableExists(jdbc, "principal")).isTrue();
         assertThat(tableExists(jdbc, "survey_session")).isTrue();
         assertThat(tableExists(jdbc, "outbox")).isTrue();
+        assertThat(tableExists(jdbc, "message_attribution")).isTrue();
+        assertThat(tableExists(jdbc, "evidence_chunk")).isTrue();
         assertThat(jdbc.sql("""
                 SELECT version FROM craftpilot_app.flyway_schema_history
                 WHERE success AND type = 'SQL' ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2");
+                """).query(String.class).list()).containsExactly("1", "2", "3");
     }
 
     @Test
@@ -53,12 +55,13 @@ class FlywayR1MigrationTest {
                 .schemas("craftpilot_upgrade")
                 .defaultSchema("craftpilot_upgrade")
                 .load();
-        assertThat(step2.migrate().migrationsExecuted).isEqualTo(1);
+        assertThat(step2.migrate().migrationsExecuted).isEqualTo(2);
         assertThat(tableExists(jdbc, "craftpilot_upgrade", "survey_session")).isTrue();
+        assertThat(tableExists(jdbc, "craftpilot_upgrade", "evidence_ref")).isTrue();
         assertThat(jdbc.sql("""
                 SELECT version FROM craftpilot_upgrade.flyway_schema_history
                 WHERE success AND type = 'SQL' ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2");
+                """).query(String.class).list()).containsExactly("1", "2", "3");
 
         UUID merchantA = UUID.randomUUID();
         UUID merchantB = UUID.randomUUID();

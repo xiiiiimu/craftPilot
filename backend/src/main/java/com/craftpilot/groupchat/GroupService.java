@@ -4,6 +4,7 @@ import static com.craftpilot.groupchat.GroupDtos.*;
 
 import com.craftpilot.common.ApiFailure;
 import com.craftpilot.events.OutboxWriter;
+import com.craftpilot.feedback.FeedbackService;
 import com.craftpilot.tenant.TenantAccess;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -21,11 +22,13 @@ public class GroupService {
     private final JdbcClient jdbc;
     private final TenantAccess tenant;
     private final OutboxWriter outbox;
+    private final FeedbackService feedback;
 
-    public GroupService(JdbcClient jdbc, TenantAccess tenant, OutboxWriter outbox) {
+    public GroupService(JdbcClient jdbc, TenantAccess tenant, OutboxWriter outbox, FeedbackService feedback) {
         this.jdbc = jdbc;
         this.tenant = tenant;
         this.outbox = outbox;
+        this.feedback = feedback;
     }
 
     @Transactional
@@ -216,6 +219,9 @@ public class GroupService {
                 "messageId", messageId,
                 "groupSeq", saved.groupSeq(),
                 "senderId", saved.senderId()));
+        if (surveyId != null) {
+            feedback.processMessage(actor, merchant, messageId);
+        }
         return saved;
     }
 
