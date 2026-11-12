@@ -24,6 +24,10 @@ spring:
       port: ${CRAFTPILOT_REDIS_PORT}
       connect-timeout: 1s
       timeout: 2s
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
 management:
   endpoints:
     web:
@@ -50,6 +54,11 @@ craftpilot:
     bucket: ${CRAFTPILOT_MINIO_BUCKET}
   auth:
     dev-enabled: ${CRAFTPILOT_DEV_AUTH_ENABLED:false}
+  outbox:
+    dispatch-enabled: true
+    poll-interval-ms: 500
+    lease-seconds: 30
+    max-attempts: 8
 logging:
   pattern:
     level: "%5p [traceId:%X{traceId:-}]"
