@@ -398,6 +398,15 @@ class R2FeedbackRetrievalVisionTest {
                 Map.of("revisionId", revisionV2, "query", "FAB-9", "topK", 5), JsonNode.class);
         assertThat(foreignSearch.getStatusCode()).isIn(HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN);
 
+        UUID outsiderRevision = UUID.randomUUID();
+        var outOfSurvey = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/retrieval/search", "r2-owner-a",
+                Map.of("revisionId", outsiderRevision, "query", "FAB-9", "topK", 5), JsonNode.class);
+        assertThat(outOfSurvey.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        var blankQuery = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/retrieval/search", "r2-owner-a",
+                Map.of("revisionId", revisionV2, "query", "   ", "topK", 5), JsonNode.class);
+        assertThat(blankQuery.getStatusCode().value()).isEqualTo(422);
+
         jdbc.sql("UPDATE evidence_ref SET visibility = 'REVOKED' WHERE id = :id")
                 .param("id", evidenceId).update();
         jdbc.sql("UPDATE evidence_chunk SET visibility = 'REVOKED' WHERE evidence_id = :id")

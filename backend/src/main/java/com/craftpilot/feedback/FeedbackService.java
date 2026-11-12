@@ -199,6 +199,18 @@ public class FeedbackService {
                 .single();
         UUID author = jdbc.sql("SELECT sender_id FROM group_message WHERE merchant_id = :m AND id = :id")
                 .param("m", merchant).param("id", message.getKey()).query(UUID.class).single();
+        // Supersede prior opinions/evidence for this message before re-aggregating onto the override revision.
+        var priorOpinions = jdbc.sql("""
+                SELECT id FROM feedback_opinion
+                WHERE merchant_id = :m AND message_id = :message AND status = 'ACTIVE'
+                """).param("m", merchant).param("message", message.getKey()).query(UUID.class).list();
+        for (UUID opinionId : priorOpinions) {
+            evidence.revokeBySource(merchant, surveyId, "FEEDBACK_OPINION", opinionId);
+        }
+        jdbc.sql("""
+                UPDATE feedback_opinion SET status = 'SUPERSEDED'
+                WHERE merchant_id = :m AND message_id = :message AND status = 'ACTIVE'
+                """).param("m", merchant).param("message", message.getKey()).update();
         extractAndAggregate(merchant, surveyId, message.getKey(), attributionId, request.revisionId(),
                 author, message.getValue() == null ? "" : message.getValue());
         return getAttribution(actor, merchant, attributionId);
@@ -308,21 +320,26 @@ public class FeedbackService {
                 """).param("m", merchant).param("id", revisionId).query(UUID.class).single();
         for (var extracted : extractor.extract(text)) {
             UUID opinionId = UUID.randomUUID();
-            int inserted = jdbc.sql("""
+            UUID persistedOpinionId = jdbc.sql("""
                     INSERT INTO feedback_opinion
                     (merchant_id, id, survey_id, message_id, attribution_id, revision_id, author_id,
                      polarity, attribute_key, canonical_text, quote_text, confidence, extractor_version)
                     VALUES (:m, :id, :survey, :message, :attr, :revision, :author, :polarity, :attrKey,
                             :canonical, :quote, :confidence, 'r2-rule-1')
-                    ON CONFLICT (merchant_id, message_id, attribute_key, polarity, canonical_text) DO NOTHING
+                    ON CONFLICT (merchant_id, message_id, attribute_key, polarity, canonical_text)
+                    DO UPDATE SET attribution_id = EXCLUDED.attribution_id,
+                                  revision_id = EXCLUDED.revision_id,
+                                  quote_text = EXCLUDED.quote_text,
+                                  confidence = EXCLUDED.confidence,
+                                  status = 'ACTIVE'
+                    RETURNING id
                     """).param("m", merchant).param("id", opinionId).param("survey", surveyId)
                     .param("message", messageId).param("attr", attributionId).param("revision", revisionId)
                     .param("author", authorId).param("polarity", extracted.polarity())
                     .param("attrKey", extracted.attributeKey()).param("canonical", extracted.canonicalText())
-                    .param("quote", extracted.quoteText()).param("confidence", extracted.confidence()).update();
-            if (inserted == 0) {
-                continue;
-            }
+                    .param("quote", extracted.quoteText()).param("confidence", extracted.confidence())
+                    .query(UUID.class).single();
+            opinionId = persistedOpinionId;
             String issueType = extracted.attributeKey() + ":" + extracted.canonicalText();
             UUID issueId = jdbc.sql("""
                     INSERT INTO feedback_issue

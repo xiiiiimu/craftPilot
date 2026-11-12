@@ -77,6 +77,8 @@ public class VisionService {
             UUID comparisonId = UUID.randomUUID();
             UUID evidenceId = null;
             if (request.surveyId() != null) {
+                requireSurveyRevision(merchant, request.surveyId(), request.rightRevisionId());
+                requireSurveyRevision(merchant, request.surveyId(), request.leftRevisionId());
                 evidenceId = createVisionEvidence(merchant, request.surveyId(), request.rightRevisionId(),
                         comparisonId, parsed);
             }
@@ -165,6 +167,14 @@ public class VisionService {
                 .update();
         return new VisionCompareView(id, request.leftRevisionId(), request.rightRevisionId(),
                 leftAsset, rightAsset, vision.modelName(), "GAP", List.of(), uncertainty, null, gapCode);
+    }
+
+    private void requireSurveyRevision(UUID merchant, UUID surveyId, UUID revisionId) {
+        jdbc.sql("""
+                SELECT 1 FROM survey_revision
+                WHERE merchant_id = :m AND survey_id = :survey AND revision_id = :revision
+                """).param("m", merchant).param("survey", surveyId).param("revision", revisionId)
+                .query(Integer.class).optional().orElseThrow(ApiFailure::notFound);
     }
 
     private UUID primaryImageAsset(UUID merchant, UUID revisionId) {

@@ -1,5 +1,6 @@
 package com.craftpilot.retrieval;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +23,8 @@ public class RetrievalController {
 
     @PostMapping("/merchants/{merchantId}/surveys/{surveyId}/retrieval/search")
     RetrievalService.SearchResult search(Principal principal, @PathVariable UUID merchantId,
-                                         @PathVariable UUID surveyId, @RequestBody SearchRequest request) {
+                                         @PathVariable UUID surveyId,
+                                         @Valid @RequestBody SearchRequest request) {
         int topK = request.topK() == null ? 10 : request.topK();
         return retrieval.search(actor(principal), merchantId, surveyId, request.revisionId(),
                 request.query(), topK);

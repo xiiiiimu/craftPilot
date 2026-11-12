@@ -36,6 +36,14 @@ public class RetrievalService {
                 .param("m", merchant).param("id", surveyId).query(UUID.class)
                 .optional().orElseThrow(ApiFailure::notFound);
         tenant.requireGroupMember(actor, merchant, groupId);
+        jdbc.sql("""
+                SELECT 1 FROM survey_revision
+                WHERE merchant_id = :m AND survey_id = :survey AND revision_id = :revision
+                """).param("m", merchant).param("survey", surveyId).param("revision", revisionId)
+                .query(Integer.class).optional().orElseThrow(ApiFailure::notFound);
+        if (query == null || query.isBlank()) {
+            throw ApiFailure.invalid("query is required");
+        }
         int k = Math.min(Math.max(topK, 1), 50);
         String norm = EvidenceService.normalize(query);
         String material = EvidenceService.extractMaterial(query);
