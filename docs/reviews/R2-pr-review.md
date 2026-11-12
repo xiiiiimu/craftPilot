@@ -13,6 +13,11 @@ Approve after remediation of authorization and attribution consistency findings 
 3. **Manual attribution stale opinions** — override supersedes prior ACTIVE opinions, revokes their evidence, then re-aggregates onto the new revision (upsert on opinion unique key).
 4. **Vision evidence survey binding** — vision evidence creation requires both revisions on the survey whitelist.
 
+## Follow-up (NULL binding + evidence reactivate)
+
+- Lexical/vector SQL branches omit unbound NULL `evidence_watermark` (`bigint`) / `material_code` (`varchar(80)`); present values use typed casts. Regression keeps unsafe SQL reproduction + green service path.
+- Manual attribution must reactivate `REVOKED` evidence for the same opinion source instead of returning the stale id.
+
 ## Residual notes
 
 - R2 formal exit remains **BLOCKED_EXTERNAL_CREDENTIALS** (no live OpenAI/Qwen keys in local `.env` at review time).

@@ -31,14 +31,39 @@ public class EvidenceService {
 
     @Transactional
     public UUID createFromOpinion(UUID merchant, UUID surveyId, UUID revisionId, UUID opinionId, String summary) {
-        UUID existing = jdbc.sql("""
-                SELECT id FROM evidence_ref
+        record ExistingEvidence(UUID id, String visibility, UUID revisionId) {}
+        ExistingEvidence existing = jdbc.sql("""
+                SELECT id, visibility, revision_id FROM evidence_ref
                 WHERE merchant_id = :m AND survey_id = :survey AND source_type = 'FEEDBACK_OPINION'
                   AND source_id = :source
                 """).param("m", merchant).param("survey", surveyId).param("source", opinionId)
-                .query(UUID.class).optional().orElse(null);
+                .query((rs, row) -> new ExistingEvidence(
+                        rs.getObject("id", UUID.class),
+                        rs.getString("visibility"),
+                        rs.getObject("revision_id", UUID.class)))
+                .optional().orElse(null);
         if (existing != null) {
-            return existing;
+            // Manual re-attribution may have revoked this source; reactivate onto the current revision.
+            if (!"ACTIVE".equals(existing.visibility()) || !revisionId.equals(existing.revisionId())) {
+                String summaryText = summary == null ? "" : summary;
+                String checksum = sha(summaryText);
+                jdbc.sql("""
+                        UPDATE evidence_ref
+                        SET revision_id = :revision, visibility = 'ACTIVE', checksum = :checksum,
+                            summary = :summary, captured_at = clock_timestamp()
+                        WHERE merchant_id = :m AND id = :id
+                        """).param("m", merchant).param("id", existing.id()).param("revision", revisionId)
+                        .param("checksum", checksum).param("summary", summaryText).update();
+                jdbc.sql("""
+                        UPDATE evidence_chunk
+                        SET revision_id = :revision, visibility = 'ACTIVE',
+                            content_text = :text, content_norm = :norm, material_code = :material
+                        WHERE merchant_id = :m AND evidence_id = :evidence
+                        """).param("m", merchant).param("evidence", existing.id()).param("revision", revisionId)
+                        .param("text", summaryText).param("norm", normalize(summaryText))
+                        .param("material", extractMaterial(summaryText)).update();
+            }
+            return existing.id();
         }
         long seq = jdbc.sql("""
                 UPDATE survey_session SET evidence_seq = evidence_seq + 1, updated_at = clock_timestamp()
