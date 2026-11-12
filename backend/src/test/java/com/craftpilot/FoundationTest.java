@@ -68,6 +68,7 @@ class FoundationTest {
         config.add("CRAFTPILOT_MINIO_SECRET_KEY", () -> MINIO_PASSWORD);
         config.add("CRAFTPILOT_MINIO_BUCKET", () -> BUCKET);
         config.add("craftpilot.auth.dev-enabled", () -> true);
+        config.add("craftpilot.outbox.dispatch-enabled", () -> false);
     }
 
     @Autowired JdbcClient jdbc;
@@ -106,7 +107,7 @@ class FoundationTest {
                 .schemas("craftpilot_app").defaultSchema("craftpilot_app").load();
         assertThat(jdbc.sql("""
                 SELECT version FROM flyway_schema_history WHERE type = 'SQL' AND success ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1");
+                """).query(String.class).list()).containsExactly("1", "2");
         assertThat(flyway.migrate().migrationsExecuted).isZero();
         assertThat(jdbc.sql("""
                 SELECT indexname FROM pg_indexes WHERE schemaname='craftpilot_app'

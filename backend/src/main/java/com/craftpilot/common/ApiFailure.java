@@ -28,7 +28,23 @@ public class ApiFailure extends RuntimeException {
         return new ApiFailure(HttpStatus.CONFLICT, "IDEMPOTENCY_CONFLICT", "Command key was used for a different request");
     }
 
-    public HttpStatus status() { return status; }
+    public static ApiFailure conflict(String code, String message) {
+        return new ApiFailure(HttpStatus.CONFLICT, code, message);
+    }
 
-    public String code() { return code; }
+    public static ApiFailure invalid(String message) {
+        return new ApiFailure(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_REQUEST", message);
+    }
+
+    public static ApiFailure unavailable(String code, String message) {
+        return new ApiFailure(HttpStatus.SERVICE_UNAVAILABLE, code, message);
+    }
+
+    public HttpStatus status() {
+        return status;
+    }
+
+    public String code() {
+        return code;
+    }
 }
