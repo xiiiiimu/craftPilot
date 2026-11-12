@@ -15,5 +15,5 @@ Approve after remediation of authorization and attribution consistency findings 
 
 ## Residual notes
 
-- Real OpenAI Embedding / Qwen-VL smoke remains an offline gate (`docs/development/R2-provider-smoke.md`); local `.env` had no provider keys at implementation time.
-- CI must stay on HTTP stubs; do not auto-merge until Actions is green and provider smoke is recorded when keys are available.
+- R2 formal exit remains **BLOCKED_EXTERNAL_CREDENTIALS** (no live OpenAI/Qwen keys in local `.env` at review time).
+- CI must stay on HTTP stubs; do not auto-merge; do not claim R2 PASSED until provider smoke is recorded.

@@ -1,7 +1,9 @@
 package com.craftpilot;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.craftpilot.retrieval.RetrievalService;
 import com.sun.net.httpserver.HttpServer;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -367,6 +369,65 @@ class R2FeedbackRetrievalVisionTest {
 
     @Test
     @Order(3)
+    void nullWatermarkAndNullMaterialBindingIsTypedAndReproducible() {
+        // Active surveys keep evidence_watermark NULL until close freezes the seq.
+        Long watermark = jdbc.sql("""
+                SELECT evidence_watermark FROM survey_session WHERE merchant_id = :m AND id = :id
+                """).param("m", merchantA).param("id", surveyId).query(Long.class).optional().orElse(null);
+        assertThat(watermark).isNull();
+
+        String materialType = jdbc.sql("""
+                SELECT data_type FROM information_schema.columns
+                WHERE table_schema = 'craftpilot_app' AND table_name = 'evidence_chunk'
+                  AND column_name = 'material_code'
+                """).query(String.class).single();
+        String watermarkType = jdbc.sql("""
+                SELECT data_type FROM information_schema.columns
+                WHERE table_schema = 'craftpilot_app' AND table_name = 'survey_session'
+                  AND column_name = 'evidence_watermark'
+                """).query(String.class).single();
+        assertThat(materialType).isEqualTo("character varying");
+        assertThat(watermarkType).isEqualTo("bigint");
+
+        // Red reproduction: untyped NULL :watermark / :material fails PostgreSQL type inference.
+        assertThatThrownBy(() -> jdbc.sql(RetrievalService.UNSAFE_NULL_PARAM_LEXICAL_SQL)
+                .param("m", merchantA).param("survey", surveyId).param("revision", revisionV2)
+                .param("watermark", null).param("material", null).param("norm", "fabric").param("limit", 5)
+                .query(UUID.class).list())
+                .getRootCause()
+                .hasMessageContaining("could not determine data type of parameter");
+
+        // Green path: query without material code + null watermark must still authorize and recall.
+        openaiMode.set(3); // force lexical path so embedding outages cannot mask SQL binding
+        var search = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/retrieval/search", "r2-owner-a",
+                Map.of("revisionId", revisionV2, "query", "面料不错", "topK", 5), JsonNode.class);
+        if (!search.getStatusCode().is2xxSuccessful()) {
+            throw new AssertionError("lexical null-binding search failed status=" + search.getStatusCode()
+                    + " body=" + search.getBody());
+        }
+        assertThat(search.getBody().path("retrievalMode").asText()).contains("lexical");
+        assertThat(search.getBody().path("hits").size()).isGreaterThan(0);
+        openaiMode.set(0);
+
+        // Frozen watermark branch still filters with an explicit bigint bind.
+        long frozen = jdbc.sql("""
+                SELECT evidence_seq FROM survey_session WHERE merchant_id = :m AND id = :id
+                """).param("m", merchantA).param("id", surveyId).query(Long.class).single();
+        jdbc.sql("""
+                UPDATE survey_session SET evidence_watermark = :w WHERE merchant_id = :m AND id = :id
+                """).param("w", frozen).param("m", merchantA).param("id", surveyId).update();
+        openaiMode.set(3);
+        var frozenSearch = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/retrieval/search", "r2-owner-a",
+                Map.of("revisionId", revisionV2, "query", "面料不错", "topK", 5), JsonNode.class);
+        assertThat(frozenSearch.getStatusCode()).isEqualTo(HttpStatus.OK);
+        openaiMode.set(0);
+        jdbc.sql("""
+                UPDATE survey_session SET evidence_watermark = NULL WHERE merchant_id = :m AND id = :id
+                """).param("m", merchantA).param("id", surveyId).update();
+    }
+
+    @Test
+    @Order(4)
     void hybridRetrievalLexicalVectorDegradeAndRevocation() {
         openaiMode.set(0);
         var search = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/retrieval/search", "r2-owner-a",
@@ -419,7 +480,7 @@ class R2FeedbackRetrievalVisionTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void visionCompareGapsAndFabricatedEvidenceRejected() {
         var compare = post("/merchants/" + merchantA + "/vision/compare", "r2-owner-a", Map.of(
                 "leftRevisionId", revisionV1,
@@ -482,7 +543,7 @@ class R2FeedbackRetrievalVisionTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void pgvectorExtensionAndTenantFkGuards() {
         assertThat(jdbc.sql("SELECT extname FROM pg_extension WHERE extname = 'vector'")
                 .query(String.class).single()).isEqualTo("vector");

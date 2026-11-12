@@ -1,5 +1,9 @@
 # R2 real provider smoke (offline from CI)
 
+## Status
+
+**BLOCKED_EXTERNAL_CREDENTIALS** until both keys are available and smoke steps below succeed. Do not mark R2 PASSED without this gate.
+
 ## Purpose
 
 Prove at least one live OpenAI Embedding call and one live Qwen-VL compare without spending budget on every GitHub Actions run.

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.core.simple.JdbcClient.StatementSpec;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
@@ -18,6 +19,24 @@ import tools.jackson.databind.ObjectMapper;
 public class RetrievalService {
     public record Hit(UUID evidenceId, UUID chunkId, int chunkOrdinal, double score, String mode, String summary) {}
     public record SearchResult(String retrievalMode, List<Hit> hits) {}
+
+    /**
+     * Unsafe lexical filter used only to document the PostgreSQL null-parameter type-inference failure.
+     * Production search must never call this; use {@link #search} instead.
+     */
+    public static final String UNSAFE_NULL_PARAM_LEXICAL_SQL = """
+            SELECT c.id
+            FROM evidence_chunk c
+            JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
+            WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
+              AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
+              AND (:watermark IS NULL OR e.seq <= :watermark)
+              AND (
+                (:material IS NOT NULL AND c.material_code = :material)
+                OR position(:norm in c.content_norm) > 0
+              )
+            LIMIT :limit
+            """;
 
     private final JdbcClient jdbc;
     private final TenantAccess tenant;
@@ -52,37 +71,7 @@ public class RetrievalService {
                 SELECT evidence_watermark FROM survey_session WHERE merchant_id = :m AND id = :id
                 """).param("m", merchant).param("id", surveyId).query(Long.class).optional().orElse(null);
 
-        List<Hit> lexical = jdbc.sql("""
-                SELECT c.id AS chunk_id, c.evidence_id, c.chunk_ordinal, e.summary, e.seq,
-                       CASE
-                         WHEN CAST(:material AS varchar) IS NOT NULL
-                              AND c.material_code = CAST(:material AS varchar) THEN 1.0
-                         WHEN position(CAST(:norm AS varchar) in c.content_norm) > 0 THEN 0.8
-                         ELSE 0.2
-                       END AS score
-                FROM evidence_chunk c
-                JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
-                WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
-                  AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
-                  AND (CAST(:watermark AS bigint) IS NULL OR e.seq <= CAST(:watermark AS bigint))
-                  AND (
-                    (CAST(:material AS varchar) IS NOT NULL
-                     AND c.material_code = CAST(:material AS varchar))
-                    OR position(CAST(:norm AS varchar) in c.content_norm) > 0
-                  )
-                ORDER BY score DESC, e.id, c.chunk_ordinal
-                LIMIT :limit
-                """).param("m", merchant).param("survey", surveyId).param("revision", revisionId)
-                .param("norm", norm).param("material", material).param("watermark", watermark)
-                .param("limit", k)
-                .query((rs, row) -> new Hit(
-                        rs.getObject("evidence_id", UUID.class),
-                        rs.getObject("chunk_id", UUID.class),
-                        rs.getInt("chunk_ordinal"),
-                        rs.getDouble("score"),
-                        "lexical",
-                        rs.getString("summary")))
-                .list();
+        List<Hit> lexical = lexicalHits(merchant, surveyId, revisionId, norm, material, watermark, k);
 
         List<Hit> vectorHits = List.of();
         String mode = lexical.isEmpty() ? "empty" : "lexical";
@@ -90,27 +79,7 @@ public class RetrievalService {
             ensureAuthorizedEmbeddings(merchant, surveyId, revisionId, watermark);
             float[] vector = embedding.embed(merchant, norm);
             String literal = embedding.vectorLiteral(vector);
-            vectorHits = jdbc.sql("""
-                    SELECT c.id AS chunk_id, c.evidence_id, c.chunk_ordinal, e.summary,
-                           (1 - (c.embedding <=> CAST(CAST(:vec AS varchar) AS public.vector))) AS score
-                    FROM evidence_chunk c
-                    JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
-                    WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
-                      AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
-                      AND c.embedding IS NOT NULL AND c.embedding_dim = 1536
-                      AND (CAST(:watermark AS bigint) IS NULL OR e.seq <= CAST(:watermark AS bigint))
-                    ORDER BY c.embedding <=> CAST(CAST(:vec AS varchar) AS public.vector), e.id, c.chunk_ordinal
-                    LIMIT :limit
-                    """).param("m", merchant).param("survey", surveyId).param("revision", revisionId)
-                    .param("vec", literal).param("watermark", watermark).param("limit", k)
-                    .query((rs, row) -> new Hit(
-                            rs.getObject("evidence_id", UUID.class),
-                            rs.getObject("chunk_id", UUID.class),
-                            rs.getInt("chunk_ordinal"),
-                            rs.getDouble("score"),
-                            "vector",
-                            rs.getString("summary")))
-                    .list();
+            vectorHits = vectorHits(merchant, surveyId, revisionId, literal, watermark, k);
             if (!vectorHits.isEmpty() && !lexical.isEmpty()) {
                 mode = "hybrid";
             } else if (!vectorHits.isEmpty()) {
@@ -132,36 +101,149 @@ public class RetrievalService {
             fused = lexical.stream().limit(k).toList();
         }
         try {
-            jdbc.sql("""
-                    INSERT INTO retrieval_execution
-                    (merchant_id, id, survey_id, revision_id, query_text, retrieval_mode, profile_version,
-                     top_k, result_json, evidence_watermark)
-                    VALUES (:m, :id, :survey, :revision, :query, :mode, 'r2-rrf-60', :topK,
-                            CAST(:json AS jsonb), :watermark)
-                    """).param("m", merchant).param("id", UUID.randomUUID()).param("survey", surveyId)
-                    .param("revision", revisionId).param("query", query).param("mode", mode)
-                    .param("topK", k).param("json", mapper.writeValueAsString(fused))
-                    .param("watermark", watermark).update();
+            String json = mapper.writeValueAsString(fused);
+            UUID executionId = UUID.randomUUID();
+            if (watermark == null) {
+                jdbc.sql("""
+                        INSERT INTO retrieval_execution
+                        (merchant_id, id, survey_id, revision_id, query_text, retrieval_mode, profile_version,
+                         top_k, result_json, evidence_watermark)
+                        VALUES (:m, :id, :survey, :revision, :query, :mode, 'r2-rrf-60', :topK,
+                                CAST(:json AS jsonb), NULL)
+                        """).param("m", merchant).param("id", executionId).param("survey", surveyId)
+                        .param("revision", revisionId).param("query", query).param("mode", mode)
+                        .param("topK", k).param("json", json).update();
+            } else {
+                jdbc.sql("""
+                        INSERT INTO retrieval_execution
+                        (merchant_id, id, survey_id, revision_id, query_text, retrieval_mode, profile_version,
+                         top_k, result_json, evidence_watermark)
+                        VALUES (:m, :id, :survey, :revision, :query, :mode, 'r2-rrf-60', :topK,
+                                CAST(:json AS jsonb), CAST(:watermark AS bigint))
+                        """).param("m", merchant).param("id", executionId).param("survey", surveyId)
+                        .param("revision", revisionId).param("query", query).param("mode", mode)
+                        .param("topK", k).param("json", json).param("watermark", watermark).update();
+            }
         } catch (Exception ignored) {
             // audit best-effort
         }
         return new SearchResult(mode, fused);
     }
 
+    private List<Hit> lexicalHits(UUID merchant, UUID surveyId, UUID revisionId, String norm, String material,
+                                  Long watermark, int limit) {
+        // Branch on nullability so JDBC never sends untyped NULL for watermark (bigint) or material (varchar(80)).
+        String watermarkClause = watermark == null
+                ? ""
+                : " AND e.seq <= CAST(:watermark AS bigint)";
+        String materialScore = material == null
+                ? """
+                       CASE
+                         WHEN position(CAST(:norm AS varchar) in c.content_norm) > 0 THEN 0.8
+                         ELSE 0.2
+                       END AS score
+                  """
+                : """
+                       CASE
+                         WHEN c.material_code = CAST(:material AS varchar(80)) THEN 1.0
+                         WHEN position(CAST(:norm AS varchar) in c.content_norm) > 0 THEN 0.8
+                         ELSE 0.2
+                       END AS score
+                  """;
+        String matchClause = material == null
+                ? " AND position(CAST(:norm AS varchar) in c.content_norm) > 0"
+                : """
+                   AND (
+                     c.material_code = CAST(:material AS varchar(80))
+                     OR position(CAST(:norm AS varchar) in c.content_norm) > 0
+                   )
+                  """;
+        // Explicit "\\n" separators: text-block openers drop the first newline after """, which would
+        // otherwise glue fragments like "> 0" + "ORDER" into invalid SQL ("> 0ORDER").
+        String sql = """
+                SELECT c.id AS chunk_id, c.evidence_id, c.chunk_ordinal, e.summary, e.seq,
+                """ + materialScore + "\n" + """
+                FROM evidence_chunk c
+                JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
+                WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
+                  AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
+                """ + watermarkClause + matchClause + "\n" + """
+                ORDER BY score DESC, e.id, c.chunk_ordinal
+                LIMIT :limit
+                """;
+        StatementSpec spec = jdbc.sql(sql)
+                .param("m", merchant).param("survey", surveyId).param("revision", revisionId)
+                .param("norm", norm).param("limit", limit);
+        if (watermark != null) {
+            spec = spec.param("watermark", watermark);
+        }
+        if (material != null) {
+            spec = spec.param("material", material);
+        }
+        return spec.query((rs, row) -> new Hit(
+                rs.getObject("evidence_id", UUID.class),
+                rs.getObject("chunk_id", UUID.class),
+                rs.getInt("chunk_ordinal"),
+                rs.getDouble("score"),
+                "lexical",
+                rs.getString("summary")))
+                .list();
+    }
+
+    private List<Hit> vectorHits(UUID merchant, UUID surveyId, UUID revisionId, String literal, Long watermark,
+                                 int limit) {
+        String watermarkClause = watermark == null
+                ? ""
+                : " AND e.seq <= CAST(:watermark AS bigint)";
+        String sql = """
+                SELECT c.id AS chunk_id, c.evidence_id, c.chunk_ordinal, e.summary,
+                       (1 - (c.embedding <=> CAST(CAST(:vec AS varchar) AS public.vector))) AS score
+                FROM evidence_chunk c
+                JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
+                WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
+                  AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
+                  AND c.embedding IS NOT NULL AND c.embedding_dim = 1536
+                """ + watermarkClause + "\n" + """
+                ORDER BY c.embedding <=> CAST(CAST(:vec AS varchar) AS public.vector), e.id, c.chunk_ordinal
+                LIMIT :limit
+                """;
+        StatementSpec spec = jdbc.sql(sql)
+                .param("m", merchant).param("survey", surveyId).param("revision", revisionId)
+                .param("vec", literal).param("limit", limit);
+        if (watermark != null) {
+            spec = spec.param("watermark", watermark);
+        }
+        return spec.query((rs, row) -> new Hit(
+                rs.getObject("evidence_id", UUID.class),
+                rs.getObject("chunk_id", UUID.class),
+                rs.getInt("chunk_ordinal"),
+                rs.getDouble("score"),
+                "vector",
+                rs.getString("summary")))
+                .list();
+    }
+
     private void ensureAuthorizedEmbeddings(UUID merchant, UUID surveyId, UUID revisionId, Long watermark) {
-        var pending = jdbc.sql("""
+        String watermarkClause = watermark == null
+                ? ""
+                : " AND e.seq <= CAST(:watermark AS bigint)";
+        String sql = """
                 SELECT c.id, c.content_norm
                 FROM evidence_chunk c
                 JOIN evidence_ref e ON e.merchant_id = c.merchant_id AND e.id = c.evidence_id
                 WHERE c.merchant_id = :m AND c.survey_id = :survey AND c.revision_id = :revision
                   AND c.visibility = 'ACTIVE' AND e.visibility = 'ACTIVE'
                   AND c.embedding IS NULL
-                  AND (CAST(:watermark AS bigint) IS NULL OR e.seq <= CAST(:watermark AS bigint))
+                """ + watermarkClause + "\n" + """
                 ORDER BY e.seq, c.chunk_ordinal
                 LIMIT 32
-                """).param("m", merchant).param("survey", surveyId).param("revision", revisionId)
-                .param("watermark", watermark)
-                .query((rs, row) -> Map.entry(rs.getObject("id", UUID.class), rs.getString("content_norm")))
+                """;
+        StatementSpec spec = jdbc.sql(sql)
+                .param("m", merchant).param("survey", surveyId).param("revision", revisionId);
+        if (watermark != null) {
+            spec = spec.param("watermark", watermark);
+        }
+        var pending = spec.query((rs, row) -> Map.entry(rs.getObject("id", UUID.class), rs.getString("content_norm")))
                 .list();
         for (var row : pending) {
             float[] vector = embedding.embed(merchant, row.getValue());

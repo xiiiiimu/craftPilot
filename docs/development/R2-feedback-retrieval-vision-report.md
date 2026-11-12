@@ -39,6 +39,16 @@ R2 adds message attribution, opinion extraction / issue merge, Evidence, OpenAI 
 - `FoundationTest` / `R1BusinessTest` — R0/R1 regression including Flyway `1,2,3`
 - `R2FeedbackRetrievalVisionTest` — attribution, merge, evidence verify, hybrid/degrade, vision success/gap/fabricated ID
 
+## Exit status
+
+**R2 status: `BLOCKED_EXTERNAL_CREDENTIALS` — not PASSED.**
+
+Offline implementation, protocol stubs, PR, and CI may be green. Formal R2 completion still requires at least one live OpenAI Embedding call and one live Qwen-VL compare with recorded model/usage fields.
+
 ## Real provider gate
 
-Offline from GitHub CI. Requires `CRAFTPILOT_OPENAI_API_KEY` and `CRAFTPILOT_QWEN_API_KEY` (and optional base URL / model overrides). Run a controlled smoke against live endpoints after merge readiness; do not enable paid calls in Actions.
+Offline from GitHub CI. Requires `CRAFTPILOT_OPENAI_API_KEY` and `CRAFTPILOT_QWEN_API_KEY` (and optional base URL / model overrides). See `R2-provider-smoke.md`. Do not enable paid calls in Actions.
+
+## NULL parameter binding (watermark / material)
+
+`survey_session.evidence_watermark` is `bigint` (NULL while ACTIVE). `evidence_chunk.material_code` is `varchar(80)`. Binding untyped JDBC NULLs into `(:watermark IS NULL OR …)` / `(:material IS NOT NULL AND …)` fails with `could not determine data type of parameter`. Production retrieval branches omit unbound NULL filters; when present, parameters are cast to `bigint` / `varchar(80)`. Regression: `nullWatermarkAndNullMaterialBindingIsTypedAndReproducible`.
