@@ -70,10 +70,11 @@ cd E:\shopper\backend
 .\mvnw.cmd -B -ntp clean verify
 ```
 
-结果：**Tests run: 14, Failures: 0, Errors: 0, Skipped: 0，BUILD SUCCESS**
+结果：**Tests run: 18, Failures: 0, Errors: 0, Skipped: 0，BUILD SUCCESS**
 
+- `FlywayR1MigrationTest`：2（空库 V1+V2；既有 V1 schema 升级到 V2，含 revision 唯一、跨租户 BOM FK、开放调查部分唯一索引反例）  
 - `FoundationTest`：7  
-- `R1BusinessTest`：7（目录/资产/租户、资产失败态、消息幂等+WS+Outbox、调查/投票/关闭、并发投票、多 Worker claim、Flyway）  
+- `R1BusinessTest`：9（目录/资产/租户、资产失败态、消息幂等+WS+Outbox、调查/订阅/偏好与购买意愿分离/关闭、并发投票、Outbox 回滚原子性、并发消息幂等与撤销失权、schema 断言）  
 
 ## 剩余风险
 

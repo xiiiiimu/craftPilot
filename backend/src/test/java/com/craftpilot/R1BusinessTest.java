@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.craftpilot.events.OutboxDispatcher;
+import com.craftpilot.events.OutboxWriter;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import java.net.URI;
@@ -42,6 +43,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -96,6 +98,8 @@ class R1BusinessTest {
     @Autowired JdbcClient jdbc;
     @Autowired PasswordEncoder encoder;
     @Autowired OutboxDispatcher dispatcher;
+    @Autowired OutboxWriter outboxWriter;
+    @Autowired TransactionTemplate tx;
     @Autowired MinioClient minio;
     @LocalServerPort int port;
 
@@ -305,10 +309,23 @@ class R1BusinessTest {
         assertThat(survey.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         UUID surveyId = UUID.fromString(survey.getBody().path("id").asText());
         assertThat(survey.getBody().path("status").asText()).isEqualTo("ACTIVE");
+        assertThat(jdbc.sql("""
+                SELECT COUNT(*) FROM subscription WHERE survey_id = :id AND status = 'ACTIVE'
+                """).param("id", surveyId).query(Long.class).single()).isEqualTo(1L);
 
         var conflict = post("/merchants/" + merchantA + "/groups/" + groupId + "/surveys", "r1-owner-a",
                 Map.of("revisionIds", List.of(revisionId)), JsonNode.class);
         assertThat(conflict.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+        var preference = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/polls", "r1-owner-a", Map.of(
+                "revisionId", revisionId,
+                "kind", "PREFERENCE",
+                "question", "Like style?",
+                "options", List.of("Love", "Hate")), JsonNode.class);
+        UUID preferencePoll = UUID.fromString(preference.getBody().path("id").asText());
+        UUID love = UUID.fromString(preference.getBody().path("options").get(0).path("id").asText());
+        put("/merchants/" + merchantA + "/surveys/" + surveyId + "/polls/" + preferencePoll + "/vote",
+                "r1-member-a", Map.of("optionId", love), JsonNode.class);
 
         var poll = post("/merchants/" + merchantA + "/surveys/" + surveyId + "/polls", "r1-owner-a", Map.of(
                 "revisionId", revisionId,
@@ -329,6 +346,11 @@ class R1BusinessTest {
                 JsonNode.class);
         assertThat(stats.getBody().path("totalVotes").asLong()).isEqualTo(1);
         assertThat(stats.getBody().path("kind").asText()).isEqualTo("PURCHASE_INTENT");
+        var preferenceStats = auth("r1-owner-a").getForEntity(
+                "/api/v1/merchants/" + merchantA + "/surveys/" + surveyId + "/polls/" + preferencePoll + "/stats",
+                JsonNode.class);
+        assertThat(preferenceStats.getBody().path("kind").asText()).isEqualTo("PREFERENCE");
+        assertThat(preferenceStats.getBody().path("totalVotes").asLong()).isEqualTo(1);
 
         UUID closeKey = UUID.randomUUID();
         var closed = auth("r1-owner-a").exchange("/api/v1/merchants/" + merchantA + "/surveys/" + surveyId + "/close",
@@ -432,13 +454,76 @@ class R1BusinessTest {
 
     @Test
     @Order(7)
-    void flywayUpgradeFromV1Baseline() {
-        // empty-library path already covered by container boot; assert V2 objects exist on upgraded schema
+    void outboxWriteRollsBackAtomicallyWithBusinessTransaction() {
+        long before = jdbc.sql("SELECT COUNT(*) FROM outbox").query(Long.class).single();
+        tx.executeWithoutResult(status -> {
+            outboxWriter.enqueue(merchantA, "probe", UUID.randomUUID(), "PROBE_EVENT",
+                    Map.of("merchantId", merchantA));
+            status.setRollbackOnly();
+        });
+        assertThat(jdbc.sql("SELECT COUNT(*) FROM outbox").query(Long.class).single()).isEqualTo(before);
+
+        var group = post("/merchants/" + merchantA + "/groups", "r1-owner-a", Map.of("name", "OutboxAtom"), JsonNode.class);
+        UUID groupId = UUID.fromString(group.getBody().path("id").asText());
+        var message = post("/merchants/" + merchantA + "/groups/" + groupId + "/messages", "r1-owner-a", Map.of(
+                "clientMsgId", UUID.randomUUID(), "text", "persisted"), JsonNode.class);
+        UUID messageId = UUID.fromString(message.getBody().path("id").asText());
+        assertThat(jdbc.sql("""
+                SELECT COUNT(*) FROM outbox
+                WHERE aggregate_id = :id AND event_type = 'MESSAGE_PERSISTED' AND status = 'PENDING'
+                """).param("id", messageId).query(Long.class).single()).isEqualTo(1L);
+    }
+
+    @Test
+    @Order(8)
+    void concurrentMessageIdempotencyAndRevokedMemberLoseAccess() throws Exception {
+        var group = post("/merchants/" + merchantA + "/groups", "r1-owner-a", Map.of("name", "IdemRoom"), JsonNode.class);
+        UUID groupId = UUID.fromString(group.getBody().path("id").asText());
+        put("/merchants/" + merchantA + "/groups/" + groupId + "/members/" + memberA, "r1-owner-a",
+                Map.of("role", "MEMBER", "enabled", true), JsonNode.class);
+
+        UUID clientMsg = UUID.randomUUID();
+        ExecutorService pool = Executors.newFixedThreadPool(8);
+        try {
+            var futures = new java.util.ArrayList<java.util.concurrent.Future<ResponseEntity<JsonNode>>>();
+            for (int i = 0; i < 16; i++) {
+                futures.add(pool.submit(() -> post("/merchants/" + merchantA + "/groups/" + groupId + "/messages",
+                        "r1-member-a", Map.of("clientMsgId", clientMsg, "text", "same"), JsonNode.class)));
+            }
+            var ids = new java.util.HashSet<String>();
+            for (var future : futures) {
+                var response = future.get(30, TimeUnit.SECONDS);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+                ids.add(response.getBody().path("id").asText());
+            }
+            assertThat(ids).hasSize(1);
+            assertThat(jdbc.sql("""
+                    SELECT COUNT(*) FROM group_message
+                    WHERE merchant_id = :m AND group_id = :g AND sender_id = :s AND client_msg_id = :c
+                    """).param("m", merchantA).param("g", groupId).param("s", memberA).param("c", clientMsg)
+                    .query(Long.class).single()).isEqualTo(1L);
+        } finally {
+            pool.shutdownNow();
+        }
+
+        put("/merchants/" + merchantA + "/groups/" + groupId + "/members/" + memberA, "r1-owner-a",
+                Map.of("role", "MEMBER", "enabled", false), JsonNode.class);
+        var deniedPost = post("/merchants/" + merchantA + "/groups/" + groupId + "/messages", "r1-member-a", Map.of(
+                "clientMsgId", UUID.randomUUID(), "text", "after-revoke"), JsonNode.class);
+        assertThat(deniedPost.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        var deniedRead = auth("r1-member-a").getForEntity(
+                "/api/v1/merchants/" + merchantA + "/groups/" + groupId + "/messages?afterSeq=0", JsonNode.class);
+        assertThat(deniedRead.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @Order(9)
+    void flywayObjectsPresentOnBootstrappedSchema() {
         assertThat(jdbc.sql("""
                 SELECT COUNT(*) FROM information_schema.tables
                 WHERE table_schema = 'craftpilot_app' AND table_name IN
-                ('launch_campaign','sample_revision','group_message','survey_session','outbox')
-                """).query(Long.class).single()).isEqualTo(5L);
+                ('launch_campaign','sample_revision','group_message','survey_session','outbox','subscription')
+                """).query(Long.class).single()).isEqualTo(6L);
         assertThat(jdbc.sql("""
                 SELECT version FROM flyway_schema_history WHERE success AND type = 'SQL' ORDER BY installed_rank
                 """).query(String.class).list()).containsExactly("1", "2");
