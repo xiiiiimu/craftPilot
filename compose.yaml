@@ -1,0 +1,68 @@
+name: craftpilot
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:9cf8b511f0e9a2c209b61430fc139f1ab9c75edbb31fb1751db6617b246a897a
+    restart: "no"
+    environment:
+      POSTGRES_DB: ${CRAFTPILOT_POSTGRES_DB:?Set CRAFTPILOT_POSTGRES_DB in .env}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${CRAFTPILOT_POSTGRES_ADMIN_PASSWORD:?Set the PostgreSQL bootstrap password in .env}
+      CRAFT_DB_USER: ${CRAFTPILOT_POSTGRES_USER:?Set CRAFTPILOT_POSTGRES_USER in .env}
+      CRAFT_DB_PASSWORD: ${CRAFTPILOT_POSTGRES_PASSWORD:?Set the PostgreSQL app password in .env}
+    ports:
+      - "127.0.0.1:${CRAFTPILOT_POSTGRES_PORT:-15432}:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./infra/postgres/01-craftpilot.sql:/docker-entrypoint-initdb.d/01-craftpilot.sql:ro
+    networks: [dev]
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=\"$$CRAFT_DB_PASSWORD\" psql -h 127.0.0.1 -U \"$$CRAFT_DB_USER\" -d \"$$POSTGRES_DB\" -v ON_ERROR_STOP=1 -Atqc 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      start_period: 20s
+      retries: 12
+    stop_grace_period: 30s
+
+  redis:
+    image: redis:7.4.12-alpine3.22@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
+    restart: "no"
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    ports:
+      - "127.0.0.1:${CRAFTPILOT_REDIS_PORT:-17379}:6379"
+    volumes:
+      - ./data/redis:/data
+    networks: [dev]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -qx PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    stop_grace_period: 30s
+
+  minio:
+    image: craftpilot/minio-dev:2026-11-12
+    pull_policy: never
+    build: ./infra/minio
+    restart: "no"
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${CRAFTPILOT_MINIO_ROOT_USER:?Set CRAFTPILOT_MINIO_ROOT_USER in .env}
+      MINIO_ROOT_PASSWORD: ${CRAFTPILOT_MINIO_ROOT_PASSWORD:?Set the MinIO root password in .env}
+    ports:
+      - "127.0.0.1:${CRAFTPILOT_MINIO_API_PORT:-19000}:9000"
+      - "127.0.0.1:${CRAFTPILOT_MINIO_CONSOLE_PORT:-19001}:9001"
+    volumes:
+      - ./data/minio:/data
+    networks: [dev]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/busybox", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9000/minio/health/ready"]
+      interval: 5s
+      timeout: 5s
+      start_period: 15s
+      retries: 12
+    stop_grace_period: 30s
+
+networks:
+  dev:
+    driver: bridge

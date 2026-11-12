@@ -1,0 +1,55 @@
+server:
+  address: ${CRAFTPILOT_HTTP_ADDRESS:127.0.0.1}
+  port: ${CRAFTPILOT_HTTP_PORT:18080}
+  error:
+    include-message: never
+    include-stacktrace: never
+spring:
+  application:
+    name: craftpilot
+  datasource:
+    url: ${CRAFTPILOT_JDBC_URL}
+    username: ${CRAFTPILOT_POSTGRES_USER}
+    password: ${CRAFTPILOT_POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 8
+      connection-timeout: 3000
+      validation-timeout: 1000
+  flyway:
+    default-schema: craftpilot_app
+    schemas: craftpilot_app
+  data:
+    redis:
+      host: ${CRAFTPILOT_REDIS_HOST:127.0.0.1}
+      port: ${CRAFTPILOT_REDIS_PORT}
+      connect-timeout: 1s
+      timeout: 2s
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      cache:
+        time-to-live: 5s
+      group:
+        readiness:
+          include: readinessState,db,redis,minio
+          show-components: always
+        liveness:
+          include: livenessState
+craftpilot:
+  minio:
+    endpoint: ${CRAFTPILOT_MINIO_ENDPOINT}
+    access-key: ${CRAFTPILOT_MINIO_ACCESS_KEY}
+    secret-key: ${CRAFTPILOT_MINIO_SECRET_KEY}
+    bucket: ${CRAFTPILOT_MINIO_BUCKET}
+  auth:
+    dev-enabled: ${CRAFTPILOT_DEV_AUTH_ENABLED:false}
+logging:
+  pattern:
+    level: "%5p [traceId:%X{traceId:-}]"

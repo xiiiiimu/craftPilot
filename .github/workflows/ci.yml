@@ -1,0 +1,96 @@
+name: CraftPilot CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: craftpilot-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Build, test and repository security
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check tracked files and scan Git history
+        shell: bash
+        run: |
+          python3 scripts/check-repository.py tracked
+          tmp="$(mktemp -d)"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            --output "$tmp/gitleaks.tar.gz"
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  $tmp/gitleaks.tar.gz" | sha256sum --check
+          tar -xzf "$tmp/gitleaks.tar.gz" -C "$tmp" gitleaks
+          "$tmp/gitleaks" git --redact --no-banner --log-opts="--all"
+
+      - name: Verify Compose image pins and restart policy
+        env:
+          CRAFTPILOT_POSTGRES_ADMIN_PASSWORD: compose-validation-only
+          CRAFTPILOT_POSTGRES_PASSWORD: compose-validation-only
+          CRAFTPILOT_MINIO_ROOT_PASSWORD: compose-validation-only
+        run: |
+          docker compose --env-file .env.example config --format json | python3 scripts/check-repository.py compose
+
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/**/pom.xml
+
+      - name: Maven verify with real Testcontainers services
+        working-directory: backend
+        run: bash ./mvnw -B -ntp clean verify
+
+      - name: Record test counts and enforce the test gate
+        if: ${{ always() }}
+        run: python3 scripts/check-repository.py tests | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Inventory and scan Maven dependencies
+        shell: bash
+        run: |
+          mkdir -p .ci-output
+          (cd backend && bash ./mvnw -B -ntp dependency:tree -Dscope=runtime) > .ci-output/maven-runtime.txt
+          tmp="$(mktemp -d)"
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_linux_amd64 \
+            --output "$tmp/osv-scanner"
+          echo "fb7dab19a8bd9bbe5c3189f09d4b7ee1820c9553a23bac202648a56efd2f6ee8  $tmp/osv-scanner" | sha256sum --check
+          chmod +x "$tmp/osv-scanner"
+          set +e
+          "$tmp/osv-scanner" scan source --format json --lockfile backend/pom.xml > .ci-output/osv-maven.json
+          result=$?
+          set -e
+          if [ "$result" -eq 1 ]; then
+            echo 'OSV matched known advisories; review the full report before merging.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$result" -ne 0 ]; then
+            echo 'Dependency vulnerability scan NOT VERIFIED.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$result"
+
+      - name: Upload test reports and dependency evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: craftpilot-test-and-security-evidence
+          path: |
+            backend/**/target/surefire-reports/*.txt
+            backend/**/target/failsafe-reports/*.txt
+            .ci-output/maven-runtime.txt
+            .ci-output/osv-maven.json
+          if-no-files-found: ignore
+          retention-days: 14
