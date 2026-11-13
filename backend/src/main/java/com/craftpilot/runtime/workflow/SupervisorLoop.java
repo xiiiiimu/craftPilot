@@ -267,6 +267,11 @@ public class SupervisorLoop {
                     }
                     tools.dispatch(actor, merchant, surveyId, runId, taskId, turnId, leaseEpoch, 0,
                             seed.get("name"), seed.get("args"), seed.get("callId"), allowed);
+                    checkpoints.appendEvent(merchant, surveyId, runId, "TOOL_GUIDANCE_CONTROLLED", Map.of(
+                            "role", role,
+                            "tool", seed.get("name"),
+                            "reason", "MODEL_SKIPPED_REQUIRED_TOOL",
+                            "provenance", "RUNTIME_CONTROLLED_SEED"));
                     continue;
                 }
             }
@@ -275,6 +280,11 @@ public class SupervisorLoop {
                     tools.dispatch(actor, merchant, surveyId, runId, taskId, turnId, leaseEpoch,
                             call.ordinal(), call.toolName(), call.argumentsJson(), call.providerCallId(),
                             allowed);
+                    checkpoints.appendEvent(merchant, surveyId, runId, "TOOL_MODEL_AUTONOMOUS", Map.of(
+                            "role", role,
+                            "tool", call.toolName(),
+                            "ordinal", call.ordinal(),
+                            "provenance", "MODEL_AUTONOMOUS"));
                 }
                 continue;
             }
