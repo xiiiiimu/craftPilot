@@ -45,24 +45,44 @@ public class ContextBuilder {
 
     public List<Map<String, Object>> buildMessages(UUID merchant, UUID surveyId, UUID runId, UUID ticketId,
                                                   String instructions, String objective) {
+        return buildMessages(merchant, surveyId, runId, ticketId, null, instructions, objective);
+    }
+
+    public List<Map<String, Object>> buildMessages(UUID merchant, UUID surveyId, UUID runId, UUID ticketId,
+                                                  UUID taskId, String instructions, String objective) {
         List<Map<String, Object>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", instructions));
         String summary = authorizedSummary(merchant, surveyId, ticketId, objective);
         messages.add(Map.of("role", "user", "content", summary));
 
-        List<Map<String, Object>> history = jdbc.sql("""
-                SELECT turn_no, response_summary, tool_batch_json::text AS tools
-                FROM agent_turn
-                WHERE merchant_id = :m AND run_id = :run AND status = 'RESPONSE_COMMITTED'
-                ORDER BY turn_no
-                """).param("m", merchant).param("run", runId)
-                .query((rs, i) -> {
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    row.put("turn", rs.getInt("turn_no"));
-                    row.put("response", rs.getString("response_summary"));
-                    row.put("tools", rs.getString("tools"));
-                    return row;
-                }).list();
+        List<Map<String, Object>> history = taskId == null
+                ? jdbc.sql("""
+                        SELECT turn_no, response_summary, tool_batch_json::text AS tools
+                        FROM agent_turn
+                        WHERE merchant_id = :m AND run_id = :run AND status = 'RESPONSE_COMMITTED'
+                        ORDER BY turn_no
+                        """).param("m", merchant).param("run", runId)
+                        .query((rs, i) -> {
+                            Map<String, Object> row = new LinkedHashMap<>();
+                            row.put("turn", rs.getInt("turn_no"));
+                            row.put("response", rs.getString("response_summary"));
+                            row.put("tools", rs.getString("tools"));
+                            return row;
+                        }).list()
+                : jdbc.sql("""
+                        SELECT turn_no, response_summary, tool_batch_json::text AS tools
+                        FROM agent_turn
+                        WHERE merchant_id = :m AND run_id = :run AND task_id = :task
+                          AND status = 'RESPONSE_COMMITTED'
+                        ORDER BY turn_no
+                        """).param("m", merchant).param("run", runId).param("task", taskId)
+                        .query((rs, i) -> {
+                            Map<String, Object> row = new LinkedHashMap<>();
+                            row.put("turn", rs.getInt("turn_no"));
+                            row.put("response", rs.getString("response_summary"));
+                            row.put("tools", rs.getString("tools"));
+                            return row;
+                        }).list();
 
         // keep last 6 turns under budget
         int start = Math.max(0, history.size() - 6);
@@ -70,7 +90,8 @@ public class ContextBuilder {
             Map<String, Object> turn = history.get(i);
             String response = String.valueOf(turn.get("response"));
             String toolsJson = String.valueOf(turn.get("tools"));
-            List<Map<String, Object>> toolResults = loadToolResults(merchant, runId, (Integer) turn.get("turn"));
+            List<Map<String, Object>> toolResults = loadToolResults(merchant, runId, taskId,
+                    (Integer) turn.get("turn"));
             if (toolsJson != null && toolsJson.startsWith("[")) {
                 try {
                     @SuppressWarnings("unchecked")
@@ -133,10 +154,16 @@ public class ContextBuilder {
                 + ". Use tools to inspect evidence before concluding. Cite only verified evidence IDs.";
     }
 
-    private List<Map<String, Object>> loadToolResults(UUID merchant, UUID runId, int turnNo) {
-        UUID turnId = jdbc.sql("""
-                SELECT id FROM agent_turn WHERE merchant_id = :m AND run_id = :run AND turn_no = :n
-                """).param("m", merchant).param("run", runId).param("n", turnNo).query(UUID.class)
+    private List<Map<String, Object>> loadToolResults(UUID merchant, UUID runId, UUID taskId, int turnNo) {
+        UUID turnId = (taskId == null
+                ? jdbc.sql("""
+                        SELECT id FROM agent_turn WHERE merchant_id = :m AND run_id = :run AND turn_no = :n
+                        """).param("m", merchant).param("run", runId).param("n", turnNo)
+                : jdbc.sql("""
+                        SELECT id FROM agent_turn
+                        WHERE merchant_id = :m AND run_id = :run AND task_id = :task AND turn_no = :n
+                        """).param("m", merchant).param("run", runId).param("task", taskId).param("n", turnNo))
+                .query(UUID.class)
                 .optional().orElse(null);
         if (turnId == null) {
             return List.of();

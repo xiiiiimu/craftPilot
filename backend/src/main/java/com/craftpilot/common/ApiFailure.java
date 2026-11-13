@@ -40,6 +40,10 @@ public class ApiFailure extends RuntimeException {
         return new ApiFailure(HttpStatus.SERVICE_UNAVAILABLE, code, message);
     }
 
+    public static ApiFailure gone(String code, String message) {
+        return new ApiFailure(HttpStatus.GONE, code, message);
+    }
+
     public HttpStatus status() {
         return status;
     }

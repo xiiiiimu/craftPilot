@@ -11,7 +11,27 @@ public final class RuntimeDtos {
     private RuntimeDtos() {}
 
     public record CreateTicketRequest(@NotEmpty List<@NotNull UUID> revisionIds,
-                                      @NotBlank String objective) {}
+                                      @NotBlank String objective,
+                                      String workflowId) {}
+
+    public record ApprovalDecisionRequest(boolean approve, String reason, long expectedVersion) {}
+
+    public record ResumeApprovalRequest(@NotBlank String commandKey) {}
+
+    public record MerchantDecisionRequest(@NotBlank String choice, String note, long expectedVersion) {}
+
+    public record MemoryPublishRequest(UUID approvalId) {}
+
+    public record ApprovalView(UUID approvalId, String status, String kind, String operationDigest,
+                               long version, Instant expiresAt) {}
+
+    public record MemoryProposalView(UUID proposalId, String status, String scopeType, String scopeKey,
+                                     String summary) {}
+
+    public record MemoryEntryView(UUID entryId, String status, long version, String summary) {}
+
+    public record MerchantDecisionView(UUID decisionId, String status, String recommendation,
+                                       String reportHash, long version) {}
 
     public record TicketView(UUID ticketId, UUID surveyId, String status, String objective,
                              Instant deadlineAt, long version, UUID runId, String runStatus,

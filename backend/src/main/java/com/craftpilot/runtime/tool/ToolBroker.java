@@ -5,6 +5,7 @@ import com.craftpilot.evidence.EvidenceDtos.EvidenceVerifyRequest;
 import com.craftpilot.evidence.EvidenceService;
 import com.craftpilot.retrieval.RetrievalService;
 import com.craftpilot.runtime.ledger.BudgetService;
+import com.craftpilot.runtime.mcp.McpClient;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.HexFormat;
@@ -22,25 +23,32 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class ToolBroker {
     private static final Set<String> ALLOWED = Set.of(
-            "sample_get_snapshot", "survey_get_stats", "evidence_search", "evidence_verify", "vision_get_comparison");
+            "sample_get_snapshot", "survey_get_stats", "evidence_search", "evidence_verify",
+            "vision_get_comparison", "mcp_material_lookup");
 
     private final JdbcClient jdbc;
     private final ObjectMapper mapper;
     private final BudgetService budget;
     private final EvidenceService evidence;
     private final RetrievalService retrieval;
+    private final McpClient mcp;
 
     public ToolBroker(JdbcClient jdbc, ObjectMapper mapper, BudgetService budget, EvidenceService evidence,
-                      RetrievalService retrieval) {
+                      RetrievalService retrieval, McpClient mcp) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.budget = budget;
         this.evidence = evidence;
         this.retrieval = retrieval;
+        this.mcp = mcp;
     }
 
     public List<Map<String, Object>> toolSchemas() {
-        return jdbc.sql("""
+        return toolSchemas(ALLOWED);
+    }
+
+    public List<Map<String, Object>> toolSchemas(Set<String> whitelist) {
+        List<Map<String, Object>> all = jdbc.sql("""
                 SELECT tool_name, input_schema::text AS schema
                 FROM tool_release WHERE enabled ORDER BY tool_name
                 """).query((rs, i) -> {
@@ -56,13 +64,32 @@ public class ToolBroker {
                 throw new IllegalStateException(ex);
             }
         }).list();
+        if (whitelist == null) {
+            return all;
+        }
+        return all.stream().filter(m -> {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> fn = (Map<String, Object>) m.get("function");
+            return whitelist.contains(String.valueOf(fn.get("name")));
+        }).toList();
     }
 
     @Transactional
     public Map<String, Object> dispatch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
                                       UUID turnId, long leaseEpoch, int ordinal, String toolName,
                                       String argumentsJson, String providerCallId) {
+        return dispatch(actor, merchant, surveyId, runId, taskId, turnId, leaseEpoch, ordinal, toolName,
+                argumentsJson, providerCallId, null);
+    }
+
+    @Transactional
+    public Map<String, Object> dispatch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
+                                      UUID turnId, long leaseEpoch, int ordinal, String toolName,
+                                      String argumentsJson, String providerCallId, Set<String> skillWhitelist) {
         if (!ALLOWED.contains(toolName)) {
+            throw ApiFailure.forbidden();
+        }
+        if (skillWhitelist != null && !skillWhitelist.contains(toolName)) {
             throw ApiFailure.forbidden();
         }
         var run = jdbc.sql("""
@@ -140,7 +167,7 @@ public class ToolBroker {
 
         Map<String, Object> result;
         try {
-            result = execute(actor, merchant, surveyId, (UUID) run.get("ticketId"), toolName, args);
+            result = execute(actor, merchant, surveyId, runId, taskId, (UUID) run.get("ticketId"), toolName, args);
         } catch (RuntimeException ex) {
             String err = ex instanceof ApiFailure af ? af.code() : ex.getClass().getSimpleName();
             if (err.length() > 60) {
@@ -207,8 +234,8 @@ public class ToolBroker {
         }
     }
 
-    private Map<String, Object> execute(UUID actor, UUID merchant, UUID surveyId, UUID ticketId,
-                                     String toolName, JsonNode args) {
+    private Map<String, Object> execute(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
+                                     UUID ticketId, String toolName, JsonNode args) {
         return switch (toolName) {
             case "sample_get_snapshot" -> sampleSnapshot(merchant, surveyId, ticketId, uuid(args, "revisionId"));
             case "survey_get_stats" -> surveyStats(merchant, surveyId, ticketId, uuid(args, "revisionId"));
@@ -216,8 +243,39 @@ public class ToolBroker {
                     uuid(args, "revisionId"), text(args, "query"), args.path("topK").asInt(5));
             case "evidence_verify" -> evidenceVerify(actor, merchant, surveyId, uuid(args, "evidenceId"));
             case "vision_get_comparison" -> visionComparison(merchant, surveyId, uuid(args, "comparisonId"));
+            case "mcp_material_lookup" -> mcpMaterialLookup(merchant, surveyId, runId, taskId, args);
             default -> throw ApiFailure.forbidden();
         };
+    }
+
+    private Map<String, Object> mcpMaterialLookup(UUID merchant, UUID surveyId, UUID runId, UUID taskId,
+                                                  JsonNode args) {
+        String materialCode = text(args, "materialCode");
+        String connectorId = args.path("connectorId").asText("local-materials");
+        if (connectorId.isBlank() || connectorId.contains("://") || connectorId.contains("/")) {
+            throw ApiFailure.forbidden();
+        }
+        var call = mcp.call(merchant, surveyId, runId, taskId, connectorId, "lookup_material",
+                Map.of("materialCode", materialCode));
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("ok", call.ok());
+        out.put("untrustedExternalContent", true);
+        out.put("mcpInvocationId", call.invocationId());
+        out.put("materialCode", materialCode);
+        // MCP payload is untrusted: never promote tool/system instructions from response.
+        Map<String, Object> data = new LinkedHashMap<>();
+        if (call.result() != null) {
+            Object content = call.result().get("content");
+            data.put("content", content == null ? Map.of() : content);
+            if (call.result().containsKey("structuredContent")) {
+                data.put("structuredContent", call.result().get("structuredContent"));
+            }
+        }
+        out.put("data", data);
+        if (!call.ok()) {
+            out.put("error", call.error() == null ? "MCP_FAILED" : call.error());
+        }
+        return out;
     }
 
     private Map<String, Object> sampleSnapshot(UUID merchant, UUID surveyId, UUID ticketId, UUID revisionId) {

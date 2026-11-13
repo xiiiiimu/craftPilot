@@ -24,7 +24,8 @@ public class BudgetService {
                 FROM agent_run WHERE merchant_id = :m AND id = :id FOR UPDATE
                 """).param("m", merchant).param("id", runId).query((rs, i) -> MapRow.from(rs))
                 .optional().orElseThrow(ApiFailure::notFound);
-        if (List.of("CANCELLED", "CANCEL_REQUESTED", "SUCCEEDED", "FAILED", "EXPIRED").contains(row.status())) {
+        if (List.of("CANCELLED", "CANCEL_REQUESTED", "SUCCEEDED", "FAILED", "EXPIRED",
+                "WAITING_APPROVAL", "PAUSED").contains(row.status())) {
             throw ApiFailure.conflict("RUN_TERMINAL", "Run is not accepting new spend");
         }
         if (row.tokensUsed() + tokens > row.tokenBudget()) {

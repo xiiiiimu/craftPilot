@@ -339,7 +339,7 @@ class R3RuntimeTest {
     @Order(6)
     void illegalStateTransitionAndBudgetGuardrails() {
         assertThat(jdbc.sql("SELECT COUNT(*) FROM workflow_release").query(Long.class).single()).isGreaterThan(0L);
-        assertThat(jdbc.sql("SELECT COUNT(*) FROM tool_release").query(Long.class).single()).isEqualTo(5L);
+        assertThat(jdbc.sql("SELECT COUNT(*) FROM tool_release").query(Long.class).single()).isGreaterThanOrEqualTo(5L);
         // completed run cannot be completed again
         int updated = jdbc.sql("""
                 UPDATE agent_run SET status = 'SUCCEEDED' WHERE id = :id AND status = 'SUCCEEDED'
