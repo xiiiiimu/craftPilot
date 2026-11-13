@@ -4,7 +4,7 @@
 
 **R2 PASSED — PR READY**（不自动合并 main）
 
-离线实现、协议 Stub 测试、真实供应商最小联调、P0/P1 复查与最新 Head CI（`059ad65` / Actions run `43334930301`）均已通过。
+离线实现、协议 Stub 测试、真实供应商最小联调、P0/P1 复查与最新 Head CI（`8e25cb8192a9a3f257f60a1efee4f62494ee47d4` / Actions run `43335837550`）均已通过。
 
 ## Scope delivered
 

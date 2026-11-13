@@ -6,7 +6,7 @@ Reviewer: independent Bugbot passes + live provider smoke gate.
 
 **R2 PASSED — PR READY**（不要自动合并）
 
-P0/P1 无未关闭项。最新 Head CI `059ad65`（Actions run `43334930301`）success。
+P0/P1 无未关闭项。最新 Head CI `8e25cb8192a9a3f257f60a1efee4f62494ee47d4`（Actions run `43335837550`）success。
 
 ## Findings addressed
 
