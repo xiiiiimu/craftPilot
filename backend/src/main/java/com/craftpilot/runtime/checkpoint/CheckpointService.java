@@ -56,6 +56,11 @@ public class CheckpointService {
 
     @Transactional
     public void appendEvent(UUID merchant, UUID surveyId, UUID runId, String type, Map<String, Object> payload) {
+        // Serialize seq allocation per run so parallel workers cannot collide on UNIQUE(run_id, seq).
+        jdbc.sql("""
+                SELECT id FROM agent_run WHERE merchant_id = :m AND id = :run FOR UPDATE
+                """).param("m", merchant).param("run", runId).query(UUID.class).optional()
+                .orElseThrow(() -> new IllegalStateException("run missing for event"));
         Long seq = jdbc.sql("""
                 SELECT COALESCE(MAX(seq), 0) + 1 FROM runtime_event
                 WHERE merchant_id = :m AND run_id = :run

@@ -2,7 +2,7 @@
 
 ## Verdict
 
-**Pending Head CI** — local gates green. Target: **R5 PASSED — PR READY**（不要自动合并）
+**Pending Head CI** — local gates green. PR [#6](https://github.com/xiiiiimu/craftPilot/pull/6) Head `d4657f6`. Target: **R5 PASSED — PR READY**（不要自动合并）
 
 ## Scope checked
 
