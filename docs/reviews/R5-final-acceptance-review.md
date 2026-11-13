@@ -2,7 +2,9 @@
 
 ## Verdict
 
-**Pending Head CI** — local gates green. PR [#6](https://github.com/xiiiiimu/craftPilot/pull/6) Head `d4657f6`. Target: **R5 PASSED — PR READY**（不要自动合并）
+**R5 PASSED — PR READY**（不要自动合并）
+
+Local gates green. PR [#6](https://github.com/xiiiiimu/craftPilot/pull/6) Head `8ebb944` / Actions run [`43446705489`](https://github.com/xiiiiimu/craftPilot/actions/runs/43446705489) **success**. P0/P1 = 0.
 
 ## Scope checked
 
@@ -20,6 +22,7 @@
 1. **P0 fixed:** `GET .../runtime/memory` ignored principal; now requires membership.
 2. **Replay 403:** sample cards require group ADMIN/OWNER; corpus now attaches cards only for owner (members text-only).
 3. **R4 P2 closed:** controlled tool seed audited separately from model-autonomous tools.
+4. **P0 fixed:** parallel worker `runtime_event` seq allocation raced under fan-out after provenance audit events; `CheckpointService.appendEvent` now `FOR UPDATE` locks the run row before allocating seq.
 
 ## P0 / P1 / P2
 

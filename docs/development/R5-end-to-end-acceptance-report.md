@@ -52,6 +52,14 @@ R5 found unauthenticated cross-tenant memory search (principal ignored). Fixed v
 - **Live:** Real OpenAI-compatible chat, OpenAI embedding, Qwen-VL; local MCP.
 - Results never embed secrets.
 
-## Final verdict (pre-PR CI)
+## Final verdict
 
-Offline verify + live E2E + Windows one-click completed locally. Final **R5 PASSED — PR READY** requires latest Head CI green and independent review on the PR.
+**R5 PASSED — PR READY**（不要自动合并）
+
+- PR: https://github.com/xiiiiimu/craftPilot/pull/6
+- Head: `8ebb944`
+- Head CI: https://github.com/xiiiiimu/craftPilot/actions/runs/43446705489 success
+- Maven offline: 53 tests, 0 failures
+- Live E2E: PASSED
+- Windows one-click: PASSED
+- Capability matrix: 18 PASS / 0 FAIL / 0 BLOCKED critical
