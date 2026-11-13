@@ -2,7 +2,14 @@
 
 ## Verification status
 
-**PARTIALLY VERIFIED (local)** — `scripts/r5-one-click.ps1` executed successfully on this workstation (infra TCP healthy on 15432/17379/19000; jar packaged; Compose postgres/redis/minio healthy). `scripts/r5-demo-v1-v2.ps1 -PrintOnly` parses and prints steps. Full API demo against a live `backend-up.ps1` process and live vision still require an operator session (manual HITL/decision by design).
+| Item | Status | Notes |
+|---|---|---|
+| `r5-one-click.ps1` | **PASS** | Infra TCP healthy (15432/17379/19000); jar packaged; Compose postgres/redis/minio healthy; no `data/` wipe; no `.env` rewrite |
+| `r5-demo-v1-v2.ps1 -PrintOnly` | **PASS (preview only)** | Parses and prints API steps; no mutations |
+| Interactive V1→V2 on `:18080` | **PARTIAL / NOT RUN this closure** | Backend liveness unreachable during final audit; script correctly refuses mutations and never auto-approves HITL/decision |
+| Full product V1→V2+HITL path | Covered by **`R5ProviderE2ETest`** (isolated Testcontainers), not by this Windows operator demo |
+
+**Do not mark the Windows interactive demo PASS from PrintOnly alone.**
 
 ## Purpose
 
@@ -69,7 +76,7 @@ Optional for live embedding/vision during the demo: `CRAFTPILOT_OPENAI_API_KEY`,
 | Jar | Present under `backend/target/` |
 | Exit code | `0` on success |
 
-**Status: PENDING** (not executed here).
+**Status: PASS** (executed locally; see Verification status).
 
 ### Usage
 
@@ -132,7 +139,7 @@ Operator inspects Ticket / Run / Approval / Decision via GET APIs or UI, then de
 | Vision | Compare may succeed with live keys, or degrade with a clear warning |
 | Approvals | None auto-posted |
 
-**Status: PENDING** (not executed here).
+**Status: PARTIAL** — PrintOnly verified; interactive API demo not completed against a live backend in this closure (by design for HITL/decision gates).
 
 ## Recommended full sequence
 

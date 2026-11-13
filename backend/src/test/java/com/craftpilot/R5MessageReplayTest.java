@@ -12,10 +12,12 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -199,9 +201,16 @@ class R5MessageReplayTest {
         Instant start = Instant.now();
         AtomicInteger posted = new AtomicInteger();
         AtomicInteger accepted = new AtomicInteger();
-        AtomicInteger duplicates = new AtomicInteger();
-        AtomicInteger failures = new AtomicInteger();
+        AtomicInteger duplicatesAccepted = new AtomicInteger();
+        AtomicInteger expectedRejects = new AtomicInteger();
+        AtomicInteger unexpectedRejects = new AtomicInteger();
+        AtomicInteger transportErrors = new AtomicInteger();
         AtomicInteger votes = new AtomicInteger();
+        AtomicInteger expected409 = new AtomicInteger();
+        AtomicInteger expected403 = new AtomicInteger();
+        Map<String, AtomicInteger> statusCounts = new ConcurrentHashMap<>();
+        Map<String, AtomicInteger> expectedRejectReasons = new ConcurrentHashMap<>();
+        List<String> rejectSamples = Collections.synchronizedList(new ArrayList<>());
 
         int perMerchant = R5TestSupport.TARGET_MESSAGES / MERCHANTS.size();
         ExecutorService pool = Executors.newFixedThreadPool(6);
@@ -225,16 +234,46 @@ class R5MessageReplayTest {
                         var resp = post(bundle.merchantId(), spec.login(),
                                 "/merchants/" + bundle.merchantId() + "/groups/" + bundle.groupId() + "/messages",
                                 body);
+                        int code = resp.getStatusCode().value();
+                        statusCounts.computeIfAbsent(String.valueOf(code), k -> new AtomicInteger()).incrementAndGet();
                         if (resp.getStatusCode().is2xxSuccessful()) {
                             accepted.incrementAndGet();
                             if (spec.duplicateOfPrior()) {
-                                duplicates.incrementAndGet();
+                                duplicatesAccepted.incrementAndGet();
+                            }
+                        } else if (code == 409 && spec.duplicateOfPrior()) {
+                            // Same sender + clientMsgId with different payload → idempotency conflict.
+                            expectedRejects.incrementAndGet();
+                            expected409.incrementAndGet();
+                            String reason = resp.getBody() != null && resp.getBody().has("code")
+                                    ? resp.getBody().path("code").asText("idempotencyConflict")
+                                    : "idempotencyConflict";
+                            expectedRejectReasons.computeIfAbsent(reason, k -> new AtomicInteger())
+                                    .incrementAndGet();
+                            if (rejectSamples.size() < 12) {
+                                rejectSamples.add("409 " + reason + " login=" + spec.login()
+                                        + " clientMsgId=" + spec.clientMsgId()
+                                        + " dupCorpus=true");
+                            }
+                        } else if (code == 403 && spec.withCard() && !spec.login().equals(bundle.ownerLogin())) {
+                            expectedRejects.incrementAndGet();
+                            expected403.incrementAndGet();
+                            expectedRejectReasons.computeIfAbsent("card_forbidden", k -> new AtomicInteger())
+                                    .incrementAndGet();
+                            if (rejectSamples.size() < 12) {
+                                rejectSamples.add("403 card_forbidden login=" + spec.login());
                             }
                         } else {
-                            failures.incrementAndGet();
+                            unexpectedRejects.incrementAndGet();
+                            if (rejectSamples.size() < 12) {
+                                String errBody = resp.getBody() == null ? "" : resp.getBody().toString();
+                                rejectSamples.add("UNEXPECTED " + code + " login=" + spec.login()
+                                        + " dup=" + spec.duplicateOfPrior() + " body=" + errBody);
+                            }
                         }
                     } catch (Exception ex) {
-                        failures.incrementAndGet();
+                        transportErrors.incrementAndGet();
+                        statusCounts.computeIfAbsent("EX", k -> new AtomicInteger()).incrementAndGet();
                     }
                     if (i % 40 == 0) {
                         try {
@@ -259,9 +298,17 @@ class R5MessageReplayTest {
         long dbMessages = jdbc.sql("SELECT COUNT(*) FROM group_message").query(Long.class).single();
         long uniqueClient = jdbc.sql("SELECT COUNT(DISTINCT client_msg_id) FROM group_message")
                 .query(Long.class).single();
+        long uniqueSenderClient = jdbc.sql("""
+                SELECT COUNT(*) FROM (
+                    SELECT DISTINCT merchant_id, group_id, sender_id, client_msg_id FROM group_message
+                ) t
+                """).query(Long.class).single();
         long evidence = jdbc.sql("SELECT COUNT(*) FROM evidence_ref").query(Long.class).single();
         long voteRows = jdbc.sql("SELECT COUNT(*) FROM survey_vote").query(Long.class).single();
         long issues = jdbc.sql("SELECT COUNT(*) FROM feedback_issue").query(Long.class).optional().orElse(0L);
+        long outboxMessageEvents = jdbc.sql("""
+                SELECT COUNT(*) FROM outbox WHERE aggregate_type = 'group_message' AND event_type = 'MESSAGE_PERSISTED'
+                """).query(Long.class).single();
 
         // Cross-tenant isolation: member of merchant0 cannot read merchant1 messages
         MerchantBundle a = MERCHANTS.get(0);
@@ -271,34 +318,101 @@ class R5MessageReplayTest {
                 JsonNode.class);
         assertThat(cross.getStatusCode().is4xxClientError()).isTrue();
 
-        // Idempotent duplicate: replaying same clientMsgId does not grow rows for that key
+        // Idempotent duplicate: replaying same clientMsgId + same payload does not grow rows
         MessageSpec first = R5TestSupport.buildMessageCorpus(1, R5TestSupport.REPLAY_SEED,
                 a.memberLogins(), a.revisionId()).get(0);
-        post(a.merchantId(), first.login(),
-                "/merchants/" + a.merchantId() + "/groups/" + a.groupId() + "/messages",
-                Map.of("clientMsgId", first.clientMsgId(), "text", first.text(),
-                        "card", Map.of("revisionId", a.revisionId())));
+        Map<String, Object> samePayload = new LinkedHashMap<>();
+        samePayload.put("clientMsgId", first.clientMsgId());
+        samePayload.put("text", first.text());
+        if (first.withCard() && first.login().equals(a.ownerLogin())) {
+            samePayload.put("card", Map.of("revisionId", a.revisionId()));
+        }
+        var idempotent = post(a.merchantId(), first.login(),
+                "/merchants/" + a.merchantId() + "/groups/" + a.groupId() + "/messages", samePayload);
+        assertThat(idempotent.getStatusCode().is2xxSuccessful()).isTrue();
         long afterDup = jdbc.sql("""
                 SELECT COUNT(*) FROM group_message
-                WHERE merchant_id = :m AND group_id = :g AND client_msg_id = :c
-                """).param("m", a.merchantId()).param("g", a.groupId()).param("c", first.clientMsgId())
-                .query(Long.class).single();
+                WHERE merchant_id = :m AND group_id = :g AND sender_id = (
+                    SELECT id FROM principal WHERE login = :login
+                ) AND client_msg_id = :c
+                """).param("m", a.merchantId()).param("g", a.groupId()).param("login", first.login())
+                .param("c", first.clientMsgId()).query(Long.class).single();
         assertThat(afterDup).isEqualTo(1L);
 
+        // Conflicting payload for same key must be rejected (expected 409), not silently overwritten.
+        var conflict = post(a.merchantId(), first.login(),
+                "/merchants/" + a.merchantId() + "/groups/" + a.groupId() + "/messages",
+                Map.of("clientMsgId", first.clientMsgId(), "text", "DIFFERENT-PAYLOAD-" + UUID.randomUUID()));
+        assertThat(conflict.getStatusCode().value()).isEqualTo(409);
+
+        int nonAccepted = expectedRejects.get() + unexpectedRejects.get() + transportErrors.get();
         assertThat(posted.get()).isEqualTo(R5TestSupport.TARGET_MESSAGES);
-        assertThat(accepted.get()).isGreaterThanOrEqualTo(R5TestSupport.TARGET_MESSAGES - 50);
-        assertThat(dbMessages).isGreaterThanOrEqualTo(uniqueClient);
+        assertThat(accepted.get()).isEqualTo(dbMessages);
+        assertThat(accepted.get() + nonAccepted).isEqualTo(posted.get());
+        assertThat(uniqueSenderClient).isEqualTo(dbMessages);
         assertThat(uniqueClient).isGreaterThan(900L);
-        assertThat(failures.get()).isLessThan(50);
+        assertThat(unexpectedRejects.get()).as("unexpected HTTP rejects").isZero();
+        assertThat(transportErrors.get()).as("transport/exceptions").isZero();
+        assertThat(outboxMessageEvents).isEqualTo(dbMessages);
         assertThat(voteRows).isGreaterThan(0L);
+
+        // Light runtime trigger per merchant (offline — worker disabled; tickets only).
+        long ticketsBefore = jdbc.sql("SELECT COUNT(*) FROM ticket").query(Long.class).single();
+        long outboxBefore = jdbc.sql("SELECT COUNT(*) FROM outbox").query(Long.class).single();
+        for (MerchantBundle bundle : MERCHANTS) {
+            HttpHeaders ticketHeaders = headers(bundle.ownerLogin());
+            ticketHeaders.set("Idempotency-Key", UUID.randomUUID().toString());
+            var ticketResp = rest.exchange("/api/v1/merchants/" + bundle.merchantId() + "/surveys/"
+                            + bundle.surveyId() + "/tickets",
+                    HttpMethod.POST, new HttpEntity<>(Map.of(
+                            "revisionIds", List.of(bundle.revisionId()),
+                            "objective", "R5 replay research",
+                            "workflowId", "launch-supervise-r4"), ticketHeaders), JsonNode.class);
+            assertThat(ticketResp.getStatusCode().is2xxSuccessful()).isTrue();
+        }
+        long ticketsAfter = jdbc.sql("SELECT COUNT(*) FROM ticket").query(Long.class).single();
+        long runs = jdbc.sql("SELECT COUNT(*) FROM agent_run").query(Long.class).single();
+        long outboxAfter = jdbc.sql("SELECT COUNT(*) FROM outbox").query(Long.class).single();
+        assertThat(ticketsAfter - ticketsBefore).isEqualTo(3L);
+        assertThat(runs).isEqualTo(3L);
+        assertThat(outboxAfter).isGreaterThan(outboxBefore);
+
+        StringBuilder statusSummary = new StringBuilder();
+        statusCounts.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(e -> {
+            if (statusSummary.length() > 0) {
+                statusSummary.append(',');
+            }
+            statusSummary.append(e.getKey()).append('=').append(e.getValue().get());
+        });
 
         METRICS.put("target_messages", String.valueOf(R5TestSupport.TARGET_MESSAGES));
         METRICS.put("posted_attempts", String.valueOf(posted.get()));
-        METRICS.put("accepted_http", String.valueOf(accepted.get()));
-        METRICS.put("duplicate_attempts", String.valueOf(duplicates.get()));
-        METRICS.put("failures", String.valueOf(failures.get()));
+        METRICS.put("accepted_http_2xx", String.valueOf(accepted.get()));
+        METRICS.put("http_status_histogram", statusSummary.toString());
+        METRICS.put("duplicate_corpus_flags_accepted_2xx", String.valueOf(duplicatesAccepted.get()));
+        METRICS.put("expected_rejects_409_or_403", String.valueOf(expectedRejects.get()));
+        METRICS.put("expected_rejects_409", String.valueOf(expected409.get()));
+        METRICS.put("expected_rejects_403", String.valueOf(expected403.get()));
+        StringBuilder reasonSummary = new StringBuilder();
+        expectedRejectReasons.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(e -> {
+            if (reasonSummary.length() > 0) {
+                reasonSummary.append(',');
+            }
+            reasonSummary.append(e.getKey()).append('=').append(e.getValue().get());
+        });
+        METRICS.put("expected_reject_reason_codes", reasonSummary.length() == 0 ? "none" : reasonSummary.toString());
+        METRICS.put("reject_samples", rejectSamples.isEmpty() ? "none" : String.join(" | ", rejectSamples));
+        METRICS.put("unexpected_rejects", String.valueOf(unexpectedRejects.get()));
+        METRICS.put("transport_errors", String.valueOf(transportErrors.get()));
+        METRICS.put("non_accepted_total", String.valueOf(nonAccepted));
+        METRICS.put("reject_classification",
+                "expected=idempotency_conflict(409 same sender+clientMsgId different payload) "
+                        + "or card_forbidden(403 non-admin card); unexpected must be 0; "
+                        + "accepted 2xx includes true idempotent retries (same payload)");
         METRICS.put("db_messages", String.valueOf(dbMessages));
         METRICS.put("unique_client_msg_ids", String.valueOf(uniqueClient));
+        METRICS.put("unique_sender_client_keys", String.valueOf(uniqueSenderClient));
+        METRICS.put("outbox_message_persisted", String.valueOf(outboxMessageEvents));
         METRICS.put("evidence_refs", String.valueOf(evidence));
         METRICS.put("feedback_issues", String.valueOf(issues));
         METRICS.put("survey_votes", String.valueOf(voteRows));
@@ -307,25 +421,12 @@ class R5MessageReplayTest {
         METRICS.put("throughput_msg_per_sec",
                 String.format(java.util.Locale.ROOT, "%.2f", accepted.get() * 1000.0 / Math.max(1, elapsedMs)));
         METRICS.put("cross_tenant_denied", "true");
-        METRICS.put("idempotent_duplicate_rows", String.valueOf(afterDup));
-        METRICS.put("outcome", "PASSED");
-
-        // Light runtime trigger per merchant (offline — worker disabled; tickets only).
-        long ticketsBefore = jdbc.sql("SELECT COUNT(*) FROM ticket").query(Long.class).single();
-        for (MerchantBundle bundle : MERCHANTS) {
-            HttpHeaders headers = headers(bundle.ownerLogin());
-            headers.set("Idempotency-Key", UUID.randomUUID().toString());
-            rest.exchange("/api/v1/merchants/" + bundle.merchantId() + "/surveys/" + bundle.surveyId()
-                            + "/tickets",
-                    HttpMethod.POST, new HttpEntity<>(Map.of(
-                            "revisionIds", List.of(bundle.revisionId()),
-                            "objective", "R5 replay research",
-                            "workflowId", "launch-supervise-r4"), headers), JsonNode.class);
-        }
-        long ticketsAfter = jdbc.sql("SELECT COUNT(*) FROM ticket").query(Long.class).single();
-        long runs = jdbc.sql("SELECT COUNT(*) FROM agent_run").query(Long.class).single();
+        METRICS.put("idempotent_same_payload_rows", String.valueOf(afterDup));
+        METRICS.put("idempotent_conflict_status", String.valueOf(conflict.getStatusCode().value()));
         METRICS.put("tickets_created", String.valueOf(ticketsAfter - ticketsBefore));
         METRICS.put("agent_runs_queued", String.valueOf(runs));
+        METRICS.put("outbox_grew_on_tickets", String.valueOf(outboxAfter > outboxBefore));
+        METRICS.put("outcome", unexpectedRejects.get() == 0 && transportErrors.get() == 0 ? "PASSED" : "FAILED");
 
         writeResults();
     }
@@ -339,6 +440,13 @@ class R5MessageReplayTest {
         for (var e : METRICS.entrySet()) {
             md.append("| `").append(e.getKey()).append("` | ").append(e.getValue()).append(" |\n");
         }
+        md.append("\n### Rejection taxonomy\n\n");
+        md.append("- **Accepted (2xx):** new messages and idempotent replays with identical payload.\n");
+        md.append("- **Expected reject (409):** corpus `duplicateOfPrior` reused `clientMsgId` for the same ");
+        md.append("sender with a *different* text/card → `ApiFailure.idempotencyConflict`.\n");
+        md.append("- **Expected reject (403):** non-admin posting a sample card (guarded in corpus by ");
+        md.append("stripping cards for members; residual counted if any).\n");
+        md.append("- **Unexpected:** any other 4xx/5xx or transport exception — must be zero.\n");
         md.append("\n**Mode:** offline automated (no paid model).\n");
         Files.createDirectories(RESULTS.getParent());
         Files.writeString(RESULTS, md.toString(), StandardCharsets.UTF_8);

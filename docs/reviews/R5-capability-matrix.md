@@ -21,17 +21,22 @@ Base: `origin/main` @ `fcb23ad` (R4 squash-merge)
 | Tool provenance (R4 P2) | evaluation | TOOL_* events | R5EvaluationHarnessTest | auto | **PASS** | eval results | P1 |
 | Memory search authz | security | `MemoryService` | R5SecurityAcceptanceTest | auto | **PASS** | security results | P0 |
 | MCP SSRF / injection | security | `validateEndpoint` | eval + security | auto | **PASS** | eval / security | P0 |
-| Fault suite | T03–T05 | runtime | R5FaultInjectionTest | auto | **PASS** | fault results | P0 |
+| Fault suite (+ seq race) | T03–T05 | runtime | R5FaultInjectionTest | auto | **PASS** | fault results | P0 |
 | Windows one-click | roadmap R5 | `r5-one-click.ps1` | manual script | executed | **PASS** | windows demo doc | P1 |
-| V1→V2 demo | roadmap R5 | `r5-demo-v1-v2.ps1` | PrintOnly + manual HITL | partial | **PASS*** | windows demo doc | P1 |
+| V1→V2 Windows interactive demo | roadmap R5 | `r5-demo-v1-v2.ps1` | PrintOnly only | partial | **PARTIAL** | windows demo doc | P1 |
 
-\*Demo script does not auto-approve; PrintOnly verified; full interactive demo left for operator with `backend-up`.
+## Notes on PARTIAL
+
+- **PrintOnly** proves script generation/preview of API steps only — not a full interactive demo.
+- Full product path V1→V2 + HITL + decision + memory is covered by isolated `R5ProviderE2ETest` (authorized test principals under Testcontainers), not by the Windows operator demo against `:18080`.
+- Real merchant HITL / decision on a live `backend-up` process remains an operator action; scripts never auto-approve.
 
 ## Counts
 
 | Status | Count |
 |---|---|
-| PASS | 18 |
+| PASS | 17 |
+| PARTIAL | 1 |
 | FAIL | 0 |
 | BLOCKED | 0 |
 | NOT TESTED | 0 critical |

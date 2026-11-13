@@ -8,6 +8,7 @@ Distinguishes `MODEL_AUTONOMOUS` vs `RUNTIME_CONTROLLED_SEED` tool provenance.
 | `autonomous_tool_events` | 2 |
 | `scenario_autonomous` | PASS |
 | `controlled_seed_events` | 2 |
+| `controlled_seed_provenance_marked` | 2 |
 | `autonomous_on_skip_scenario` | 0 |
 | `scenario_skip_seed` | PASS |
 | `wrong_tool_status` | FAILED |

@@ -308,10 +308,17 @@ class R5EvaluationHarnessTest {
                 SELECT COUNT(*) FROM runtime_event
                 WHERE run_id = :r AND event_type = 'TOOL_MODEL_AUTONOMOUS'
                 """).param("r", runId).query(Long.class).single();
+        long seedProvenance = jdbc.sql("""
+                SELECT COUNT(*) FROM runtime_event
+                WHERE run_id = :r AND event_type = 'TOOL_GUIDANCE_CONTROLLED'
+                  AND payload_json::text LIKE '%RUNTIME_CONTROLLED_SEED%'
+                """).param("r", runId).query(Long.class).single();
         RESULTS_MAP.put("controlled_seed_events", String.valueOf(seed));
+        RESULTS_MAP.put("controlled_seed_provenance_marked", String.valueOf(seedProvenance));
         RESULTS_MAP.put("autonomous_on_skip_scenario", String.valueOf(autonomous));
-        RESULTS_MAP.put("scenario_skip_seed", seed > 0 ? "PASS" : "FAIL");
+        RESULTS_MAP.put("scenario_skip_seed", seed > 0 && seedProvenance == seed ? "PASS" : "FAIL");
         assertThat(seed).as("runtime controlled seed must be audited").isGreaterThan(0L);
+        assertThat(seedProvenance).as("controlled seed provenance field").isEqualTo(seed);
     }
 
     @Test

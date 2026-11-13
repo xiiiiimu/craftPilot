@@ -24,5 +24,9 @@ Offline stubbed models + Testcontainers. Each scenario records injection point a
 | `budget_status` | FAILED |
 | `budget_reason` | SUPERVISOR_ExecutionException |
 | `scenario_budget_exhaustion` | PASS |
+| `seq_stress_events` | 40 |
+| `seq_stress_distinct` | 40 |
+| `seq_stress_errors` | 0 |
+| `scenario_runtime_event_seq_race` | PASS |
 
 **Mode:** automated fault injection (no paid model).

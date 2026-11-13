@@ -3,6 +3,7 @@ package com.craftpilot;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.craftpilot.common.ApiFailure;
+import com.craftpilot.runtime.checkpoint.CheckpointService;
 import com.craftpilot.runtime.mcp.McpClient;
 import com.craftpilot.runtime.supervisor.JoinService;
 import com.craftpilot.runtime.worker.RunWorker;
@@ -15,6 +16,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterAll;
@@ -198,6 +201,7 @@ class R5FaultInjectionTest {
     @Autowired RunWorker worker;
     @Autowired McpClient mcp;
     @Autowired JoinService joins;
+    @Autowired CheckpointService checkpoints;
 
     static UUID owner;
     static UUID merchant;
@@ -412,8 +416,50 @@ class R5FaultInjectionTest {
         RESULTS_MAP.put("scenario_budget_exhaustion",
                 "FAILED".equals(budgetStatus) || reason.toUpperCase().contains("BUDGET")
                         || reason.toUpperCase().contains("TOKEN") ? "PASS" : "OBSERVED_" + budgetStatus);
-        writeResults();
         assertThat(mcpStatus).isIn("FAILED", "WAITING_APPROVAL", "SUCCEEDED");
+    }
+
+    @Test
+    @Order(6)
+    void concurrentRuntimeEventSeqNoCollision() throws Exception {
+        UUID runId = createRun("event seq race");
+        CountDownLatch gate = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(8);
+        List<Future<?>> futures = new ArrayList<>();
+        AtomicInteger errors = new AtomicInteger();
+        for (int i = 0; i < 40; i++) {
+            final int n = i;
+            futures.add(pool.submit(() -> {
+                try {
+                    gate.await();
+                    checkpoints.appendEvent(merchant, surveyId, runId, "R5_SEQ_STRESS",
+                            Map.of("n", n, "thread", Thread.currentThread().getName()));
+                } catch (Exception ex) {
+                    errors.incrementAndGet();
+                }
+            }));
+        }
+        gate.countDown();
+        for (Future<?> f : futures) {
+            f.get(30, TimeUnit.SECONDS);
+        }
+        pool.shutdown();
+        long events = jdbc.sql("""
+                SELECT COUNT(*) FROM runtime_event WHERE run_id = :r AND event_type = 'R5_SEQ_STRESS'
+                """).param("r", runId).query(Long.class).single();
+        long distinctSeq = jdbc.sql("""
+                SELECT COUNT(DISTINCT seq) FROM runtime_event
+                WHERE run_id = :r AND event_type = 'R5_SEQ_STRESS'
+                """).param("r", runId).query(Long.class).single();
+        RESULTS_MAP.put("seq_stress_events", String.valueOf(events));
+        RESULTS_MAP.put("seq_stress_distinct", String.valueOf(distinctSeq));
+        RESULTS_MAP.put("seq_stress_errors", String.valueOf(errors.get()));
+        RESULTS_MAP.put("scenario_runtime_event_seq_race",
+                events == 40L && distinctSeq == 40L && errors.get() == 0 ? "PASS" : "FAIL");
+        writeResults();
+        assertThat(errors.get()).isZero();
+        assertThat(events).isEqualTo(40L);
+        assertThat(distinctSeq).isEqualTo(40L);
     }
 
     private void writeResults() throws Exception {
