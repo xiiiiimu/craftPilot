@@ -2,9 +2,9 @@
 
 ## Exit status
 
-**R2 live smoke + offline verify 已通过；等待最新 Head CI 全绿后正式宣布 R2 PASSED — PR READY**（不自动合并 main）
+**R2 PASSED — PR READY**（不自动合并 main）
 
-离线实现、协议 Stub 测试、真实供应商最小联调已完成；Head CI 与最终 P0/P1 复查见 PR #3。
+离线实现、协议 Stub 测试、真实供应商最小联调、P0/P1 复查与最新 Head CI（`059ad65` / Actions run `43334930301`）均已通过。
 
 ## Scope delivered
 

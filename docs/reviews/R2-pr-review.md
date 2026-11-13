@@ -4,9 +4,9 @@ Reviewer: independent Bugbot passes + live provider smoke gate.
 
 ## Verdict
 
-**待最新 Head CI 全绿后宣布 R2 PASSED — PR READY**（不要自动合并）
+**R2 PASSED — PR READY**（不要自动合并）
 
-P0/P1 本地已处理；以 PR #3 最新 Head CI 为准。
+P0/P1 无未关闭项。最新 Head CI `059ad65`（Actions run `43334930301`）success。
 
 ## Findings addressed
 
