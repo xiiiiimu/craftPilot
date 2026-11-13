@@ -67,6 +67,16 @@ craftpilot:
     base-url: ${CRAFTPILOT_QWEN_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
     api-key: ${CRAFTPILOT_QWEN_API_KEY:}
     vision-model: ${CRAFTPILOT_QWEN_VISION_MODEL:qwen3-vl-plus}
+  chat:
+    base-url: ${CRAFTPILOT_CHAT_BASE_URL:${CRAFTPILOT_OPENAI_BASE_URL:https://api.openai.com}}
+    api-key: ${CRAFTPILOT_CHAT_API_KEY:${CRAFTPILOT_OPENAI_API_KEY:}}
+    model: ${CRAFTPILOT_CHAT_MODEL:gpt-4o-mini}
+    max-retries: ${CRAFTPILOT_CHAT_MAX_RETRIES:2}
+  runtime:
+    worker-enabled: ${CRAFTPILOT_RUNTIME_WORKER_ENABLED:true}
+    worker-id: ${CRAFTPILOT_RUNTIME_WORKER_ID:}
+    lease-seconds: ${CRAFTPILOT_RUNTIME_LEASE_SECONDS:30}
+    poll-interval-ms: ${CRAFTPILOT_RUNTIME_POLL_INTERVAL_MS:700}
 logging:
   pattern:
     level: "%5p [traceId:%X{traceId:-}]"

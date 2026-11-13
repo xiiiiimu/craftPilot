@@ -147,6 +147,10 @@ public class OutboxDispatcher {
                     "groupSeq", groupSeq,
                     "messageId", payload.get("messageId").asText()));
         }
+        // RUNTIME_RUN_QUEUED is durable signal for workers; receipt prevents duplicate side effects.
+        if ("RUNTIME_RUN_QUEUED".equals(claim.eventType()) || "TICKET_CANCELLED".equals(claim.eventType())) {
+            LOG.debug("runtime_outbox_event type={} id={}", claim.eventType(), claim.id());
+        }
 
         tx.executeWithoutResult(status -> {
             try {

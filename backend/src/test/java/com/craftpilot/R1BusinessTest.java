@@ -526,7 +526,7 @@ class R1BusinessTest {
                 """).query(Long.class).single()).isEqualTo(6L);
         assertThat(jdbc.sql("""
                 SELECT version FROM flyway_schema_history WHERE success AND type = 'SQL' ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2", "3");
+                """).query(String.class).list()).containsExactly("1", "2", "3", "4");
     }
 
     private UUID uploadAsset(String login, UUID merchant, String contentType, byte[] bytes) {
