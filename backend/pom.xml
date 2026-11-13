@@ -43,6 +43,7 @@
         <!-- Live provider smoke spends quota and needs local .env keys; run manually. -->
         <excludes>
           <exclude>**/R2ProviderSmokeTest.java</exclude>
+          <exclude>**/R3ProviderSmokeTest.java</exclude>
         </excludes>
       </configuration>
     </plugin>

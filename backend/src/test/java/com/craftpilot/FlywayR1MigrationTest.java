@@ -21,19 +21,50 @@ class FlywayR1MigrationTest {
                     .asCompatibleSubstituteFor("postgres"));
 
     @Test
-    void emptyDatabaseAppliesV1ThenV2() {
+    void emptyDatabaseAppliesV1ThroughV4() {
         var flyway = flyway();
-        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(3);
+        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(4);
         var jdbc = jdbc();
         assertThat(tableExists(jdbc, "principal")).isTrue();
         assertThat(tableExists(jdbc, "survey_session")).isTrue();
         assertThat(tableExists(jdbc, "outbox")).isTrue();
         assertThat(tableExists(jdbc, "message_attribution")).isTrue();
         assertThat(tableExists(jdbc, "evidence_chunk")).isTrue();
+        assertThat(tableExists(jdbc, "agent_run")).isTrue();
+        assertThat(tableExists(jdbc, "tool_invocation")).isTrue();
+        assertThat(tableExists(jdbc, "checkpoint")).isTrue();
         assertThat(jdbc.sql("""
                 SELECT version FROM craftpilot_app.flyway_schema_history
                 WHERE success AND type = 'SQL' ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2", "3");
+                """).query(String.class).list()).containsExactly("1", "2", "3", "4");
+    }
+
+    @Test
+    void existingV3DatabaseUpgradesToV4RuntimeTables() {
+        var throughV3 = Flyway.configure()
+                .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+                .schemas("craftpilot_v3")
+                .defaultSchema("craftpilot_v3")
+                .createSchemas(true)
+                .target("3")
+                .load();
+        assertThat(throughV3.migrate().migrationsExecuted).isEqualTo(3);
+        var jdbc = jdbc("craftpilot_v3");
+        assertThat(tableExists(jdbc, "craftpilot_v3", "evidence_ref")).isTrue();
+        assertThat(tableExists(jdbc, "craftpilot_v3", "agent_run")).isFalse();
+
+        var toV4 = Flyway.configure()
+                .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+                .schemas("craftpilot_v3")
+                .defaultSchema("craftpilot_v3")
+                .load();
+        assertThat(toV4.migrate().migrationsExecuted).isEqualTo(1);
+        assertThat(tableExists(jdbc, "craftpilot_v3", "agent_run")).isTrue();
+        assertThat(tableExists(jdbc, "craftpilot_v3", "budget_reservation")).isTrue();
+        assertThat(jdbc.sql("""
+                SELECT version FROM craftpilot_v3.flyway_schema_history
+                WHERE success AND type = 'SQL' ORDER BY installed_rank
+                """).query(String.class).list()).containsExactly("1", "2", "3", "4");
     }
 
     @Test
@@ -55,13 +86,14 @@ class FlywayR1MigrationTest {
                 .schemas("craftpilot_upgrade")
                 .defaultSchema("craftpilot_upgrade")
                 .load();
-        assertThat(step2.migrate().migrationsExecuted).isEqualTo(2);
+        assertThat(step2.migrate().migrationsExecuted).isEqualTo(3);
         assertThat(tableExists(jdbc, "craftpilot_upgrade", "survey_session")).isTrue();
         assertThat(tableExists(jdbc, "craftpilot_upgrade", "evidence_ref")).isTrue();
+        assertThat(tableExists(jdbc, "craftpilot_upgrade", "agent_run")).isTrue();
         assertThat(jdbc.sql("""
                 SELECT version FROM craftpilot_upgrade.flyway_schema_history
                 WHERE success AND type = 'SQL' ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2", "3");
+                """).query(String.class).list()).containsExactly("1", "2", "3", "4");
 
         UUID merchantA = UUID.randomUUID();
         UUID merchantB = UUID.randomUUID();
