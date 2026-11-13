@@ -50,7 +50,9 @@ public class TicketService {
         UUID sourceKey = idempotencyKey != null ? idempotencyKey : UUID.randomUUID();
         UUID ticketId = triggers.acceptManual(actor, merchant, surveyId, groupId, request.revisionIds(),
                 request.objective(), "manual:" + sourceKey);
-        assignments.allocate(merchant, surveyId, ticketId, "manual-create");
+        String workflowId = request.workflowId() == null || request.workflowId().isBlank()
+                ? "launch-research-r3" : request.workflowId();
+        assignments.allocate(merchant, surveyId, ticketId, "manual-create", workflowId);
         TicketView view = get(actor, merchant, ticketId);
         storeApiCommand(merchant, actor, "survey_ticket", surveyId, idempotencyKey, hash, view);
         return view;

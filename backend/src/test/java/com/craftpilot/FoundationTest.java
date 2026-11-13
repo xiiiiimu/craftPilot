@@ -107,7 +107,7 @@ class FoundationTest {
                 .schemas("craftpilot_app").defaultSchema("craftpilot_app").load();
         assertThat(jdbc.sql("""
                 SELECT version FROM flyway_schema_history WHERE type = 'SQL' AND success ORDER BY installed_rank
-                """).query(String.class).list()).containsExactly("1", "2", "3", "4");
+                """).query(String.class).list()).containsExactly("1", "2", "3", "4", "5");
         assertThat(flyway.migrate().migrationsExecuted).isZero();
         assertThat(jdbc.sql("""
                 SELECT indexname FROM pg_indexes WHERE schemaname='craftpilot_app'

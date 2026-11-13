@@ -2,8 +2,8 @@ package com.craftpilot.runtime.worker;
 
 import com.craftpilot.runtime.checkpoint.CheckpointService;
 import com.craftpilot.runtime.workflow.AgentLoop;
+import com.craftpilot.runtime.workflow.SupervisorLoop;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -21,25 +21,26 @@ public class RunWorker {
     private final JdbcClient jdbc;
     private final TransactionTemplate tx;
     private final AgentLoop loop;
+    private final SupervisorLoop supervisor;
     private final CheckpointService checkpoints;
     private final String workerId;
     private final Duration leaseTtl;
     private final boolean enabled;
-    private final UUID systemActor;
 
-    public RunWorker(JdbcClient jdbc, TransactionTemplate tx, AgentLoop loop, CheckpointService checkpoints,
+    public RunWorker(JdbcClient jdbc, TransactionTemplate tx, AgentLoop loop, SupervisorLoop supervisor,
+                     CheckpointService checkpoints,
                      @Value("${craftpilot.runtime.worker-id:}") String configuredWorkerId,
                      @Value("${craftpilot.runtime.lease-seconds:30}") long leaseSeconds,
                      @Value("${craftpilot.runtime.worker-enabled:true}") boolean enabled) {
         this.jdbc = jdbc;
         this.tx = tx;
         this.loop = loop;
+        this.supervisor = supervisor;
         this.checkpoints = checkpoints;
         this.workerId = configuredWorkerId == null || configuredWorkerId.isBlank()
                 ? "runtime-" + UUID.randomUUID() : configuredWorkerId;
         this.leaseTtl = Duration.ofSeconds(leaseSeconds);
         this.enabled = enabled;
-        this.systemActor = null;
     }
 
     @Scheduled(fixedDelayString = "${craftpilot.runtime.poll-interval-ms:700}")
@@ -63,16 +64,25 @@ public class RunWorker {
             }
             try {
                 renew(claim);
-                UUID taskId = ensureResearchTask(claim);
+                String workflowId = jdbc.sql("""
+                        SELECT workflow_id FROM agent_run WHERE merchant_id = :m AND id = :id
+                        """).param("m", claim.merchantId()).param("id", claim.runId()).query(String.class).single();
                 UUID actor = resolveActor(claim.merchantId(), claim.ticketId());
-                loop.executeResearch(actor, claim.merchantId(), claim.surveyId(), claim.runId(), taskId,
-                        claim.leaseEpoch());
-                done++;
+                if ("launch-supervise-r4".equals(workflowId)) {
+                    UUID taskId = ensureSupervisorTask(claim);
+                    supervisor.execute(actor, claim.merchantId(), claim.surveyId(), claim.runId(), taskId,
+                            claim.leaseEpoch());
+                } else {
+                    UUID taskId = ensureResearchTask(claim);
+                    loop.executeResearch(actor, claim.merchantId(), claim.surveyId(), claim.runId(), taskId,
+                            claim.leaseEpoch());
+                }
             } catch (Exception ex) {
                 LOG.warn("runtime_run_failed run={} type={} msg={}", claim.runId(), ex.getClass().getSimpleName(),
                         ex.getMessage());
                 tx.executeWithoutResult(status -> markFailed(claim, ex.getClass().getSimpleName()));
             }
+            done++;
         }
         return done;
     }
@@ -146,6 +156,24 @@ public class RunWorker {
                             INSERT INTO agent_task
                             (merchant_id, id, survey_id, run_id, logical_key, node_id, agent_spec_id, status, started_at)
                             VALUES (:m, :id, :survey, :run, 'research-main', 'research', 'research-agent-r3',
+                                    'RUNNING', clock_timestamp())
+                            """).param("m", claim.merchantId()).param("id", id).param("survey", claim.surveyId())
+                            .param("run", claim.runId()).update();
+                    return id;
+                });
+    }
+
+    private UUID ensureSupervisorTask(Claim claim) {
+        return jdbc.sql("""
+                SELECT id FROM agent_task
+                WHERE merchant_id = :m AND run_id = :run AND logical_key = 'supervisor-main'
+                """).param("m", claim.merchantId()).param("run", claim.runId()).query(UUID.class)
+                .optional().orElseGet(() -> {
+                    UUID id = UUID.randomUUID();
+                    jdbc.sql("""
+                            INSERT INTO agent_task
+                            (merchant_id, id, survey_id, run_id, logical_key, node_id, agent_spec_id, status, started_at)
+                            VALUES (:m, :id, :survey, :run, 'supervisor-main', 'plan', 'supervisor-agent-r4',
                                     'RUNNING', clock_timestamp())
                             """).param("m", claim.merchantId()).param("id", id).param("survey", claim.surveyId())
                             .param("run", claim.runId()).update();

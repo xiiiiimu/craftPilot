@@ -87,7 +87,7 @@ public class AgentLoop {
                     """).param("m", merchant).param("run", runId).query(Integer.class).single();
 
             List<Map<String, Object>> messages = contexts.buildMessages(
-                    merchant, surveyId, runId, ticketId, instructions, objective);
+                    merchant, surveyId, runId, ticketId, taskId, instructions, objective);
             UUID contextId = contexts.persist(merchant, surveyId, runId, taskId, instructions, messages,
                     toolSchemas, List.of(), estimateTokens(messages), null);
 
