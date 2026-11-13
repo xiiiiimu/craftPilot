@@ -4,7 +4,7 @@
 
 **R3 PASSED — PR READY**（不要自动合并）
 
-Offline `clean verify` green; live OpenAI-compatible chat tool-calling smoke green. P0/P1 = 0 at review time.
+Offline `clean verify` green; live OpenAI-compatible chat tool-calling smoke green. Latest Head CI `ce456e4` / Actions run `43354713153` **success**. P0/P1 = 0 at review time.
 
 ## Scope checked
 
