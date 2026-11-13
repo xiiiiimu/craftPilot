@@ -4,7 +4,7 @@
 
 **R4 PASSED — PR READY**（不要自动合并）
 
-Offline `clean verify` green (38 tests). Live multi-agent + local MCP + HITL smoke green. P0/P1 = 0. Review threads unresolved = 0 at PR open time (re-check after Head CI).
+Offline `clean verify` green (38 tests). Live multi-agent + local MCP + HITL smoke green. Latest Head `8855db6` / Actions run `43367167589` **success**. P0/P1 = 0. Review threads unresolved = 0.
 
 ## Scope checked
 
