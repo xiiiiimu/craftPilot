@@ -416,10 +416,7 @@ class R4RuntimeTest {
         UUID key = UUID.randomUUID();
         var created = postTicket(key, "Reject path", "launch-supervise-r4");
         UUID run3 = UUID.fromString(created.getBody().path("runId").asText());
-        worker.claimAndRun(1);
-        UUID approval3 = jdbc.sql("""
-                SELECT id FROM approval WHERE run_id = :r AND status = 'PENDING' LIMIT 1
-                """).param("r", run3).query(UUID.class).single();
+        UUID approval3 = awaitPendingApproval(run3);
         var rejected = post("/merchants/" + merchant + "/runtime/approvals/" + approval3 + "/decide",
                 Map.of("approve", false, "reason", "no", "expectedVersion", 0));
         assertThat(rejected.getBody().path("status").asText()).isEqualTo("REJECTED");
@@ -429,10 +426,7 @@ class R4RuntimeTest {
         UUID key2 = UUID.randomUUID();
         var created2 = postTicket(key2, "Expire path", "launch-supervise-r4");
         UUID run4 = UUID.fromString(created2.getBody().path("runId").asText());
-        worker.claimAndRun(1);
-        UUID approval4 = jdbc.sql("""
-                SELECT id FROM approval WHERE run_id = :r AND status = 'PENDING' LIMIT 1
-                """).param("r", run4).query(UUID.class).single();
+        UUID approval4 = awaitPendingApproval(run4);
         jdbc.sql("UPDATE approval SET expires_at = clock_timestamp() - interval '1 minute' WHERE id = :id")
                 .param("id", approval4).update();
         var expired = auth("r4-owner").exchange(
@@ -443,6 +437,37 @@ class R4RuntimeTest {
         assertThat(expired.getBody().path("status").asText()).isEqualTo("EXPIRED");
         assertThat(jdbc.sql("SELECT status FROM approval WHERE id = :id").param("id", approval4)
                 .query(String.class).single()).isEqualTo("EXPIRED");
+    }
+
+    private UUID awaitPendingApproval(UUID runId) {
+        for (int attempt = 0; attempt < 5; attempt++) {
+            worker.claimAndRun(1);
+            UUID approval = jdbc.sql("""
+                    SELECT id FROM approval WHERE run_id = :r AND status = 'PENDING' LIMIT 1
+                    """).param("r", runId).query(UUID.class).optional().orElse(null);
+            if (approval != null) {
+                return approval;
+            }
+            String status = jdbc.sql("SELECT status FROM agent_run WHERE id = :id").param("id", runId)
+                    .query(String.class).single();
+            if (List.of("FAILED", "CANCELLED", "SUCCEEDED", "EXPIRED").contains(status)) {
+                String reason = jdbc.sql("SELECT coalesce(terminal_reason,'') FROM agent_run WHERE id = :id")
+                        .param("id", runId).query(String.class).single();
+                throw new AssertionError("run " + runId + " terminal status=" + status + " reason=" + reason
+                        + " without PENDING approval");
+            }
+            try {
+                Thread.sleep(200L * (attempt + 1));
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError(ex);
+            }
+        }
+        String status = jdbc.sql("SELECT status FROM agent_run WHERE id = :id").param("id", runId)
+                .query(String.class).single();
+        String reason = jdbc.sql("SELECT coalesce(terminal_reason,'') FROM agent_run WHERE id = :id")
+                .param("id", runId).query(String.class).single();
+        throw new AssertionError("no PENDING approval for run " + runId + " status=" + status + " reason=" + reason);
     }
 
     private ResponseEntity<JsonNode> postTicket(UUID key, String objective, String workflowId) {

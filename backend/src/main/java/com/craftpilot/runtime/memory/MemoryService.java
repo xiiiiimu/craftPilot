@@ -136,7 +136,8 @@ public class MemoryService {
                 .single();
     }
 
-    public List<EntryView> searchActive(UUID merchant, String scopeType, String scopeKey) {
+    public List<EntryView> searchActive(UUID actor, UUID merchant, String scopeType, String scopeKey) {
+        tenant.requireMember(actor, merchant);
         return jdbc.sql("""
                 SELECT id, status, version, summary FROM memory_entry
                 WHERE merchant_id = :m AND scope_type = :stype AND scope_key = :skey AND status = 'ACTIVE'

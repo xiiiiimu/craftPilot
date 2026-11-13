@@ -45,6 +45,7 @@
           <exclude>**/R2ProviderSmokeTest.java</exclude>
           <exclude>**/R3ProviderSmokeTest.java</exclude>
           <exclude>**/R4ProviderSmokeTest.java</exclude>
+          <exclude>**/R5ProviderE2ETest.java</exclude>
         </excludes>
       </configuration>
     </plugin>

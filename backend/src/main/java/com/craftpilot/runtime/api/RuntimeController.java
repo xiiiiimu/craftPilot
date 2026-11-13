@@ -155,7 +155,7 @@ public class RuntimeController {
     @GetMapping("/merchants/{merchantId}/runtime/memory")
     List<MemoryEntryView> searchMemory(Principal principal, @PathVariable UUID merchantId,
                                        @RequestParam String scopeType, @RequestParam String scopeKey) {
-        return memory.searchActive(merchantId, scopeType, scopeKey).stream()
+        return memory.searchActive(actor(principal), merchantId, scopeType, scopeKey).stream()
                 .map(v -> new MemoryEntryView(v.id(), v.status(), v.version(), v.summary()))
                 .toList();
     }
