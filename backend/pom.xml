@@ -36,5 +36,15 @@
   </dependencies>
   <build><plugins>
     <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <!-- Live provider smoke spends quota and needs local .env keys; run manually. -->
+        <excludes>
+          <exclude>**/R2ProviderSmokeTest.java</exclude>
+        </excludes>
+      </configuration>
+    </plugin>
   </plugins></build>
 </project>

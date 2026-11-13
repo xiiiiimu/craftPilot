@@ -59,6 +59,14 @@ craftpilot:
     poll-interval-ms: 500
     lease-seconds: 30
     max-attempts: 8
+  openai:
+    base-url: ${CRAFTPILOT_OPENAI_BASE_URL:https://api.openai.com}
+    api-key: ${CRAFTPILOT_OPENAI_API_KEY:}
+    embedding-model: ${CRAFTPILOT_OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+  qwen:
+    base-url: ${CRAFTPILOT_QWEN_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+    api-key: ${CRAFTPILOT_QWEN_API_KEY:}
+    vision-model: ${CRAFTPILOT_QWEN_VISION_MODEL:qwen3-vl-plus}
 logging:
   pattern:
     level: "%5p [traceId:%X{traceId:-}]"

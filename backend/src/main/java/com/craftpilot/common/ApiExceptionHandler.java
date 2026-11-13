@@ -33,7 +33,9 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     ResponseEntity<ApiError> database(DataAccessException failure) {
-        LOG.error("database_request_failed type={}", failure.getClass().getSimpleName());
+        LOG.error("database_request_failed type={} message={}", failure.getClass().getSimpleName(),
+                failure.getMostSpecificCause() == null ? failure.getMessage()
+                        : failure.getMostSpecificCause().getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ApiError.of("DATABASE_UNAVAILABLE", "Database request could not be completed", true));
     }
