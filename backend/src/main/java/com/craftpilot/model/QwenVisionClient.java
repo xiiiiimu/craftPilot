@@ -90,7 +90,8 @@ public class QwenVisionClient {
                     throw ApiFailure.unavailable("VISION_RATE_LIMITED", "Vision provider rate limited");
                 }
                 if (!response.isSuccessful()) {
-                    mark(merchant, callId, "FAILED", response.code(), null, null, null, "HTTP_" + response.code());
+                    mark(merchant, callId, "FAILED", response.code(), null, null, null,
+                            sanitizeProviderError(response.code(), responseBody));
                     throw ApiFailure.unavailable("VISION_UNAVAILABLE", "Vision provider failed");
                 }
                 JsonNode root = mapper.readTree(responseBody);
@@ -138,6 +139,40 @@ public class QwenVisionClient {
 
     private static Integer intOrNull(JsonNode node) {
         return node == null || node.isMissingNode() || node.isNull() ? null : node.asInt();
+    }
+
+    /** Persist a short provider error code/message without secrets or image payloads. */
+    static String sanitizeProviderError(int httpStatus, String responseBody) {
+        String code = "HTTP_" + httpStatus;
+        if (responseBody == null || responseBody.isBlank()) {
+            return code;
+        }
+        try {
+            // Lazy parse via simple markers to avoid depending on mapper in static path failures.
+            String lower = responseBody.toLowerCase();
+            if (lower.contains("invalid_api_key") || lower.contains("unauthorized")) {
+                return code + ":auth";
+            }
+            if (lower.contains("model") && (lower.contains("not exist") || lower.contains("not found")
+                    || lower.contains("does not exist") || lower.contains("unavailable"))) {
+                return code + ":model";
+            }
+            if (lower.contains("quota") || lower.contains("insufficient") || lower.contains("balance")) {
+                return code + ":quota";
+            }
+            if (lower.contains("image") || lower.contains("multimodal") || lower.contains("content")) {
+                return code + ":image_or_content";
+            }
+            String snippet = responseBody.replaceAll("\\s+", " ").trim();
+            if (snippet.length() > 160) {
+                snippet = snippet.substring(0, 160);
+            }
+            // Strip anything that looks like a bearer token if ever echoed.
+            snippet = snippet.replaceAll("(?i)sk-[a-z0-9\\-_]+", "[redacted]");
+            return code + ":" + snippet;
+        } catch (Exception ex) {
+            return code;
+        }
     }
 
     private static String sha(String value) {

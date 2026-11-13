@@ -1,24 +1,30 @@
 # R2 PR Review — feature/r2-feedback-retrieval-vision
 
-Reviewer: independent Bugbot pass on branch changes for PR #3.
+Reviewer: independent Bugbot passes + live provider smoke gate.
 
 ## Verdict
 
-Approve after remediation of authorization and attribution consistency findings (landed in follow-up commit on the same branch).
+**待最新 Head CI 全绿后宣布 R2 PASSED — PR READY**（不要自动合并）
+
+P0/P1 本地已处理；以 PR #3 最新 Head CI 为准。
 
 ## Findings addressed
 
-1. **Retrieval survey whitelist** — `RetrievalService.search` now requires `revisionId` ∈ `survey_revision` before lexical/vector recall.
-2. **Search validation** — `RetrievalController` applies `@Valid`; blank queries rejected (422).
-3. **Manual attribution stale opinions** — override supersedes prior ACTIVE opinions, revokes their evidence, then re-aggregates onto the new revision (upsert on opinion unique key).
-4. **Vision evidence survey binding** — vision evidence creation requires both revisions on the survey whitelist.
+1. **Retrieval survey whitelist** — `revisionId` ∈ `survey_revision` before recall.
+2. **Search validation** — `@Valid`；空白 query → 422.
+3. **Manual attribution stale opinions** — supersede + revoke evidence，再聚合；`createFromOpinion` 对 REVOKED 同源证据会重新激活。
+4. **Vision evidence survey binding** — 两侧 revision 均须在调查白名单。
+5. **NULL watermark/material JDBC** — 可复现 unsafe SQL 失败测试 + 生产分支/类型转换（bigint / varchar(80)）。
+6. **Qwen-VL 图片尺寸** — 供应商限制宽高 >10；前置 GAP `IMAGE_DIMENSION_TOO_SMALL`；live smoke 使用 64×64 授权样例。
 
-## Follow-up (NULL binding + evidence reactivate)
+## Live smoke（脱敏）
 
-- Lexical/vector SQL branches omit unbound NULL `evidence_watermark` (`bigint`) / `material_code` (`varchar(80)`); present values use typed casts. Regression keeps unsafe SQL reproduction + green service path.
-- Manual attribution must reactivate `REVOKED` evidence for the same opinion source instead of returning the stale id.
+见 `docs/development/R2-provider-smoke-results.md`：
+
+- Embedding：SUCCEEDED / hybrid / pgvector chunks>0
+- Vision：SUCCEEDED / tokens 与脱敏 request id 已记录
 
 ## Residual notes
 
-- R2 formal exit remains **BLOCKED_EXTERNAL_CREDENTIALS** (no live OpenAI/Qwen keys in local `.env` at review time).
-- CI must stay on HTTP stubs; do not auto-merge; do not claim R2 PASSED until provider smoke is recorded.
+- `R2ProviderSmokeTest` 不进默认 CI（防额度消耗）；需本地密钥手动跑。
+- 不要把密钥提交进仓库；不要自动合并 main。

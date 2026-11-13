@@ -2,7 +2,7 @@
 
 ## Status
 
-**BLOCKED_EXTERNAL_CREDENTIALS** until both keys are available and smoke steps below succeed. Do not mark R2 PASSED without this gate.
+**COMPLETED** — see `R2-provider-smoke-results.md`（脱敏结果）。默认 CI 不跑 live smoke。
 
 ## Purpose
 
@@ -20,11 +20,21 @@ Qwen-VL uses the OpenAI-compatible chat completions protocol documented by Aliba
 
 ## Procedure
 
+推荐一键（Testcontainers + 真实供应商，不走 Stub）：
+
+```bash
+cd backend
+# requires CRAFTPILOT_OPENAI_API_KEY and CRAFTPILOT_QWEN_API_KEY in ../.env
+mvn -Dtest=R2ProviderSmokeTest test
+```
+
+手工路径：
+
 1. Start local stack (`scripts/dev-up.ps1`) with keys loaded.
-2. Create two revisions with sample images and an active survey (same path as R2 tests).
-3. `POST /api/v1/merchants/{m}/surveys/{s}/retrieval/search` with a material query — expect `retrievalMode` hybrid/vector/lexical and a `model_call_attempt` row for `embedding` with `SUCCEEDED`, tokens, and model name.
-4. `POST /api/v1/merchants/{m}/vision/compare` with left/right revision IDs — expect `SUCCEEDED` or explicit `GAP`, plus `model_call_attempt` for `vision_compare` with provider request id / token usage when the vendor returns them.
-5. Record redacted request ids, model names, status, and token fields in the PR or handoff notes.
+2. Create two revisions with sample images（宽高须 >10）and an active survey.
+3. `POST .../retrieval/search` — expect hybrid/vector and `model_call_attempt` embedding SUCCEEDED.
+4. `POST .../vision/compare` — expect SUCCEEDED（或明确 GAP）及 vision_compare 用量字段.
+5. Record redacted request ids / model / status / tokens into `R2-provider-smoke-results.md`.
 
 ## Budget
 

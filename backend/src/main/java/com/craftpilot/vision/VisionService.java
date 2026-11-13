@@ -61,6 +61,10 @@ public class VisionService {
         byte[] rightBytes = assets.content(actor, merchant, rightAsset);
         String leftType = assets.get(actor, merchant, leftAsset).contentType();
         String rightType = assets.get(actor, merchant, rightAsset).contentType();
+        // Qwen-VL rejects images with width/height <= 10; surface as GAP rather than opaque model failure.
+        if (looksTooSmallForVision(leftBytes) || looksTooSmallForVision(rightBytes)) {
+            return gap(merchant, request, leftAsset, rightAsset, "IMAGE_DIMENSION_TOO_SMALL");
+        }
 
         String prompt = """
                 Compare the first image (left/V1) with the second image (right/V2).
@@ -167,6 +171,22 @@ public class VisionService {
                 .update();
         return new VisionCompareView(id, request.leftRevisionId(), request.rightRevisionId(),
                 leftAsset, rightAsset, vision.modelName(), "GAP", List.of(), uncertainty, null, gapCode);
+    }
+
+    private static boolean looksTooSmallForVision(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return true;
+        }
+        // Only inspect PNG IHDR; other formats are left to the provider.
+        if (bytes.length >= 24
+                && bytes[0] == (byte) 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
+            int width = ((bytes[16] & 0xff) << 24) | ((bytes[17] & 0xff) << 16)
+                    | ((bytes[18] & 0xff) << 8) | (bytes[19] & 0xff);
+            int height = ((bytes[20] & 0xff) << 24) | ((bytes[21] & 0xff) << 16)
+                    | ((bytes[22] & 0xff) << 8) | (bytes[23] & 0xff);
+            return width <= 10 || height <= 10;
+        }
+        return false;
     }
 
     private void requireSurveyRevision(UUID merchant, UUID surveyId, UUID revisionId) {

@@ -1,5 +1,11 @@
 # R2 Feedback, Retrieval, and Vision — Implementation Report
 
+## Exit status
+
+**R2 live smoke + offline verify 已通过；等待最新 Head CI 全绿后正式宣布 R2 PASSED — PR READY**（不自动合并 main）
+
+离线实现、协议 Stub 测试、真实供应商最小联调已完成；Head CI 与最终 P0/P1 复查见 PR #3。
+
 ## Scope delivered
 
 R2 adds message attribution, opinion extraction / issue merge, Evidence, OpenAI Embedding, hybrid retrieval (lexical + pgvector RRF), and Qwen-VL revision image compare on top of the merged R1 business domain.
@@ -28,27 +34,27 @@ R2 adds message attribution, opinion extraction / issue merge, Evidence, OpenAI 
 
 - Attribution uses server `received_at` and survey intake window; card / reply-chain / ambiguous / out-of-window states are explicit. No forced revision without an anchor.
 - Opinions use a versioned rule extractor (`r2-rule-1`) with structured polarity/attribute/canonical/quote/confidence; issues are revision-scoped with independent author counts.
-- Evidence IDs are server-allocated with checksum + seq; model-fabricated Evidence IDs are rejected.
+- Evidence IDs are server-allocated with checksum + seq; model-fabricated Evidence IDs are rejected; manual override reactivates revoked opinion evidence.
 - Embedding/Qwen adapters are real HTTP clients; CI uses local stubs. Keys come from env only.
 - Retrieval authorizes merchant/survey/revision/visibility/watermark first, then lexical + vector with RRF k=60; vector failures degrade to lexical.
-- Vision reads MinIO assets only after revision binding checks; missing assets / model outage return `GAP`.
-
-## Tests
-
-- `FlywayR1MigrationTest` — empty DB V1→V3 and V1→V2/V3 upgrade
-- `FoundationTest` / `R1BusinessTest` — R0/R1 regression including Flyway `1,2,3`
-- `R2FeedbackRetrievalVisionTest` — attribution, merge, evidence verify, hybrid/degrade, vision success/gap/fabricated ID
-
-## Exit status
-
-**R2 status: `BLOCKED_EXTERNAL_CREDENTIALS` — not PASSED.**
-
-Offline implementation, protocol stubs, PR, and CI may be green. Formal R2 completion still requires at least one live OpenAI Embedding call and one live Qwen-VL compare with recorded model/usage fields.
-
-## Real provider gate
-
-Offline from GitHub CI. Requires `CRAFTPILOT_OPENAI_API_KEY` and `CRAFTPILOT_QWEN_API_KEY` (and optional base URL / model overrides). See `R2-provider-smoke.md`. Do not enable paid calls in Actions.
+- Vision reads MinIO assets only after revision binding checks; PNG width/height ≤10 → `IMAGE_DIMENSION_TOO_SMALL`; missing assets / model outage return `GAP`.
 
 ## NULL parameter binding (watermark / material)
 
-`survey_session.evidence_watermark` is `bigint` (NULL while ACTIVE). `evidence_chunk.material_code` is `varchar(80)`. Binding untyped JDBC NULLs into `(:watermark IS NULL OR …)` / `(:material IS NOT NULL AND …)` fails with `could not determine data type of parameter`. Production retrieval branches omit unbound NULL filters; when present, parameters are cast to `bigint` / `varchar(80)`. Regression: `nullWatermarkAndNullMaterialBindingIsTypedAndReproducible`.
+`survey_session.evidence_watermark` is `bigint` (NULL while ACTIVE). `evidence_chunk.material_code` is `varchar(80)`. Untyped JDBC NULLs fail PostgreSQL inference. Production branches omit unbound filters; present values cast to `bigint` / `varchar(80)`. Regression: `nullWatermarkAndNullMaterialBindingIsTypedAndReproducible`.
+
+## Tests
+
+- `FlywayR1MigrationTest` / `FoundationTest` / `R1BusinessTest` / `R2FeedbackRetrievalVisionTest`（CI 默认）
+- `R2ProviderSmokeTest`（本地 live，已从 Surefire 默认排除；结果见 `R2-provider-smoke-results.md`）
+
+## Real provider gate（已完成）
+
+| 项 | 结果 |
+|---|---|
+| OpenAI Embedding | `text-embedding-3-small` SUCCEEDED，tokens=4，request id 已脱敏 |
+| Hybrid retrieval | `hybrid`，hits=2，pgvector embedded chunks=2 |
+| Qwen-VL | `qwen3-vl-plus` SUCCEEDED，in=223 out=132，request id 已脱敏 |
+| 视觉差异 | status=SUCCEEDED，diff_count=2，evidence 已关联 |
+
+联调中曾因 1×1 PNG 触发供应商 `InvalidParameter`（宽高须 >10）；已改为 ≥64×64 样例，并增加 PNG 尺寸前置 GAP。密钥未写入日志、提交或 PR。

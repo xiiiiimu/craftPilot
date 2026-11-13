@@ -69,17 +69,17 @@ public class EmbeddingClient {
             try (var response = http.newCall(builder.build()).execute()) {
                 String responseBody = response.body() == null ? "" : response.body().string();
                 if (response.code() == 429) {
-                    mark(merchant, callId, "RATE_LIMITED", 429, null, null, "RATE_LIMITED");
+                    mark(merchant, callId, "RATE_LIMITED", 429, null, null, null, "RATE_LIMITED");
                     throw ApiFailure.unavailable("EMBEDDING_RATE_LIMITED", "Embedding provider rate limited");
                 }
                 if (!response.isSuccessful()) {
-                    mark(merchant, callId, "FAILED", response.code(), null, null, "HTTP_" + response.code());
+                    mark(merchant, callId, "FAILED", response.code(), null, null, null, "HTTP_" + response.code());
                     throw ApiFailure.unavailable("EMBEDDING_UNAVAILABLE", "Embedding provider failed");
                 }
                 JsonNode root = mapper.readTree(responseBody);
                 JsonNode vectorNode = root.path("data").path(0).path("embedding");
                 if (!vectorNode.isArray() || vectorNode.size() != DIMENSION) {
-                    mark(merchant, callId, "FAILED", response.code(), null, null, "DIMENSION_MISMATCH");
+                    mark(merchant, callId, "FAILED", response.code(), null, null, null, "DIMENSION_MISMATCH");
                     throw ApiFailure.conflict("EMBEDDING_DIMENSION_MISMATCH",
                             "Embedding dimension must be " + DIMENSION);
                 }
@@ -89,16 +89,20 @@ public class EmbeddingClient {
                 }
                 Integer tokens = root.path("usage").path("total_tokens").isMissingNode()
                         ? null : root.path("usage").path("total_tokens").asInt();
-                mark(merchant, callId, "SUCCEEDED", response.code(), tokens, null, null);
+                String requestId = root.path("id").asText(null);
+                if (requestId == null || requestId.isBlank()) {
+                    requestId = response.header("x-request-id");
+                }
+                mark(merchant, callId, "SUCCEEDED", response.code(), tokens, null, requestId, null);
                 return vector;
             }
         } catch (ApiFailure failure) {
             throw failure;
         } catch (IOException ex) {
-            mark(merchant, callId, "TIMEOUT", null, null, null, "IO_ERROR");
+            mark(merchant, callId, "TIMEOUT", null, null, null, null, "IO_ERROR");
             throw ApiFailure.unavailable("EMBEDDING_UNAVAILABLE", "Embedding provider unavailable");
         } catch (Exception ex) {
-            mark(merchant, callId, "FAILED", null, null, null, "PROTOCOL_ERROR");
+            mark(merchant, callId, "FAILED", null, null, null, null, "PROTOCOL_ERROR");
             throw ApiFailure.unavailable("EMBEDDING_UNAVAILABLE", "Embedding provider protocol error");
         }
     }
@@ -123,14 +127,16 @@ public class EmbeddingClient {
     }
 
     private void mark(UUID merchant, UUID callId, String status, Integer httpStatus, Integer tokens,
-                      Double cost, String error) {
+                      Double cost, String providerRequestId, String error) {
         jdbc.sql("""
                 UPDATE model_call_attempt
                 SET status = :status, http_status = :http, input_tokens = :tokens,
-                    estimated_cost_usd = :cost, error_code = :error, completed_at = clock_timestamp()
+                    estimated_cost_usd = :cost, provider_request_id = :req,
+                    error_code = :error, completed_at = clock_timestamp()
                 WHERE merchant_id = :m AND id = :id
                 """).param("m", merchant).param("id", callId).param("status", status)
-                .param("http", httpStatus).param("tokens", tokens).param("cost", cost).param("error", error)
+                .param("http", httpStatus).param("tokens", tokens).param("cost", cost)
+                .param("req", providerRequestId).param("error", error)
                 .update();
     }
 
