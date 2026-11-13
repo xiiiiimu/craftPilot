@@ -68,13 +68,18 @@ R5 found unauthenticated cross-tenant memory search (principal ignored). Fixed v
 |---|---|---|---|
 | Historical (seq-race docs) | `d28034e` | [43448845107](https://github.com/xiiiiimu/craftPilot/actions/runs/43448845107) success | Prior READY snapshot |
 | Prior Head (docs align) | `cea7f2f` | [43458269573](https://github.com/xiiiiimu/craftPilot/actions/runs/43458269573) success | User-verified green Head before closure commits |
-| Latest Head | *(this commit)* | *(await CI after push)* | Closure: replay taxonomy, seq stress, provenance assert, PARTIAL demo honesty |
+| Latest Head | `38cd1c8` | [43495514359](https://github.com/xiiiiimu/craftPilot/actions/runs/43495514359) success | Closure: replay taxonomy, seq stress, provenance assert, PARTIAL demo honesty |
 
 ## Final verdict
 
-**R5 PASSED with one PARTIAL (Windows interactive V1→V2 demo) — PR READY to merge after latest Head CI green**（不要自动合并）
+**R5 PASSED with one PARTIAL (Windows interactive V1→V2 demo) — PR READY**（不要自动合并）
 
 - PR: https://github.com/xiiiiimu/craftPilot/pull/6
+- Head: `38cd1c8bf04081f91c2b2d407c1d3d3626a73e33`
+- Required check `Build, test and repository security`: **success**
+- mergeable=`True`, mergeable_state=`clean`
+- Review comments / unresolved threads: **0**
 - P0/P1 open: **0**
 - Capability matrix: 17 PASS / 1 PARTIAL / 0 FAIL
 - Do not treat PrintOnly as full interactive demo PASS
+- **建议合并；本轮不自动合并 main**

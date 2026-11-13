@@ -12,9 +12,9 @@ Offline + live E2E gates green. Windows one-click PASS; V1→V2 operator demo re
 |---|---|---|---|
 | Historical READY | `d28034e` | [43448845107](https://github.com/xiiiiimu/craftPilot/actions/runs/43448845107) success | Prior snapshot |
 | User-audited Head | `cea7f2f` | [43458269573](https://github.com/xiiiiimu/craftPilot/actions/runs/43458269573) success | Green before closure commits |
-| Latest Head | *(post-closure commit)* | *(re-check after push)* | Must be green before merge |
+| Latest Head | `38cd1c8` | [43495514359](https://github.com/xiiiiimu/craftPilot/actions/runs/43495514359) success | Closure taxonomy + PARTIAL demo |
 
-PR: [#6](https://github.com/xiiiiimu/craftPilot/pull/6) — open, mergeable pending latest CI; Review Threads target = 0.
+PR: [#6](https://github.com/xiiiiimu/craftPilot/pull/6) — open, `mergeable=True` / `mergeable_state=clean`; review comments = 0.
 
 ## Scope checked
 
@@ -59,4 +59,4 @@ PR: [#6](https://github.com/xiiiiimu/craftPilot/pull/6) — open, mergeable pend
 
 ## Review threads
 
-Unresolved = 0 at review authoring time (confirm again after latest push).
+Unresolved review threads / PR review comments = **0** after Head `38cd1c8` CI success.
