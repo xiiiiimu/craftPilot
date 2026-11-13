@@ -57,8 +57,8 @@ R5 found unauthenticated cross-tenant memory search (principal ignored). Fixed v
 **R5 PASSED — PR READY**（不要自动合并）
 
 - PR: https://github.com/xiiiiimu/craftPilot/pull/6
-- Head: `8ebb944`
-- Head CI: https://github.com/xiiiiimu/craftPilot/actions/runs/43446705489 success
+- Head: `d28034e`
+- Head CI: https://github.com/xiiiiimu/craftPilot/actions/runs/43448845107 success
 - Maven offline: 53 tests, 0 failures
 - Live E2E: PASSED
 - Windows one-click: PASSED

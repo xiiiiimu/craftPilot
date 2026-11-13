@@ -4,7 +4,7 @@
 
 **R5 PASSED — PR READY**（不要自动合并）
 
-Local gates green. PR [#6](https://github.com/xiiiiimu/craftPilot/pull/6) Head `8ebb944` / Actions run [`43446705489`](https://github.com/xiiiiimu/craftPilot/actions/runs/43446705489) **success**. P0/P1 = 0.
+Local gates green. PR [#6](https://github.com/xiiiiimu/craftPilot/pull/6) Head `d28034e` / Actions run [`43448845107`](https://github.com/xiiiiimu/craftPilot/actions/runs/43448845107) **success**. P0/P1 = 0.
 
 ## Scope checked
 
