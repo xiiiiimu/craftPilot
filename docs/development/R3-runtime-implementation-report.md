@@ -4,7 +4,7 @@
 
 **R3 PASSED — PR READY**（不自动合并 main）
 
-Offline `.\mvnw.cmd -B -ntp clean verify` **BUILD SUCCESS** (31 tests). Live `R3ProviderSmokeTest` **PASSED** (see `R3-provider-smoke-results.md`). Head CI `406cab1` / Actions run [`43355349253`](https://github.com/xiiiiimu/craftPilot/actions/runs/43355349253) success.
+Offline `.\mvnw.cmd -B -ntp clean verify` **BUILD SUCCESS** (31 tests). Live `R3ProviderSmokeTest` **PASSED** (see `R3-provider-smoke-results.md`). Head CI `81be716` / Actions run [`43356050784`](https://github.com/xiiiiimu/craftPilot/actions/runs/43356050784) success.
 
 ## Scope delivered
 
