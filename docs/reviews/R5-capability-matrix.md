@@ -28,7 +28,7 @@ Base: `origin/main` @ `fcb23ad` (R4 squash-merge)
 ## Notes on PARTIAL
 
 - **PrintOnly** proves script generation/preview of API steps only — not a full interactive demo.
-- The Windows follow-up records a live backend, dedicated development tenant, and catalog, survey, feedback and evidence checks. Provider usage and the integrated runtime approval and decision gates remain outstanding for this workstation run.
+- The Windows follow-up records live V1 and V2 catalog, survey and feedback checks, verified Evidence, and retained V1 history in a dedicated development tenant. Provider usage and the integrated runtime approval and decision gates remain outstanding for this workstation run.
 - The historical `R5ProviderE2ETest` evidence and the new isolated Maven regression are tracked separately from interactive Windows acceptance. The demo script leaves approval and decision commands to the authorized operator.
 
 ## Counts

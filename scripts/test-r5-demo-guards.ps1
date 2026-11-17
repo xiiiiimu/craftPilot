@@ -25,3 +25,5 @@ try {
     $listener.Stop()
 }
 Write-Output '3 R5 demo guard checks passed.'
+# The last child is expected to exit nonzero. Report the assertions' result to the caller.
+exit 0
