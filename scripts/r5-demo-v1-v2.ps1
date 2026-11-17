@@ -24,11 +24,18 @@ param(
     [string]$Login = '',
     [string]$Password = '',
     [switch]$PrintOnly,
-    [switch]$SkipBackendCheck
+    [switch]$SkipBackendCheck,
+    [switch]$UseProviders
 )
 
 $ErrorActionPreference = 'Stop'
 $DemoLoginPrefix = 'r5-demo-'
+$endpoint = [uri]$BaseUrl
+if (-not $endpoint.IsAbsoluteUri -or $endpoint.Scheme -ne 'http' -or
+    $endpoint.Host -notin @('localhost', '127.0.0.1', '[::1]') -or
+    $endpoint.UserInfo -or $endpoint.AbsolutePath -ne '/' -or $endpoint.Query -or $endpoint.Fragment) {
+    throw 'BaseUrl must be a local loopback HTTP origin.'
+}
 $Api = $BaseUrl.TrimEnd('/') + '/api/v1'
 
 function Write-Step([string]$Message) {
@@ -75,6 +82,8 @@ function Invoke-Json {
         Uri         = $Url
         Headers     = $Headers
         ErrorAction = 'Stop'
+        MaximumRedirection = 0
+        TimeoutSec = 60
     }
     if ($null -ne $Body) {
         $params.Body = ($Body | ConvertTo-Json -Depth 8 -Compress)
@@ -95,37 +104,35 @@ function Show-PrintOnlyGuide([string]$User) {
     Write-Warn 'PrintOnly: no API mutations; no approvals/decisions posted.'
 }
 
-function New-MinimalPngBytes {
-    $b64 = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAFElEQVQ4T2NkYGD4z0ABYBw1gGABAD8YAQf9fYQnAAAAAElFTkSuQmCC'
-    return [Convert]::FromBase64String($b64)
-}
-
 function Upload-DemoAsset([hashtable]$Headers, [string]$MerchantId, [string]$Label) {
-    $png = New-MinimalPngBytes
-    $tmp = Join-Path $env:TEMP ("craftpilot-{0}-{1}.png" -f $Label, [guid]::NewGuid().ToString('N'))
-    [IO.File]::WriteAllBytes($tmp, $png)
+    # Distinct valid 64x64 PNGs satisfy the vision input size and revision comparison contracts.
+    $images = @{
+        v1 = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAeElEQVR4nO3PQQkAMAzAwMqpfyZwIvY4BoEIuMzZ/brhgga0oAEtaEALGtCCBrSgAS1oQAsa0IIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAsa0IIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAseu+qJQPEh8FEUAAAAAElFTkSuQmCC'
+        v2 = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAeElEQVR4nO3PQQkAMAzAwMqpfyZwIvY4BoEIuMzu+brhgga0oAEtaEALGtCCBrSgAS1oQAsa0IIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAsa0IIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAseu2mKQPGSV3xbAAAAAElFTkSuQmCC'
+    }
+    $png = [Convert]::FromBase64String($images[$Label])
+
+    $url = "$Api/merchants/$MerchantId/assets"
+    Add-Type -AssemblyName System.Net.Http
+    $handler = [Net.Http.HttpClientHandler]::new()
+    $handler.AllowAutoRedirect = $false
+    $client = [Net.Http.HttpClient]::new($handler)
+    $client.Timeout = [TimeSpan]::FromSeconds(60)
+    $form = [Net.Http.MultipartFormDataContent]::new()
     try {
-        $url = "$Api/merchants/$MerchantId/assets"
-        $curl = Get-Command curl.exe -ErrorAction SilentlyContinue
-        if ($curl) {
-            $out = & curl.exe -sS -f -X POST `
-                -H ("Authorization: {0}" -f $Headers.Authorization) `
-                -F ("file=@{0};type=image/png" -f $tmp) `
-                $url
-            if ($LASTEXITCODE -ne 0) {
-                throw ("Asset upload via curl.exe failed with exit code {0}" -f $LASTEXITCODE)
-            }
-            $resp = $out | ConvertFrom-Json
-            return $resp.id
-        }
-        if ($PSVersionTable.PSVersion.Major -ge 6) {
-            $authOnly = @{ Authorization = $Headers.Authorization }
-            $resp = Invoke-RestMethod -Method POST -Headers $authOnly -Uri $url -Form @{ file = Get-Item -LiteralPath $tmp }
-            return $resp.id
-        }
-        throw 'Asset upload requires curl.exe or PowerShell 7+ (-Form).'
+        $client.DefaultRequestHeaders.Add('Authorization', $Headers.Authorization)
+        $form.Add([Net.Http.StringContent]::new('image'), 'kind')
+        $file = [Net.Http.ByteArrayContent]::new($png)
+        $file.Headers.ContentType = [Net.Http.Headers.MediaTypeHeaderValue]::new('image/png')
+        $form.Add($file, 'file', "$Label.png")
+        $response = $client.PostAsync($url, $form).GetAwaiter().GetResult()
+        try {
+            [void]$response.EnsureSuccessStatusCode()
+            return ($response.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json).id
+        } finally { $response.Dispose() }
     } finally {
-        Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
+        $form.Dispose()
+        $client.Dispose()
     }
 }
 
@@ -136,7 +143,7 @@ $modePrintOnly = [bool]$PrintOnly
 if (-not $SkipBackendCheck) {
     Write-Step ("Probe backend liveness at {0}" -f $BaseUrl)
     try {
-        $live = Invoke-WebRequest -Uri ("{0}/actuator/health/liveness" -f $BaseUrl) -UseBasicParsing -TimeoutSec 5
+        $live = Invoke-WebRequest -Uri ("{0}/actuator/health/liveness" -f $BaseUrl) -UseBasicParsing -MaximumRedirection 0 -TimeoutSec 5
         if ($live.StatusCode -ge 200 -and $live.StatusCode -lt 300) {
             Write-Ok ("liveness HTTP {0}" -f $live.StatusCode)
         } else {
@@ -146,8 +153,7 @@ if (-not $SkipBackendCheck) {
         Write-Warn ("Backend not reachable: {0}" -f $_.Exception.Message)
         Write-Warn 'Start it with .\scripts\backend-up.ps1 after .\scripts\r5-one-click.ps1'
         if (-not $modePrintOnly) {
-            Write-Host 'Falling back to PrintOnly instructions.' -ForegroundColor Yellow
-            $modePrintOnly = $true
+            throw 'Interactive demo requires a running local backend.'
         }
     }
 }
@@ -183,8 +189,13 @@ $headers = New-BasicAuthHeader $Login $Password
 
 Write-Step 'Authenticate and resolve merchant'
 $me = Invoke-Json -Method GET -Url "$Api/me" -Headers $headers
+if ($me.login -cne $Login) { throw 'Authenticated identity differs from the demo login.' }
 Write-Ok ("principal login={0}" -f $me.login)
 $merchants = Invoke-Json -Method GET -Url "$Api/me/merchants" -Headers $headers
+if (@($merchants.items).Count -ne 1 -or $merchants.hasMore -or
+    $merchants.items[0].role -ne 'OWNER' -or $merchants.items[0].name -ne 'Local development') {
+    throw 'Use a dedicated owner created by the local development bootstrap.'
+}
 $merchantId = $merchants.items[0].id
 Write-Ok ("merchantId={0}" -f $merchantId)
 
@@ -214,35 +225,35 @@ Write-Step 'Open V1 survey and post attributed feedback'
 $surveyV1 = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/surveys" -Headers $headers -Body @{
     revisionIds = @($revisionV1.id)
 }
-Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/messages" -Headers $headers -Body @{
+$messageV1 = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/messages" -Headers $headers -Body @{
     clientMsgId = [guid]::NewGuid().ToString()
     text        = 'r5-demo: like V1 fabric, want improvements'
     card        = @{ revisionId = $revisionV1.id }
-} | Out-Null
+}
 Write-Ok ("surveyV1={0}" -f $surveyV1.id)
 
-Write-Step 'Read issues / feedback-stats / retrieval (best-effort)'
-try {
-    Invoke-Json -Method GET -Url ("$Api/merchants/$merchantId/surveys/$($surveyV1.id)/issues?revisionId={0}" -f $revisionV1.id) -Headers $headers | Out-Null
-    Write-Ok 'issues OK'
-} catch {
-    Write-Warn ("issues: {0}" -f $_.Exception.Message)
+function Confirm-Feedback($Survey, $Revision, $Message) {
+    $merchantApi = "$Api/merchants/$merchantId"
+    $attribution = Invoke-Json -Method POST -Url "$merchantApi/messages/$($Message.id)/attribution" -Headers $headers
+    if ($attribution.status -ne 'ATTRIBUTED' -or $attribution.revisionId -ne $Revision.id -or $attribution.surveyId -ne $Survey.id) {
+        throw 'Feedback attribution did not match the survey and revision.'
+    }
+    $surveyApi = "$merchantApi/surveys/$($Survey.id)"
+    $stats = Invoke-Json -Method GET -Url "$surveyApi/feedback-stats?revisionId=$($Revision.id)" -Headers $headers
+    $issues = Invoke-Json -Method GET -Url "$surveyApi/issues?revisionId=$($Revision.id)" -Headers $headers
+    if ($stats.attributedMessages -lt 1 -or @($issues).Count -lt 1) { throw 'Feedback statistics or issues are missing.' }
+    Write-Ok "message=$($Message.id) attribution=$($attribution.id) survey=$($Survey.id) revision=$($Revision.id) issues=$(@($issues).Count)"
 }
-try {
-    Invoke-Json -Method GET -Url ("$Api/merchants/$merchantId/surveys/$($surveyV1.id)/feedback-stats?revisionId={0}" -f $revisionV1.id) -Headers $headers | Out-Null
-    Write-Ok 'feedback-stats OK'
-} catch {
-    Write-Warn ("feedback-stats: {0}" -f $_.Exception.Message)
-}
-try {
-    Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)/retrieval/search" -Headers $headers -Body @{
+
+Write-Step 'Verify V1 feedback and issues'
+Confirm-Feedback $surveyV1 $revisionV1 $messageV1
+if ($UseProviders) {
+    $search = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)/retrieval/search" -Headers $headers -Body @{
         revisionId = $revisionV1.id
-        query      = 'fabric'
-        topK       = 5
-    } | Out-Null
-    Write-Ok 'retrieval/search invoked'
-} catch {
-    Write-Warn ("retrieval/search: {0}" -f $_.Exception.Message)
+        query = 'fabric'
+        topK = 5
+    }
+    Write-Ok "retrievalMode=$($search.retrievalMode) hits=$(@($search.hits).Count)"
 }
 
 Write-Step 'Create V2 revision and new survey (V1 history retained)'
@@ -260,32 +271,47 @@ $revisionV2 = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/styles/$
         })
     notes            = 'r5-demo-v2'
 }
-try {
-    Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)/close" -Headers $headers -Body @{} | Out-Null
-    Write-Ok ("closed surveyV1={0}" -f $surveyV1.id)
-} catch {
-    Write-Warn ("close surveyV1: {0}" -f $_.Exception.Message)
+$closeHeaders = $headers.Clone()
+$closeHeaders['Idempotency-Key'] = [guid]::NewGuid().ToString()
+$closed = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)/close" -Headers $closeHeaders
+if ($closed.status -eq 'CLOSING') {
+    Write-Host "  Survey $($surveyV1.id) is CLOSING. Waiting for its documented closing window."
+    $remaining = ([DateTimeOffset]$closed.closingDeadlineAt - [DateTimeOffset]::UtcNow).TotalSeconds
+    if ($remaining -gt 660) { throw 'The closing deadline exceeds the demo wait limit.' }
+    Start-Sleep -Seconds ([int][Math]::Max(1, [Math]::Ceiling($remaining) + 1))
+    # A fresh command applies the due state transition. Reusing the key would replay CLOSING.
+    $closeHeaders['Idempotency-Key'] = [guid]::NewGuid().ToString()
+    $closed = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)/close" -Headers $closeHeaders
 }
+if ($closed.status -ne 'CLOSED') { throw "V1 survey must finish closing before opening V2 (status=$($closed.status), id=$($surveyV1.id))." }
+Write-Ok "closed surveyV1=$($surveyV1.id)"
 $surveyV2 = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/surveys" -Headers $headers -Body @{
     revisionIds = @($revisionV1.id, $revisionV2.id)
 }
-Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/messages" -Headers $headers -Body @{
+$messageV2 = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/groups/$($group.id)/messages" -Headers $headers -Body @{
     clientMsgId = [guid]::NewGuid().ToString()
     text        = 'r5-demo: V2 shoulder improved, higher purchase intent'
     card        = @{ revisionId = $revisionV2.id }
-} | Out-Null
+}
+Confirm-Feedback $surveyV2 $revisionV2 $messageV2
+$savedV1 = Invoke-Json -Method GET -Url "$Api/merchants/$merchantId/revisions/$($revisionV1.id)" -Headers $headers
+$savedSurvey = Invoke-Json -Method GET -Url "$Api/merchants/$merchantId/surveys/$($surveyV1.id)" -Headers $headers
+if ($savedV1.snapshotHash -ne $revisionV1.snapshotHash -or $revisionV2.parentRevisionId -ne $savedV1.id -or $savedSurvey.status -ne 'CLOSED') {
+    throw 'V1 history or V2 parent linkage did not match the demo.'
+}
 Write-Ok ("revisionV2={0} surveyV2={1}" -f $revisionV2.id, $surveyV2.id)
 
-Write-Step 'Vision compare V1 vs V2 (best-effort; needs provider keys)'
-try {
+if ($UseProviders) {
+    Write-Step 'Vision compare V1 vs V2'
     $cmp = Invoke-Json -Method POST -Url "$Api/merchants/$merchantId/vision/compare" -Headers $headers -Body @{
         leftRevisionId  = $revisionV1.id
         rightRevisionId = $revisionV2.id
         surveyId        = $surveyV2.id
     }
+    if ($cmp.status -ne 'SUCCEEDED') { throw "Vision comparison did not succeed (status=$($cmp.status))." }
     Write-Ok ("vision compare id={0}" -f $cmp.id)
-} catch {
-    Write-Warn ("vision/compare: {0}" -f $_.Exception.Message)
+} else {
+    Write-Warn 'Provider probes require explicit -UseProviders and configured credentials.'
 }
 
 Write-Step 'Manual gates (NOT automated)'

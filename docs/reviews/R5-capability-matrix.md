@@ -23,13 +23,13 @@ Base: `origin/main` @ `fcb23ad` (R4 squash-merge)
 | MCP SSRF / injection | security | `validateEndpoint` | eval + security | auto | **PASS** | eval / security | P0 |
 | Fault suite (+ seq race) | T03–T05 | runtime | R5FaultInjectionTest | auto | **PASS** | fault results | P0 |
 | Windows one-click | roadmap R5 | `r5-one-click.ps1` | manual script | executed | **PASS** | windows demo doc | P1 |
-| V1→V2 Windows interactive demo | roadmap R5 | `r5-demo-v1-v2.ps1` | PrintOnly only | partial | **PARTIAL** | windows demo doc | P1 |
+| V1→V2 Windows interactive demo | roadmap R5 | `r5-demo-v1-v2.ps1` | Windows HTTP + guard regression | partial | **PARTIAL** | [Windows follow-up](../development/R5-windows-startup-demo.md#windows-follow-up-2026-11-17) | P1 |
 
 ## Notes on PARTIAL
 
 - **PrintOnly** proves script generation/preview of API steps only — not a full interactive demo.
-- Full product path V1→V2 + HITL + decision + memory is covered by isolated `R5ProviderE2ETest` (authorized test principals under Testcontainers), not by the Windows operator demo against `:18080`.
-- Real merchant HITL / decision on a live `backend-up` process remains an operator action; scripts never auto-approve.
+- The Windows follow-up records a live backend, dedicated development tenant, and catalog, survey, feedback and evidence checks. Provider usage and the integrated runtime approval and decision gates remain outstanding for this workstation run.
+- The historical `R5ProviderE2ETest` evidence and the new isolated Maven regression are tracked separately from interactive Windows acceptance. The demo script leaves approval and decision commands to the authorized operator.
 
 ## Counts
 
