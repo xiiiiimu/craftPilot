@@ -11,6 +11,7 @@ import com.craftpilot.runtime.hitl.ApprovalService;
 import com.craftpilot.runtime.lease.LeaseHandle;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.memory.MemoryService;
+import com.craftpilot.runtime.metrics.RuntimeMetrics;
 import com.craftpilot.runtime.model.ChatModelGateway;
 import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
 import com.craftpilot.runtime.model.ChatModelGateway.ToolCall;
@@ -63,12 +64,13 @@ public class SupervisorLoop {
     private final ApprovalService approvals;
     private final MerchantDecisionService decisions;
     private final MemoryService memory;
+    private final RuntimeMetrics metrics;
 
     public SupervisorLoop(JdbcClient jdbc, ObjectMapper mapper, TransactionTemplate tx, ChatModelGateway chat,
                           ContextBuilder contexts, ToolBroker tools, BudgetService budget,
                           CheckpointService checkpoints, EvidenceService evidence, SkillRegistry skills,
                           HandoffService handoffs, JoinService joins, ApprovalService approvals,
-                          MerchantDecisionService decisions, MemoryService memory) {
+                          MerchantDecisionService decisions, MemoryService memory, RuntimeMetrics metrics) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.tx = tx;
@@ -84,6 +86,7 @@ public class SupervisorLoop {
         this.approvals = approvals;
         this.decisions = decisions;
         this.memory = memory;
+        this.metrics = metrics;
     }
 
     public void execute(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId, long leaseEpoch,
@@ -211,19 +214,23 @@ public class SupervisorLoop {
                     || isCancelRequested(merchant, runId)) {
                 return Map.of("ok", false, "error", "CANCELLED_OR_LEASE");
             }
+            long contextStart = System.nanoTime();
             List<Map<String, Object>> messages = contexts.buildMessages(
                     merchant, surveyId, runId, ticketId, taskId, instructions,
                     "[role=" + role + "] " + objective + " revisionId=" + revisionId);
             int inputEstimate = TokenEstimator.estimate(mapper, messages, toolSchemas);
             UUID contextId = contexts.persist(merchant, surveyId, runId, taskId, instructions, messages,
                     toolSchemas, List.of(), inputEstimate, null);
+            long contextNanos = System.nanoTime() - contextStart;
+            metrics.contextBuild("supervisor-worker", contextNanos);
             // Budget refusals (MAX_TURNS_EXCEEDED, ...) propagate; planAndFanout records their code.
             int reserveTokens = inputEstimate + WORKER_MAX_OUTPUT_TOKENS;
-            BigDecimal reserveCost = ChatModelGateway.estimateCost(inputEstimate, WORKER_MAX_OUTPUT_TOKENS);
+            BigDecimal reserveCost = chat.estimateCost(inputEstimate, WORKER_MAX_OUTPUT_TOKENS);
             UUID reservationId = tx.execute(status ->
                     budget.reserveTurn(merchant, surveyId, runId, reserveTokens, reserveCost));
             UUID turnId = UUID.randomUUID();
             InferResult infer;
+            long modelNanos = 0;
             boolean settled = false;
             try {
                 int turnNo = jdbc.sql("""
@@ -233,14 +240,25 @@ public class SupervisorLoop {
                         .query(Integer.class).single();
                 jdbc.sql("""
                         INSERT INTO agent_turn
-                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
-                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
+                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary,
+                         context_build_ms)
+                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary, :ctxMs)
                         """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
                         .param("task", taskId).param("n", turnNo).param("ctx", contextId)
-                        .param("summary", role + "-turn-" + turnNo).update();
+                        .param("summary", role + "-turn-" + turnNo).param("ctxMs", RuntimeMetrics.millis(contextNanos))
+                        .update();
+                long modelStart = System.nanoTime();
                 try {
                     infer = chat.infer(merchant, messages, toolSchemas, WORKER_MAX_OUTPUT_TOKENS);
+                    modelNanos = System.nanoTime() - modelStart;
+                    metrics.modelCall("supervisor-worker", true, modelNanos);
                 } catch (RuntimeException ex) {
+                    long failedNanos = System.nanoTime() - modelStart;
+                    metrics.modelCall("supervisor-worker", false, failedNanos);
+                    jdbc.sql("""
+                            UPDATE agent_turn SET model_latency_ms = :modelMs WHERE merchant_id = :m AND id = :id
+                            """).param("m", merchant).param("id", turnId)
+                            .param("modelMs", RuntimeMetrics.millis(failedNanos)).update();
                     return Map.of("ok", false, "error", "MODEL_" + ex.getClass().getSimpleName());
                 }
                 tx.executeWithoutResult(status -> budget.settleModel(
@@ -262,12 +280,14 @@ public class SupervisorLoop {
                 jdbc.sql("""
                         UPDATE agent_turn SET status = 'RESPONSE_COMMITTED', model_call_id = :call,
                                response_summary = :summary, tool_batch_json = CAST(:tools AS jsonb),
-                               input_tokens = :tin, output_tokens = :tout, completed_at = clock_timestamp()
+                               input_tokens = :tin, output_tokens = :tout, model_latency_ms = :modelMs,
+                               completed_at = clock_timestamp()
                         WHERE merchant_id = :m AND id = :id
                         """).param("m", merchant).param("id", turnId).param("call", infer.modelCallId())
                         .param("summary", truncate(infer.content(), 900))
                         .param("tools", mapper.writeValueAsString(toolBatch))
-                        .param("tin", infer.inputTokens()).param("tout", infer.outputTokens()).update();
+                        .param("tin", infer.inputTokens()).param("tout", infer.outputTokens())
+                        .param("modelMs", RuntimeMetrics.millis(modelNanos)).update();
             } catch (Exception ex) {
                 throw new IllegalStateException(ex);
             }

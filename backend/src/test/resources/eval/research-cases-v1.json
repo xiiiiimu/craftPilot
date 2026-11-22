@@ -1,0 +1,185 @@
+{
+  "dataset": "research-cases",
+  "version": "v1",
+  "simulated": true,
+  "cases": [
+    {
+      "id": "C01", "scenario": "clear_positive", "split": "dev",
+      "style": {"name": "亚麻衬衫", "category": "top"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "LIN-1", "materialName": "亚麻"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断亚麻衬衫 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "面料很舒服，透气不闷", "keyEvidence": true},
+        {"key": "m2", "revision": "V1", "text": "版型好看，想买", "keyEvidence": true},
+        {"key": "m3", "revision": "V1", "text": "做工扎实，走线整齐"},
+        {"key": "m4", "revision": "V1", "text": "颜色很高级"},
+        {"key": "m5", "revision": "V1", "text": "已经想下单了，什么时候开售"},
+        {"key": "m6", "revision": "V1", "text": "价格合理，值这个价"}
+      ],
+      "polls": [{"revision": "V1", "kind": "PURCHASE_INTENT", "question": "开售后会买吗？", "options": [{"label": "会买", "votes": 9}, {"label": "不会买", "votes": 2}]}],
+      "expected": {"recommendation": "PRODUCE", "acceptable": ["PRODUCE"], "mustCite": ["m1", "m2"], "mustNotCite": []}
+    },
+    {
+      "id": "C02", "scenario": "clear_positive", "split": "dev",
+      "style": {"name": "针织开衫", "category": "top"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "WOL-2", "materialName": "羊毛混纺"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断针织开衫 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "手感软糯，一点都不扎", "keyEvidence": true},
+        {"key": "m2", "revision": "V1", "text": "颜色温柔，很显气质"},
+        {"key": "m3", "revision": "V1", "text": "尺码标准，按平时买就行"},
+        {"key": "m4", "revision": "V1", "text": "做工细致，扣子很牢"},
+        {"key": "m5", "revision": "V1", "text": "喜欢，开售一定买", "keyEvidence": true},
+        {"key": "m6", "revision": "V1", "text": "比我之前买的那件好太多"},
+        {"key": "m7", "revision": "V1", "text": "价格可以接受"}
+      ],
+      "polls": [{"revision": "V1", "kind": "PREFERENCE", "question": "喜欢这一版吗？", "options": [{"label": "喜欢", "votes": 10}, {"label": "一般", "votes": 1}]}],
+      "expected": {"recommendation": "PRODUCE", "acceptable": ["PRODUCE"], "mustCite": ["m1", "m5"], "mustNotCite": []}
+    },
+    {
+      "id": "C03", "scenario": "revise_attribute", "split": "test",
+      "style": {"name": "牛仔外套", "category": "outerwear"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "DEN-3", "materialName": "14oz 牛仔布"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断牛仔外套 V1 是否可以量产，需要改哪里",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "版型很好看，很有型"},
+        {"key": "m2", "revision": "V1", "text": "颜色喜欢，水洗做得好"},
+        {"key": "m3", "revision": "V1", "text": "面料太硬了，领口磨脖子", "keyEvidence": true},
+        {"key": "m4", "revision": "V1", "text": "面料硬，洗了一次还是硬", "keyEvidence": true},
+        {"key": "m5", "revision": "V1", "text": "布料偏硬，穿着不舒服", "keyEvidence": true},
+        {"key": "m6", "revision": "V1", "text": "整体想买，就是面料要改软一点"}
+      ],
+      "polls": [{"revision": "V1", "kind": "PURCHASE_INTENT", "question": "改进后会买吗？", "options": [{"label": "会买", "votes": 7}, {"label": "不会买", "votes": 4}]}],
+      "expected": {"recommendation": "REVISE", "acceptable": ["REVISE"], "mustCite": ["m3", "m4", "m5"], "mustNotCite": []}
+    },
+    {
+      "id": "C04", "scenario": "revise_attribute", "split": "dev",
+      "style": {"name": "收腰连衣裙", "category": "dress"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "POL-4", "materialName": "醋酸缎面"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断收腰连衣裙 V1 是否可以量产，需要改哪里",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "裙子很好看，光泽感好"},
+        {"key": "m2", "revision": "V1", "text": "腰太紧了，坐下来勒得慌", "keyEvidence": true},
+        {"key": "m3", "revision": "V1", "text": "尺码偏小一码，M 穿不进去", "keyEvidence": true},
+        {"key": "m4", "revision": "V1", "text": "胸围紧，抬手不方便", "keyEvidence": true},
+        {"key": "m5", "revision": "V1", "text": "颜色喜欢"},
+        {"key": "m6", "revision": "V1", "text": "放大一码我就买"}
+      ],
+      "polls": [],
+      "expected": {"recommendation": "REVISE", "acceptable": ["REVISE"], "mustCite": ["m2", "m3", "m4"], "mustNotCite": []}
+    },
+    {
+      "id": "C05", "scenario": "trial_low_intent", "split": "dev",
+      "style": {"name": "刺绣托特包", "category": "bag"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "CAN-5", "materialName": "帆布"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断刺绣托特包 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "好看！刺绣很精致"},
+        {"key": "m2", "revision": "V1", "text": "颜色搭配好看"},
+        {"key": "m3", "revision": "V1", "text": "喜欢但是不会买，包已经够多了", "keyEvidence": true},
+        {"key": "m4", "revision": "V1", "text": "好看是好看，平时用不上", "keyEvidence": true},
+        {"key": "m5", "revision": "V1", "text": "价格有点高，可能不买"}
+      ],
+      "polls": [
+        {"revision": "V1", "kind": "PREFERENCE", "question": "喜欢这一版吗？", "options": [{"label": "喜欢", "votes": 10}, {"label": "一般", "votes": 2}]},
+        {"revision": "V1", "kind": "PURCHASE_INTENT", "question": "开售后会买吗？", "options": [{"label": "会买", "votes": 2}, {"label": "不会买", "votes": 9}]}
+      ],
+      "expected": {"recommendation": "TRIAL", "acceptable": ["TRIAL"], "mustCite": ["m3", "m4"], "mustNotCite": []}
+    },
+    {
+      "id": "C06", "scenario": "trial_low_intent", "split": "dev",
+      "style": {"name": "手绘陶瓷杯", "category": "home"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "CER-6", "materialName": "高温陶瓷"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手绘陶瓷杯 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "花纹好可爱"},
+        {"key": "m2", "revision": "V1", "text": "釉色很漂亮"},
+        {"key": "m3", "revision": "V1", "text": "喜欢，但家里杯子太多了不会买", "keyEvidence": true},
+        {"key": "m4", "revision": "V1", "text": "送人可以考虑，自己不会买", "keyEvidence": true},
+        {"key": "m5", "revision": "V1", "text": "看看就好"}
+      ],
+      "polls": [
+        {"revision": "V1", "kind": "PREFERENCE", "question": "喜欢这一版吗？", "options": [{"label": "喜欢", "votes": 9}, {"label": "一般", "votes": 2}]},
+        {"revision": "V1", "kind": "PURCHASE_INTENT", "question": "开售后会买吗？", "options": [{"label": "会买", "votes": 3}, {"label": "不会买", "votes": 8}]}
+      ],
+      "expected": {"recommendation": "TRIAL", "acceptable": ["TRIAL"], "mustCite": ["m3", "m4"], "mustNotCite": []}
+    },
+    {
+      "id": "C07", "scenario": "hold_sparse", "split": "dev",
+      "style": {"name": "渔夫帽", "category": "accessory"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "COT-7", "materialName": "棉"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断渔夫帽 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "还行吧"},
+        {"key": "m2", "revision": "V1", "text": "再看看"}
+      ],
+      "polls": [],
+      "expected": {"recommendation": "HOLD", "acceptable": ["HOLD"], "mustCite": [], "mustNotCite": []}
+    },
+    {
+      "id": "C08", "scenario": "hold_polarized", "split": "test",
+      "style": {"name": "高腰阔腿裤", "category": "bottom"},
+      "revisions": [{"key": "V1", "notes": "首版样品", "materialCode": "WOL-8", "materialName": "精纺羊毛"}],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断高腰阔腿裤 V1 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "很好看，显腿长", "keyEvidence": true},
+        {"key": "m2", "revision": "V1", "text": "版型绝了，喜欢"},
+        {"key": "m3", "revision": "V1", "text": "很显瘦，想要"},
+        {"key": "m4", "revision": "V1", "text": "不喜欢，裤腿太宽显矮", "keyEvidence": true},
+        {"key": "m5", "revision": "V1", "text": "有点难看，像睡裤"},
+        {"key": "m6", "revision": "V1", "text": "不适合我，腰太高"}
+      ],
+      "polls": [{"revision": "V1", "kind": "PURCHASE_INTENT", "question": "开售后会买吗？", "options": [{"label": "会买", "votes": 5}, {"label": "不会买", "votes": 5}]}],
+      "expected": {"recommendation": "HOLD", "acceptable": ["HOLD", "TRIAL"], "mustCite": ["m1", "m4"], "mustNotCite": []}
+    },
+    {
+      "id": "C09", "scenario": "version_mix", "split": "dev",
+      "style": {"name": "双排扣风衣", "category": "outerwear"},
+      "revisions": [
+        {"key": "V1", "notes": "首版样品", "materialCode": "GAB-9", "materialName": "华达呢"},
+        {"key": "V2", "notes": "换软面料、缩短袖长", "materialCode": "GAB-9S", "materialName": "软华达呢"}
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断双排扣风衣 V2 是否可以量产",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "V1 面料太硬了"},
+        {"key": "m2", "revision": "V1", "text": "V1 袖子太长，盖住手"},
+        {"key": "m3", "revision": "V1", "text": "V1 线头多"},
+        {"key": "m4", "revision": "V2", "text": "V2 面料软了很多，舒服", "keyEvidence": true},
+        {"key": "m5", "revision": "V2", "text": "V2 袖长合适了", "keyEvidence": true},
+        {"key": "m6", "revision": "V2", "text": "V2 好看，想买", "keyEvidence": true},
+        {"key": "m7", "revision": "V2", "text": "V2 做工干净多了"}
+      ],
+      "polls": [{"revision": "V2", "kind": "PURCHASE_INTENT", "question": "V2 开售后会买吗？", "options": [{"label": "会买", "votes": 8}, {"label": "不会买", "votes": 2}]}],
+      "expected": {"recommendation": "PRODUCE", "acceptable": ["PRODUCE", "TRIAL"], "mustCite": ["m4", "m5", "m6"], "mustNotCite": ["m1", "m2", "m3"]}
+    },
+    {
+      "id": "C10", "scenario": "version_mix", "split": "test",
+      "style": {"name": "连帽卫衣", "category": "top"},
+      "revisions": [
+        {"key": "V1", "notes": "首版样品", "materialCode": "FLC-10", "materialName": "抓绒"},
+        {"key": "V2", "notes": "换毛圈面料，新配色", "materialCode": "TRY-10", "materialName": "毛圈"}
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断连帽卫衣 V2 是否可以量产，需要改哪里",
+      "messages": [
+        {"key": "m1", "revision": "V1", "text": "V1 面料起球严重"},
+        {"key": "m2", "revision": "V1", "text": "V1 面料掉毛"},
+        {"key": "m3", "revision": "V2", "text": "V2 面料好多了，不起球"},
+        {"key": "m4", "revision": "V2", "text": "V2 颜色偏暗，显脏", "keyEvidence": true},
+        {"key": "m5", "revision": "V2", "text": "V2 这个灰色有点土", "keyEvidence": true},
+        {"key": "m6", "revision": "V2", "text": "V2 颜色不显白，换个亮一点的我就买", "keyEvidence": true}
+      ],
+      "polls": [],
+      "expected": {"recommendation": "REVISE", "acceptable": ["REVISE"], "mustCite": ["m4", "m5", "m6"], "mustNotCite": ["m1", "m2"]}
+    }
+  ]
+}

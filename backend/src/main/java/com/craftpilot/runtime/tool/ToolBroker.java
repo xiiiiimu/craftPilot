@@ -6,6 +6,7 @@ import com.craftpilot.evidence.EvidenceService;
 import com.craftpilot.retrieval.RetrievalService;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.mcp.McpClient;
+import com.craftpilot.runtime.metrics.RuntimeMetrics;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.HexFormat;
@@ -32,15 +33,17 @@ public class ToolBroker {
     private final EvidenceService evidence;
     private final RetrievalService retrieval;
     private final McpClient mcp;
+    private final RuntimeMetrics metrics;
 
     public ToolBroker(JdbcClient jdbc, ObjectMapper mapper, BudgetService budget, EvidenceService evidence,
-                      RetrievalService retrieval, McpClient mcp) {
+                      RetrievalService retrieval, McpClient mcp, RuntimeMetrics metrics) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.budget = budget;
         this.evidence = evidence;
         this.retrieval = retrieval;
         this.mcp = mcp;
+        this.metrics = metrics;
     }
 
     public List<Map<String, Object>> toolSchemas() {
@@ -166,9 +169,13 @@ public class ToolBroker {
                 .param("epoch", leaseEpoch).param("remote", providerCallId).update();
 
         Map<String, Object> result;
+        long toolStart = System.nanoTime();
         try {
             result = execute(actor, merchant, surveyId, runId, taskId, (UUID) run.get("ticketId"), toolName, args);
         } catch (RuntimeException ex) {
+            long failedNanos = System.nanoTime() - toolStart;
+            metrics.toolCall(toolName, false, failedNanos);
+            int failedMs = RuntimeMetrics.millis(failedNanos);
             String err = ex instanceof ApiFailure af ? af.code() : ex.getClass().getSimpleName();
             if (err.length() > 60) {
                 err = err.substring(0, 60);
@@ -177,10 +184,10 @@ public class ToolBroker {
                     .contains(af.code())) {
                 jdbc.sql("""
                         UPDATE tool_invocation SET status = 'FAILED_FINAL', error_code = :err,
-                               completed_at = clock_timestamp()
+                               latency_ms = :latency, completed_at = clock_timestamp()
                         WHERE merchant_id = :m AND id = :id
                         """).param("m", merchant).param("id", invocationId)
-                        .param("err", err).update();
+                        .param("err", err).param("latency", failedMs).update();
                 jdbc.sql("""
                         UPDATE tool_dispatch_attempt SET status = 'FAILED', completed_at = clock_timestamp(),
                                error_code = :err WHERE merchant_id = :m AND id = :id
@@ -196,10 +203,11 @@ public class ToolBroker {
                 String body = mapper.writeValueAsString(failed);
                 jdbc.sql("""
                         UPDATE tool_invocation SET status = 'FAILED_FINAL', error_code = :err,
-                               result_json = CAST(:body AS jsonb), completed_at = clock_timestamp()
+                               result_json = CAST(:body AS jsonb), latency_ms = :latency,
+                               completed_at = clock_timestamp()
                         WHERE merchant_id = :m AND id = :id
                         """).param("m", merchant).param("id", invocationId)
-                        .param("err", err).param("body", body).update();
+                        .param("err", err).param("body", body).param("latency", failedMs).update();
                 jdbc.sql("""
                         UPDATE tool_dispatch_attempt SET status = 'FAILED', completed_at = clock_timestamp(),
                                error_code = :err WHERE merchant_id = :m AND id = :id
@@ -210,14 +218,17 @@ public class ToolBroker {
             }
             return failed;
         }
+        long toolNanos = System.nanoTime() - toolStart;
+        metrics.toolCall(toolName, true, toolNanos);
 
         try {
             String body = mapper.writeValueAsString(result);
             jdbc.sql("""
                     UPDATE tool_invocation SET status = 'SUCCEEDED', result_json = CAST(:body AS jsonb),
-                           completed_at = clock_timestamp()
+                           latency_ms = :latency, completed_at = clock_timestamp()
                     WHERE merchant_id = :m AND id = :id
-                    """).param("m", merchant).param("id", invocationId).param("body", body).update();
+                    """).param("m", merchant).param("id", invocationId).param("body", body)
+                    .param("latency", RuntimeMetrics.millis(toolNanos)).update();
             jdbc.sql("""
                     UPDATE tool_dispatch_attempt SET status = 'SUCCEEDED', completed_at = clock_timestamp()
                     WHERE merchant_id = :m AND id = :id
