@@ -52,6 +52,10 @@ jobs:
           cache: maven
           cache-dependency-path: backend/**/pom.xml
 
+      - name: Verify R5 PowerShell demo guards
+        shell: pwsh
+        run: ./scripts/test-r5-demo-guards.ps1
+
       - name: Maven verify with real Testcontainers services
         working-directory: backend
         run: bash ./mvnw -B -ntp clean verify

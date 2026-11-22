@@ -6,7 +6,7 @@
 |---|---|---|
 | `r5-one-click.ps1` | **PASS** | Infra TCP healthy (15432/17379/19000); jar packaged; Compose postgres/redis/minio healthy; no `data/` wipe; no `.env` rewrite |
 | `r5-demo-v1-v2.ps1 -PrintOnly` | **PASS (preview only)** | Parses and prints API steps; no mutations |
-| Interactive V1→V2 on `:18080` | **PARTIAL / NOT RUN this closure** | Backend liveness unreachable during final audit; script correctly refuses mutations and never auto-approves HITL/decision |
+| Interactive V1→V2 on `:18080` | **PARTIAL** | See the November 17 Windows follow-up below for live results and outstanding gates. |
 | Full product V1→V2+HITL path | Covered by **`R5ProviderE2ETest`** (isolated Testcontainers), not by this Windows operator demo |
 
 **Do not mark the Windows interactive demo PASS from PrintOnly alone.**
@@ -104,12 +104,14 @@ Matches the reproducible demo described in M5 / T13:
 |---|---|
 | `-PrintOnly` | Prints `Invoke-RestMethod` / curl sketches; no mutations |
 | Interactive / `-Login` | Calls APIs when backend is up; prompts for password if needed |
-| Backend down | Warns and falls back to print-only |
+| Backend down | Interactive execution exits nonzero. Preview remains available with `-PrintOnly`. |
+| `-UseProviders` | Opts into retrieval and Qwen-VL requests. Use only after authorizing Provider usage and configuring the backend. |
 
 ### Identity isolation
 
 - Bootstrap owner with `CRAFTPILOT_BOOTSTRAP_LOGIN=r5-demo-owner` (or another `r5-demo-*` login) on first `backend-up.ps1`.
-- Script rejects logins that do not start with `r5-demo-`.
+- The demo requires a loopback HTTP origin, a matching authenticated `r5-demo-*` login, and exactly one `Local development` merchant with the `OWNER` role. Use a dedicated identity created by the development bootstrap.
+- Opening the second survey in the same room requires the first to be `CLOSED`. The script sends `Idempotency-Key`, waits for the ten-minute closing window, then submits a fresh close command to advance the state.
 
 ### Manual gates (required)
 
@@ -139,7 +141,7 @@ Operator inspects Ticket / Run / Approval / Decision via GET APIs or UI, then de
 | Vision | Compare may succeed with live keys, or degrade with a clear warning |
 | Approvals | None auto-posted |
 
-**Status: PARTIAL** — PrintOnly verified; interactive API demo not completed against a live backend in this closure (by design for HITL/decision gates).
+**Status: PARTIAL**. The live catalog and feedback workflow and the separate authorized runtime gates are tracked independently below.
 
 ## Recommended full sequence
 
@@ -172,4 +174,13 @@ Related setup: [docker-setup](docker-setup.md), [backend-setup](backend-setup.md
 
 ## Recording a real verification
 
-When you run the scripts locally, update this section with date, host notes, and PASS/FAIL per check. Until then keep **PENDING** — do not mark PASS from authorship alone.
+### Windows follow-up, 2026-11-17
+
+- Windows 11, Java 21.0.11, Maven Wrapper 3.9.16 and Docker Desktop Linux engine 29.8.1. `r5-one-click.ps1` exited successfully. Compose reported PostgreSQL, Redis and MinIO healthy. The backend validated five Flyway migrations and upgraded the existing local schema from V1 to V5.
+- `backend-up.ps1` launched in a separate hidden PowerShell process. `http://localhost:18080/actuator/health/liveness` and `/readiness` returned HTTP 200 with `UP`. Readiness included `db`, `redis`, `minio` and `readinessState`.
+- A new `r5-demo-*` development principal and its own merchant were created using the existing bootstrap. The live script authenticated, created a new room and uploaded synthetic images. Initial upload failed with HTTP 400 because the request lacked multipart `kind`. The script now sends `kind=image`, uses distinct 64×64 PNGs, and keeps Basic authentication out of the native process command line.
+- The real V1 survey returned one issue for the correctly attributed feedback. A read-only tenant-scoped query found the test evidence ID. The Evidence GET returned `ACTIVE` and `evidence/verify` returned it in `validIds`. The scoped Memory GET returned HTTP 200 with an empty list for this new merchant.
+- `r5-demo-v1-v2.ps1` completed in live mode. After the configured closing deadline, the V1 survey reached `CLOSED` and the same room opened a survey covering V1 and V2. V2 feedback was attributed to that survey and revision with one issue. The V2 parent pointed to V1, whose previously recorded snapshot hash remained readable. Demo survey IDs were `3f49add9-08e1-4aad-8113-bcac56a76f5c` (V1) and `5a0e45ec-ddcb-4710-949f-3f973c1ab7f0` (V2).
+- Interactive execution now fails on unavailable health or mismatched attribution. The script verifies both rounds of feedback and checks the V1 snapshot hash, survey history and V2 parent. Three PowerShell guard checks cover preview, remote-origin rejection and failure on an unavailable backend.
+- Local Maven ran 54 tests with zero failures, errors or skips. This included the isolated R4 runtime gates and R5 evaluation, replay, fault and security tests. The final repackage step in the running backend's checkout failed because Windows held the JAR open. Run packaging in a separate checkout while keeping the original backend online. The PR workflow runs `clean verify` on its own checkout.
+- Live Provider calls require authorization to spend quota. The local demo ran with Provider credentials omitted from the backend process. Chat, Embedding and Qwen-VL remain **BLOCKED** for this run. The existing isolated tests exercise Agent Run, Supervisor, Worker Handoff, Join, MCP, HITL, Merchant Decision and Memory. The Windows backend received no approval or decision command from this demo.
