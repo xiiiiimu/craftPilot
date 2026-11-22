@@ -1,0 +1,53 @@
+{
+  "mode" : "live",
+  "settings" : {
+    "mode" : "live",
+    "maxCostUsd" : 1.00,
+    "cases" : "all",
+    "chatBaseUrl" : "https://api.openai.com",
+    "chatKey" : "CONFIGURED",
+    "embeddingsBaseUrl" : "https://api.openai.com",
+    "embeddingsKey" : "CONFIGURED"
+  },
+  "spend" : {
+    "capUsd" : 1.00,
+    "perRunCeilingUsd" : 0.006480,
+    "plannedRuns" : 120,
+    "worstCaseUsd" : 0.777600,
+    "spentUsd" : 0.105627,
+    "enforced" : true,
+    "skippedRuns" : 0,
+    "stopReason" : ""
+  },
+  "startedAt" : "2026-11-22T21:53:45.207573600Z",
+  "finishedAt" : "2026-11-22T22:29:07.189058900Z",
+  "datasets" : {
+    "adversarial-cases" : "v2",
+    "research-cases" : "v2",
+    "opinions" : "v2"
+  },
+  "prompt" : {
+    "id" : "research-agent-r3",
+    "version" : "1",
+    "content_hash" : "sha256:research-agent-r3-v1"
+  },
+  "model" : {
+    "name" : "gpt-4o-mini",
+    "temperature" : 0.1,
+    "inputUsdPerMtok" : 0.15,
+    "outputUsdPerMtok" : 0.6
+  },
+  "researchTokenBudget" : 24000,
+  "repeats" : 3,
+  "git" : {
+    "commit" : "301dd09",
+    "dirty" : false
+  },
+  "machine" : {
+    "os" : "Windows 11 10.0",
+    "arch" : "amd64",
+    "cpus" : 16,
+    "maxHeapMb" : 4022,
+    "java" : "21.0.11"
+  }
+}
