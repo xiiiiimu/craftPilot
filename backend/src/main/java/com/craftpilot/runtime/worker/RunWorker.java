@@ -1,6 +1,10 @@
 package com.craftpilot.runtime.worker;
 
+import com.craftpilot.common.ApiFailure;
 import com.craftpilot.runtime.checkpoint.CheckpointService;
+import com.craftpilot.runtime.lease.LeaseHandle;
+import com.craftpilot.runtime.lease.LeaseHeartbeat;
+import com.craftpilot.runtime.lease.RenewOutcome;
 import com.craftpilot.runtime.workflow.AgentLoop;
 import com.craftpilot.runtime.workflow.SupervisorLoop;
 import java.time.Duration;
@@ -23,12 +27,13 @@ public class RunWorker {
     private final AgentLoop loop;
     private final SupervisorLoop supervisor;
     private final CheckpointService checkpoints;
+    private final LeaseHeartbeat heartbeat;
     private final String workerId;
     private final Duration leaseTtl;
     private final boolean enabled;
 
     public RunWorker(JdbcClient jdbc, TransactionTemplate tx, AgentLoop loop, SupervisorLoop supervisor,
-                     CheckpointService checkpoints,
+                     CheckpointService checkpoints, LeaseHeartbeat heartbeat,
                      @Value("${craftpilot.runtime.worker-id:}") String configuredWorkerId,
                      @Value("${craftpilot.runtime.lease-seconds:30}") long leaseSeconds,
                      @Value("${craftpilot.runtime.worker-enabled:true}") boolean enabled) {
@@ -37,6 +42,7 @@ public class RunWorker {
         this.loop = loop;
         this.supervisor = supervisor;
         this.checkpoints = checkpoints;
+        this.heartbeat = heartbeat;
         this.workerId = configuredWorkerId == null || configuredWorkerId.isBlank()
                 ? "runtime-" + UUID.randomUUID() : configuredWorkerId;
         this.leaseTtl = Duration.ofSeconds(leaseSeconds);
@@ -62,7 +68,10 @@ public class RunWorker {
             if (claim == null) {
                 break;
             }
-            try {
+            // The heartbeat keeps the lease alive for the whole execution (model and tool calls can outlast the
+            // TTL); closing the handle stops it on every exit path: success, failure, cancel, HITL pause, exception.
+            try (LeaseHandle lease = heartbeat.start(claim.runId().toString(), claim.leaseEpoch(),
+                    () -> renewOutcome(claim))) {
                 renew(claim);
                 String workflowId = jdbc.sql("""
                         SELECT workflow_id FROM agent_run WHERE merchant_id = :m AND id = :id
@@ -71,16 +80,16 @@ public class RunWorker {
                 if ("launch-supervise-r4".equals(workflowId)) {
                     UUID taskId = ensureSupervisorTask(claim);
                     supervisor.execute(actor, claim.merchantId(), claim.surveyId(), claim.runId(), taskId,
-                            claim.leaseEpoch());
+                            claim.leaseEpoch(), lease);
                 } else {
                     UUID taskId = ensureResearchTask(claim);
                     loop.executeResearch(actor, claim.merchantId(), claim.surveyId(), claim.runId(), taskId,
-                            claim.leaseEpoch());
+                            claim.leaseEpoch(), lease);
                 }
             } catch (Exception ex) {
                 LOG.warn("runtime_run_failed run={} type={} msg={}", claim.runId(), ex.getClass().getSimpleName(),
                         ex.getMessage());
-                tx.executeWithoutResult(status -> markFailed(claim, ex.getClass().getSimpleName()));
+                tx.executeWithoutResult(status -> markFailed(claim, failureReason(ex)));
             }
             done++;
         }
@@ -134,15 +143,36 @@ public class RunWorker {
     }
 
     public boolean renew(Claim claim) {
+        return renewOutcome(claim) == RenewOutcome.RENEWED;
+    }
+
+    /**
+     * Extends the lease while this worker still owns an active run whose deadline has not passed. Terminal and
+     * paused (WAITING_APPROVAL) runs are never renewed, so a late heartbeat cannot resurrect them.
+     */
+    public RenewOutcome renewOutcome(Claim claim) {
         int updated = jdbc.sql("""
                 UPDATE agent_run
                 SET lease_until = clock_timestamp() + make_interval(secs => :leaseSeconds),
                     updated_at = clock_timestamp()
                 WHERE merchant_id = :m AND id = :id AND lease_owner = :owner AND lease_epoch = :epoch
                   AND lease_until > clock_timestamp()
+                  AND status IN ('RUNNING','RECOVERING','CANCEL_REQUESTED')
+                  AND execution_deadline > clock_timestamp()
                 """).param("m", claim.merchantId()).param("id", claim.runId()).param("owner", workerId)
                 .param("epoch", claim.leaseEpoch()).param("leaseSeconds", leaseTtl.toSeconds()).update();
-        return updated == 1;
+        if (updated == 1) {
+            return RenewOutcome.RENEWED;
+        }
+        boolean ownedButPastDeadline = jdbc.sql("""
+                SELECT 1 FROM agent_run
+                WHERE merchant_id = :m AND id = :id AND lease_owner = :owner AND lease_epoch = :epoch
+                  AND lease_until > clock_timestamp()
+                  AND status IN ('RUNNING','RECOVERING','CANCEL_REQUESTED')
+                  AND execution_deadline <= clock_timestamp()
+                """).param("m", claim.merchantId()).param("id", claim.runId()).param("owner", workerId)
+                .param("epoch", claim.leaseEpoch()).query(Integer.class).optional().isPresent();
+        return ownedButPastDeadline ? RenewOutcome.DEADLINE : RenewOutcome.LOST;
     }
 
     private UUID ensureResearchTask(Claim claim) {
@@ -184,6 +214,11 @@ public class RunWorker {
     private UUID resolveActor(UUID merchant, UUID ticketId) {
         return jdbc.sql("SELECT created_by FROM ticket WHERE merchant_id = :m AND id = :id")
                 .param("m", merchant).param("id", ticketId).query(UUID.class).single();
+    }
+
+    /** Business error code for ApiFailure (e.g. MAX_TURNS_EXCEEDED); exception class name otherwise. */
+    static String failureReason(Throwable ex) {
+        return ex instanceof ApiFailure af && af.code() != null ? af.code() : ex.getClass().getSimpleName();
     }
 
     private void markFailed(Claim claim, String reason) {

@@ -198,7 +198,8 @@ public class ChatModelGateway {
                 .param("error", error).update();
     }
 
-    private static BigDecimal estimateCost(Integer inTok, Integer outTok) {
+    /** Shared by settle (actual usage) and reservation (estimated usage) so both follow the same pricing. */
+    public static BigDecimal estimateCost(Integer inTok, Integer outTok) {
         if (inTok == null && outTok == null) {
             return BigDecimal.valueOf(0.001);
         }

@@ -76,7 +76,13 @@ craftpilot:
     worker-enabled: ${CRAFTPILOT_RUNTIME_WORKER_ENABLED:true}
     worker-id: ${CRAFTPILOT_RUNTIME_WORKER_ID:}
     lease-seconds: ${CRAFTPILOT_RUNTIME_LEASE_SECONDS:30}
+    # 0 = lease-seconds / 3
+    lease-renew-interval-ms: ${CRAFTPILOT_RUNTIME_LEASE_RENEW_INTERVAL_MS:0}
+    lease-heartbeat-threads: ${CRAFTPILOT_RUNTIME_LEASE_HEARTBEAT_THREADS:2}
     poll-interval-ms: ${CRAFTPILOT_RUNTIME_POLL_INTERVAL_MS:700}
+    # Per-run token budgets; evaluation runs may raise these without changing the defaults.
+    research-token-budget: ${CRAFTPILOT_RUNTIME_RESEARCH_TOKEN_BUDGET:8000}
+    supervise-token-budget: ${CRAFTPILOT_RUNTIME_SUPERVISE_TOKEN_BUDGET:16000}
 logging:
   pattern:
     level: "%5p [traceId:%X{traceId:-}]"
