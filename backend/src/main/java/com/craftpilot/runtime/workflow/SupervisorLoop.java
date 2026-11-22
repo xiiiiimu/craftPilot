@@ -5,8 +5,10 @@ import com.craftpilot.evidence.EvidenceDtos.EvidenceVerifyRequest;
 import com.craftpilot.evidence.EvidenceService;
 import com.craftpilot.runtime.checkpoint.CheckpointService;
 import com.craftpilot.runtime.context.ContextBuilder;
+import com.craftpilot.runtime.context.TokenEstimator;
 import com.craftpilot.runtime.decision.MerchantDecisionService;
 import com.craftpilot.runtime.hitl.ApprovalService;
+import com.craftpilot.runtime.lease.LeaseHandle;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.memory.MemoryService;
 import com.craftpilot.runtime.model.ChatModelGateway;
@@ -24,12 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -38,8 +43,10 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class SupervisorLoop {
+    private static final Logger LOG = LoggerFactory.getLogger(SupervisorLoop.class);
     private static final Pattern UUID_RE = Pattern.compile(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+    static final int WORKER_MAX_OUTPUT_TOKENS = 700;
 
     private final JdbcClient jdbc;
     private final ObjectMapper mapper;
@@ -79,14 +86,15 @@ public class SupervisorLoop {
         this.memory = memory;
     }
 
-    public void execute(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId, long leaseEpoch) {
+    public void execute(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId, long leaseEpoch,
+                        LeaseHandle lease) {
         if (isCancelRequested(merchant, runId)) {
             cancel(merchant, surveyId, runId);
             return;
         }
         String node = currentNode(merchant, runId);
         if (node == null || node.isBlank() || "plan".equals(node) || "fanout".equals(node) || "join".equals(node)) {
-            if (!planAndFanout(actor, merchant, surveyId, runId, taskId, leaseEpoch)) {
+            if (!planAndFanout(actor, merchant, surveyId, runId, taskId, leaseEpoch, lease)) {
                 return;
             }
             node = "hitl";
@@ -103,13 +111,13 @@ public class SupervisorLoop {
             }
         }
         if ("memory".equals(node) || "publish".equals(node)) {
-            finishAfterApproval(actor, merchant, surveyId, runId, taskId, leaseEpoch);
+            finishAfterApproval(actor, merchant, surveyId, runId, taskId, leaseEpoch, lease);
         }
     }
 
     private boolean planAndFanout(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
-                                  long leaseEpoch) {
-        if (!stillOwns(merchant, runId, leaseEpoch) || isCancelRequested(merchant, runId)) {
+                                  long leaseEpoch, LeaseHandle lease) {
+        if (!ownsLease(merchant, runId, leaseEpoch, lease, "plan") || isCancelRequested(merchant, runId)) {
             if (isCancelRequested(merchant, runId)) {
                 cancel(merchant, surveyId, runId);
             }
@@ -147,9 +155,9 @@ public class SupervisorLoop {
         ExecutorService pool = Executors.newFixedThreadPool(2);
         try {
             Future<Map<String, Object>> evidenceFuture = pool.submit(() -> runWorker(
-                    actor, merchant, surveyId, runId, evidenceHandoff.id(), leaseEpoch, revisionId));
+                    actor, merchant, surveyId, runId, evidenceHandoff.id(), leaseEpoch, lease, revisionId));
             Future<Map<String, Object>> materialFuture = pool.submit(() -> runWorker(
-                    actor, merchant, surveyId, runId, materialHandoff.id(), leaseEpoch, revisionId));
+                    actor, merchant, surveyId, runId, materialHandoff.id(), leaseEpoch, lease, revisionId));
             Map<String, Object> evidenceResult = evidenceFuture.get(120, TimeUnit.SECONDS);
             Map<String, Object> materialResult = materialFuture.get(120, TimeUnit.SECONDS);
             boolean evidenceOk = Boolean.TRUE.equals(evidenceResult.get("ok"));
@@ -170,9 +178,12 @@ public class SupervisorLoop {
                 return false;
             }
             setNode(merchant, runId, "hitl");
-            return stillOwns(merchant, runId, leaseEpoch) && !isCancelRequested(merchant, runId);
+            return ownsLease(merchant, runId, leaseEpoch, lease, "join") && !isCancelRequested(merchant, runId);
         } catch (Exception ex) {
-            fail(merchant, surveyId, runId, "SUPERVISOR_" + ex.getClass().getSimpleName());
+            Throwable cause = ex instanceof ExecutionException && ex.getCause() != null ? ex.getCause() : ex;
+            String code = cause instanceof ApiFailure af && af.code() != null
+                    ? af.code() : cause.getClass().getSimpleName();
+            fail(merchant, surveyId, runId, "SUPERVISOR_" + code);
             return false;
         } finally {
             pool.shutdownNow();
@@ -180,7 +191,7 @@ public class SupervisorLoop {
     }
 
     private Map<String, Object> runWorker(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID handoffId,
-                                          long leaseEpoch, UUID revisionId) {
+                                          long leaseEpoch, LeaseHandle lease, UUID revisionId) {
         Map<String, Object> handoff = handoffs.load(merchant, handoffId);
         handoffs.markRunning(merchant, handoffId);
         String role = String.valueOf(handoff.get("targetRole"));
@@ -196,41 +207,52 @@ public class SupervisorLoop {
                 .param("m", merchant).param("id", runId).query(UUID.class).single();
 
         for (int turn = 0; turn < 4; turn++) {
-            if (!stillOwns(merchant, runId, leaseEpoch) || isCancelRequested(merchant, runId)) {
+            if (!ownsLease(merchant, runId, leaseEpoch, lease, role + "-turn-start")
+                    || isCancelRequested(merchant, runId)) {
                 return Map.of("ok", false, "error", "CANCELLED_OR_LEASE");
             }
             List<Map<String, Object>> messages = contexts.buildMessages(
                     merchant, surveyId, runId, ticketId, taskId, instructions,
                     "[role=" + role + "] " + objective + " revisionId=" + revisionId);
+            int inputEstimate = TokenEstimator.estimate(mapper, messages, toolSchemas);
             UUID contextId = contexts.persist(merchant, surveyId, runId, taskId, instructions, messages,
-                    toolSchemas, List.of(), Math.max(1, messages.toString().length() / 4), null);
+                    toolSchemas, List.of(), inputEstimate, null);
+            // Budget refusals (MAX_TURNS_EXCEEDED, ...) propagate; planAndFanout records their code.
+            int reserveTokens = inputEstimate + WORKER_MAX_OUTPUT_TOKENS;
+            BigDecimal reserveCost = ChatModelGateway.estimateCost(inputEstimate, WORKER_MAX_OUTPUT_TOKENS);
             UUID reservationId = tx.execute(status ->
-                    budget.reserveModel(merchant, surveyId, runId, 400, BigDecimal.valueOf(0.008)));
-            tx.executeWithoutResult(status -> budget.consumeTurn(merchant, runId));
-            int turnNo = jdbc.sql("""
-                    SELECT COALESCE(MAX(turn_no), 0) + 1 FROM agent_turn
-                    WHERE merchant_id = :m AND run_id = :run AND task_id = :task
-                    """).param("m", merchant).param("run", runId).param("task", taskId)
-                    .query(Integer.class).single();
+                    budget.reserveTurn(merchant, surveyId, runId, reserveTokens, reserveCost));
             UUID turnId = UUID.randomUUID();
-            jdbc.sql("""
-                    INSERT INTO agent_turn
-                    (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
-                    VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
-                    """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
-                    .param("task", taskId).param("n", turnNo).param("ctx", contextId)
-                    .param("summary", role + "-turn-" + turnNo).update();
             InferResult infer;
+            boolean settled = false;
             try {
-                infer = chat.infer(merchant, messages, toolSchemas, 700);
-            } catch (RuntimeException ex) {
-                tx.executeWithoutResult(status -> budget.release(merchant, reservationId, runId));
-                return Map.of("ok", false, "error", "MODEL_" + ex.getClass().getSimpleName());
+                int turnNo = jdbc.sql("""
+                        SELECT COALESCE(MAX(turn_no), 0) + 1 FROM agent_turn
+                        WHERE merchant_id = :m AND run_id = :run AND task_id = :task
+                        """).param("m", merchant).param("run", runId).param("task", taskId)
+                        .query(Integer.class).single();
+                jdbc.sql("""
+                        INSERT INTO agent_turn
+                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
+                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
+                        """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
+                        .param("task", taskId).param("n", turnNo).param("ctx", contextId)
+                        .param("summary", role + "-turn-" + turnNo).update();
+                try {
+                    infer = chat.infer(merchant, messages, toolSchemas, WORKER_MAX_OUTPUT_TOKENS);
+                } catch (RuntimeException ex) {
+                    return Map.of("ok", false, "error", "MODEL_" + ex.getClass().getSimpleName());
+                }
+                tx.executeWithoutResult(status -> budget.settleModel(
+                        merchant, reservationId, runId, infer.modelCallId(), infer.inputTokens(),
+                        infer.outputTokens(), infer.estimatedCostUsd(), infer.usageAccuracy(),
+                        infer.providerRequestId()));
+                settled = true;
+            } finally {
+                if (!settled) {
+                    tx.executeWithoutResult(status -> budget.release(merchant, reservationId, runId));
+                }
             }
-            tx.executeWithoutResult(status -> budget.settleModel(
-                    merchant, reservationId, runId, infer.modelCallId(), infer.inputTokens(),
-                    infer.outputTokens(), infer.estimatedCostUsd(), infer.usageAccuracy(),
-                    infer.providerRequestId()));
             List<Map<String, Object>> toolBatch = new ArrayList<>();
             for (ToolCall call : infer.toolCalls()) {
                 toolBatch.add(Map.of("id", call.providerCallId(), "name", call.toolName(),
@@ -265,6 +287,10 @@ public class SupervisorLoop {
                     } catch (Exception ex) {
                         throw new IllegalStateException(ex);
                     }
+                    if (!ownsLease(merchant, runId, leaseEpoch, lease, role + "-before-tool")
+                            || isCancelRequested(merchant, runId)) {
+                        return Map.of("ok", false, "error", "CANCELLED_OR_LEASE");
+                    }
                     tools.dispatch(actor, merchant, surveyId, runId, taskId, turnId, leaseEpoch, 0,
                             seed.get("name"), seed.get("args"), seed.get("callId"), allowed);
                     checkpoints.appendEvent(merchant, surveyId, runId, "TOOL_GUIDANCE_CONTROLLED", Map.of(
@@ -277,6 +303,10 @@ public class SupervisorLoop {
             }
             if (!infer.toolCalls().isEmpty()) {
                 for (ToolCall call : infer.toolCalls()) {
+                    if (!ownsLease(merchant, runId, leaseEpoch, lease, role + "-before-tool")
+                            || isCancelRequested(merchant, runId)) {
+                        return Map.of("ok", false, "error", "CANCELLED_OR_LEASE");
+                    }
                     tools.dispatch(actor, merchant, surveyId, runId, taskId, turnId, leaseEpoch,
                             call.ordinal(), call.toolName(), call.argumentsJson(), call.providerCallId(),
                             allowed);
@@ -349,8 +379,8 @@ public class SupervisorLoop {
     }
 
     private void finishAfterApproval(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
-                                     long leaseEpoch) {
-        if (!stillOwns(merchant, runId, leaseEpoch) || isCancelRequested(merchant, runId)) {
+                                     long leaseEpoch, LeaseHandle lease) {
+        if (!ownsLease(merchant, runId, leaseEpoch, lease, "finish") || isCancelRequested(merchant, runId)) {
             if (isCancelRequested(merchant, runId)) {
                 cancel(merchant, surveyId, runId);
             }
@@ -519,6 +549,20 @@ public class SupervisorLoop {
                 WHERE merchant_id = :m AND id = :t AND status <> 'COMPLETED'
                 """).param("m", merchant).param("t", ticketId).update();
         checkpoints.appendEvent(merchant, surveyId, runId, "RUN_CANCELLED", Map.of());
+    }
+
+    /** Same contract as AgentLoop.ownsLease: heartbeat state first, then the fenced database check; log only. */
+    private boolean ownsLease(UUID merchant, UUID runId, long epoch, LeaseHandle lease, String checkpoint) {
+        if (lease.isLost()) {
+            LOG.info("runtime_lease_lost run={} epoch={} at={} source=heartbeat state={}", runId, epoch, checkpoint,
+                    lease.state());
+            return false;
+        }
+        if (!stillOwns(merchant, runId, epoch)) {
+            LOG.info("runtime_lease_lost run={} epoch={} at={} source=database", runId, epoch, checkpoint);
+            return false;
+        }
+        return true;
     }
 
     private boolean stillOwns(UUID merchant, UUID runId, long epoch) {

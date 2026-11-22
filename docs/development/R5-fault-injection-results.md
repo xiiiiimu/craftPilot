@@ -22,7 +22,7 @@ Offline stubbed models + Testcontainers. Each scenario records injection point a
 | `mcp_failed_invocations` | 1 |
 | `scenario_mcp_disconnect` | PASS |
 | `budget_status` | FAILED |
-| `budget_reason` | SUPERVISOR_ExecutionException |
+| `budget_reason` | SUPERVISOR_TOKEN_BUDGET_EXCEEDED |
 | `scenario_budget_exhaustion` | PASS |
 | `seq_stress_events` | 40 |
 | `seq_stress_distinct` | 40 |

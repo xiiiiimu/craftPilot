@@ -117,7 +117,7 @@ class R3RuntimeTest {
             }
             byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.getResponseHeaders().add("x-request-id", "req_r3_test_abcdef");
+            exchange.getResponseHeaders().add("x-request-id", "req_r3_test_" + UUID.randomUUID());
             exchange.sendResponseHeaders(status, bytes.length);
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(bytes);

@@ -6,6 +6,7 @@ import com.craftpilot.runtime.skill.SkillRegistry;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,17 @@ public class AssignmentService {
     private final JdbcClient jdbc;
     private final OutboxWriter outbox;
     private final SkillRegistry skills;
+    private final int researchTokenBudget;
+    private final int superviseTokenBudget;
 
-    public AssignmentService(JdbcClient jdbc, OutboxWriter outbox, SkillRegistry skills) {
+    public AssignmentService(JdbcClient jdbc, OutboxWriter outbox, SkillRegistry skills,
+                             @Value("${craftpilot.runtime.research-token-budget:8000}") int researchTokenBudget,
+                             @Value("${craftpilot.runtime.supervise-token-budget:16000}") int superviseTokenBudget) {
         this.jdbc = jdbc;
         this.outbox = outbox;
         this.skills = skills;
+        this.researchTokenBudget = researchTokenBudget;
+        this.superviseTokenBudget = superviseTokenBudget;
     }
 
     @Transactional
@@ -76,7 +83,7 @@ public class AssignmentService {
                 """).param("m", merchant).param("id", runId).param("survey", surveyId)
                 .param("ticket", ticketId).param("attempt", attemptId).param("wf", workflow)
                 .param("agent", agentSpec).param("node", nodeId)
-                .param("tokens", supervise ? 16000 : 8000).update();
+                .param("tokens", supervise ? superviseTokenBudget : researchTokenBudget).update();
         jdbc.sql("""
                 INSERT INTO agent_task
                 (merchant_id, id, survey_id, run_id, logical_key, node_id, agent_spec_id, status)

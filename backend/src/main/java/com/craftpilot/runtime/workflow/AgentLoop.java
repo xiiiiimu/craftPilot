@@ -5,6 +5,8 @@ import com.craftpilot.evidence.EvidenceDtos.EvidenceVerifyRequest;
 import com.craftpilot.evidence.EvidenceService;
 import com.craftpilot.runtime.checkpoint.CheckpointService;
 import com.craftpilot.runtime.context.ContextBuilder;
+import com.craftpilot.runtime.context.TokenEstimator;
+import com.craftpilot.runtime.lease.LeaseHandle;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.model.ChatModelGateway;
 import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
@@ -15,9 +17,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -26,8 +31,13 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AgentLoop {
+    private static final Logger LOG = LoggerFactory.getLogger(AgentLoop.class);
     private static final Pattern UUID_RE = Pattern.compile(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+    static final int MAX_OUTPUT_TOKENS = 800;
+    /** Budget refusals that end the run with their own code as terminal_reason. */
+    static final Set<String> BUDGET_CODES = Set.of(
+            "MAX_TURNS_EXCEEDED", "TOKEN_BUDGET_EXCEEDED", "COST_BUDGET_EXCEEDED");
 
     private final JdbcClient jdbc;
     private final ObjectMapper mapper;
@@ -54,7 +64,7 @@ public class AgentLoop {
     }
 
     public void executeResearch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
-                                long leaseEpoch) {
+                                long leaseEpoch, LeaseHandle lease) {
         String instructions = jdbc.sql("SELECT instructions FROM agent_spec WHERE id = 'research-agent-r3'")
                 .query(String.class).single();
         var ticket = jdbc.sql("""
@@ -69,7 +79,7 @@ public class AgentLoop {
         List<Map<String, Object>> toolSchemas = tools.toolSchemas();
 
         while (true) {
-            if (!stillOwns(merchant, runId, leaseEpoch)) {
+            if (!ownsLease(merchant, runId, leaseEpoch, lease, "turn-start")) {
                 return;
             }
             if (deadlinePassed(merchant, runId)) {
@@ -88,43 +98,72 @@ public class AgentLoop {
 
             List<Map<String, Object>> messages = contexts.buildMessages(
                     merchant, surveyId, runId, ticketId, taskId, instructions, objective);
+            int inputEstimate = TokenEstimator.estimate(mapper, messages, toolSchemas);
             UUID contextId = contexts.persist(merchant, surveyId, runId, taskId, instructions, messages,
-                    toolSchemas, List.of(), estimateTokens(messages), null);
+                    toolSchemas, List.of(), inputEstimate, null);
 
-            UUID reservationId = tx.execute(status ->
-                    budget.reserveModel(merchant, surveyId, runId, 500, BigDecimal.valueOf(0.01)));
-            tx.executeWithoutResult(status -> budget.consumeTurn(merchant, runId));
-
-            UUID turnId = UUID.randomUUID();
-            jdbc.sql("""
-                    INSERT INTO agent_turn
-                    (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
-                    VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
-                    """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
-                    .param("task", taskId).param("n", turnNo).param("ctx", contextId)
-                    .param("summary", "turn-" + turnNo).update();
-            checkpoints.append(merchant, surveyId, runId, "turn-" + turnNo + "-requested", "research",
-                    "REQUESTED", Map.of("turnId", turnId, "turnNo", turnNo));
-
-            InferResult infer;
+            // Reserve what this call can actually spend: the full prompt (re-sent every turn) plus max_tokens.
+            int reserveTokens = inputEstimate + MAX_OUTPUT_TOKENS;
+            BigDecimal reserveCost = ChatModelGateway.estimateCost(inputEstimate, MAX_OUTPUT_TOKENS);
+            UUID reservationId;
             try {
-                infer = chat.infer(merchant, messages, toolSchemas, 800);
-            } catch (RuntimeException ex) {
-                tx.executeWithoutResult(status -> budget.release(merchant, reservationId, runId));
-                jdbc.sql("""
-                        UPDATE agent_turn SET status = 'FAILED', completed_at = clock_timestamp()
-                        WHERE merchant_id = :m AND id = :id
-                        """).param("m", merchant).param("id", turnId).update();
-                fail(merchant, surveyId, runId, ticketId, "MODEL_" + ex.getClass().getSimpleName());
+                reservationId = tx.execute(status ->
+                        budget.reserveTurn(merchant, surveyId, runId, reserveTokens, reserveCost));
+            } catch (ApiFailure ex) {
+                if (!BUDGET_CODES.contains(ex.code())) {
+                    throw ex;
+                }
+                if (isCancelRequested(merchant, runId)) {
+                    cancel(merchant, surveyId, runId, ticketId);
+                } else {
+                    fail(merchant, surveyId, runId, ticketId, ex.code());
+                }
                 return;
             }
 
-            tx.executeWithoutResult(status -> budget.settleModel(
-                    merchant, reservationId, runId, infer.modelCallId(), infer.inputTokens(),
-                    infer.outputTokens(), infer.estimatedCostUsd(), infer.usageAccuracy(),
-                    infer.providerRequestId()));
+            UUID turnId = UUID.randomUUID();
+            InferResult infer;
+            boolean settled = false;
+            try {
+                jdbc.sql("""
+                        INSERT INTO agent_turn
+                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
+                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
+                        """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
+                        .param("task", taskId).param("n", turnNo).param("ctx", contextId)
+                        .param("summary", "turn-" + turnNo).update();
+                checkpoints.append(merchant, surveyId, runId, "turn-" + turnNo + "-requested", "research",
+                        "REQUESTED", Map.of("turnId", turnId, "turnNo", turnNo));
+                if (!ownsLease(merchant, runId, leaseEpoch, lease, "before-model-call")
+                        || isCancelRequested(merchant, runId)) {
+                    return; // the finally block releases the reservation
+                }
 
-            if (!stillOwns(merchant, runId, leaseEpoch) || isCancelRequested(merchant, runId)) {
+                try {
+                    infer = chat.infer(merchant, messages, toolSchemas, MAX_OUTPUT_TOKENS);
+                } catch (RuntimeException ex) {
+                    jdbc.sql("""
+                            UPDATE agent_turn SET status = 'FAILED', completed_at = clock_timestamp()
+                            WHERE merchant_id = :m AND id = :id
+                            """).param("m", merchant).param("id", turnId).update();
+                    fail(merchant, surveyId, runId, ticketId, "MODEL_" + ex.getClass().getSimpleName());
+                    return;
+                }
+
+                tx.executeWithoutResult(status -> budget.settleModel(
+                        merchant, reservationId, runId, infer.modelCallId(), infer.inputTokens(),
+                        infer.outputTokens(), infer.estimatedCostUsd(), infer.usageAccuracy(),
+                        infer.providerRequestId()));
+                settled = true;
+            } finally {
+                if (!settled) {
+                    // release only acts on HELD reservations, so this is safe on every exit path
+                    tx.executeWithoutResult(status -> budget.release(merchant, reservationId, runId));
+                }
+            }
+
+            if (!ownsLease(merchant, runId, leaseEpoch, lease, "after-model-call")
+                    || isCancelRequested(merchant, runId)) {
                 return;
             }
 
@@ -154,7 +193,8 @@ public class AgentLoop {
 
             if (!infer.toolCalls().isEmpty()) {
                 for (ToolCall call : infer.toolCalls()) {
-                    if (!stillOwns(merchant, runId, leaseEpoch) || isCancelRequested(merchant, runId)) {
+                    if (!ownsLease(merchant, runId, leaseEpoch, lease, "before-tool")
+                            || isCancelRequested(merchant, runId)) {
                         return;
                     }
                     Map<String, Object> result = tools.dispatch(actor, merchant, surveyId, runId, taskId, turnId,
@@ -299,6 +339,23 @@ public class AgentLoop {
         checkpoints.appendEvent(merchant, surveyId, runId, "RUN_CANCELLED", Map.of());
     }
 
+    /**
+     * Lease check at a loop checkpoint: the in-memory heartbeat state first (no database round trip), then the
+     * fenced database check. A stale worker only logs and stops; it writes nothing for a run it no longer owns.
+     */
+    private boolean ownsLease(UUID merchant, UUID runId, long epoch, LeaseHandle lease, String checkpoint) {
+        if (lease.isLost()) {
+            LOG.info("runtime_lease_lost run={} epoch={} at={} source=heartbeat state={}", runId, epoch, checkpoint,
+                    lease.state());
+            return false;
+        }
+        if (!stillOwns(merchant, runId, epoch)) {
+            LOG.info("runtime_lease_lost run={} epoch={} at={} source=database", runId, epoch, checkpoint);
+            return false;
+        }
+        return true;
+    }
+
     private boolean stillOwns(UUID merchant, UUID runId, long epoch) {
         return jdbc.sql("""
                 SELECT 1 FROM agent_run
@@ -320,11 +377,6 @@ public class AgentLoop {
                 SELECT 1 FROM agent_run
                 WHERE merchant_id = :m AND id = :run AND execution_deadline <= clock_timestamp()
                 """).param("m", merchant).param("run", runId).query(Integer.class).optional().isPresent();
-    }
-
-    private static int estimateTokens(List<Map<String, Object>> messages) {
-        int chars = messages.stream().mapToInt(m -> String.valueOf(m.get("content")).length()).sum();
-        return Math.max(1, chars / 4);
     }
 
     private static String truncate(String value, int max) {
