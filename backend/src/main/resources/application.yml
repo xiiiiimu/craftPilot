@@ -72,6 +72,16 @@ craftpilot:
     api-key: ${CRAFTPILOT_CHAT_API_KEY:${CRAFTPILOT_OPENAI_API_KEY:}}
     model: ${CRAFTPILOT_CHAT_MODEL:gpt-4o-mini}
     max-retries: ${CRAFTPILOT_CHAT_MAX_RETRIES:2}
+    # USD per 1M tokens, used by both reservation and settle. Add an entry when switching models;
+    # a model without one is priced at the fallback and logged as chat_pricing_fallback at startup.
+    pricing:
+      fallback:
+        input-usd-per-mtok: 0.15
+        output-usd-per-mtok: 0.60
+      models:
+        "[gpt-4o-mini]":
+          input-usd-per-mtok: 0.15
+          output-usd-per-mtok: 0.60
   runtime:
     worker-enabled: ${CRAFTPILOT_RUNTIME_WORKER_ENABLED:true}
     worker-id: ${CRAFTPILOT_RUNTIME_WORKER_ID:}

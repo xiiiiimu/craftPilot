@@ -8,6 +8,7 @@ import com.craftpilot.runtime.context.ContextBuilder;
 import com.craftpilot.runtime.context.TokenEstimator;
 import com.craftpilot.runtime.lease.LeaseHandle;
 import com.craftpilot.runtime.ledger.BudgetService;
+import com.craftpilot.runtime.metrics.RuntimeMetrics;
 import com.craftpilot.runtime.model.ChatModelGateway;
 import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
 import com.craftpilot.runtime.model.ChatModelGateway.ToolCall;
@@ -48,10 +49,11 @@ public class AgentLoop {
     private final BudgetService budget;
     private final CheckpointService checkpoints;
     private final EvidenceService evidence;
+    private final RuntimeMetrics metrics;
 
     public AgentLoop(JdbcClient jdbc, ObjectMapper mapper, TransactionTemplate tx, ChatModelGateway chat,
                      ContextBuilder contexts, ToolBroker tools, BudgetService budget,
-                     CheckpointService checkpoints, EvidenceService evidence) {
+                     CheckpointService checkpoints, EvidenceService evidence, RuntimeMetrics metrics) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.tx = tx;
@@ -61,6 +63,7 @@ public class AgentLoop {
         this.budget = budget;
         this.checkpoints = checkpoints;
         this.evidence = evidence;
+        this.metrics = metrics;
     }
 
     public void executeResearch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
@@ -96,15 +99,18 @@ public class AgentLoop {
                     WHERE merchant_id = :m AND run_id = :run
                     """).param("m", merchant).param("run", runId).query(Integer.class).single();
 
+            long contextStart = System.nanoTime();
             List<Map<String, Object>> messages = contexts.buildMessages(
                     merchant, surveyId, runId, ticketId, taskId, instructions, objective);
             int inputEstimate = TokenEstimator.estimate(mapper, messages, toolSchemas);
             UUID contextId = contexts.persist(merchant, surveyId, runId, taskId, instructions, messages,
                     toolSchemas, List.of(), inputEstimate, null);
+            long contextNanos = System.nanoTime() - contextStart;
+            metrics.contextBuild("research", contextNanos);
 
             // Reserve what this call can actually spend: the full prompt (re-sent every turn) plus max_tokens.
             int reserveTokens = inputEstimate + MAX_OUTPUT_TOKENS;
-            BigDecimal reserveCost = ChatModelGateway.estimateCost(inputEstimate, MAX_OUTPUT_TOKENS);
+            BigDecimal reserveCost = chat.estimateCost(inputEstimate, MAX_OUTPUT_TOKENS);
             UUID reservationId;
             try {
                 reservationId = tx.execute(status ->
@@ -123,15 +129,18 @@ public class AgentLoop {
 
             UUID turnId = UUID.randomUUID();
             InferResult infer;
+            long modelNanos = 0;
             boolean settled = false;
             try {
                 jdbc.sql("""
                         INSERT INTO agent_turn
-                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary)
-                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary)
+                        (merchant_id, id, survey_id, run_id, task_id, turn_no, status, context_id, request_summary,
+                         context_build_ms)
+                        VALUES (:m, :id, :survey, :run, :task, :n, 'REQUESTED', :ctx, :summary, :ctxMs)
                         """).param("m", merchant).param("id", turnId).param("survey", surveyId).param("run", runId)
                         .param("task", taskId).param("n", turnNo).param("ctx", contextId)
-                        .param("summary", "turn-" + turnNo).update();
+                        .param("summary", "turn-" + turnNo).param("ctxMs", RuntimeMetrics.millis(contextNanos))
+                        .update();
                 checkpoints.append(merchant, surveyId, runId, "turn-" + turnNo + "-requested", "research",
                         "REQUESTED", Map.of("turnId", turnId, "turnNo", turnNo));
                 if (!ownsLease(merchant, runId, leaseEpoch, lease, "before-model-call")
@@ -139,13 +148,20 @@ public class AgentLoop {
                     return; // the finally block releases the reservation
                 }
 
+                long modelStart = System.nanoTime();
                 try {
                     infer = chat.infer(merchant, messages, toolSchemas, MAX_OUTPUT_TOKENS);
+                    modelNanos = System.nanoTime() - modelStart;
+                    metrics.modelCall("research", true, modelNanos);
                 } catch (RuntimeException ex) {
+                    long failedNanos = System.nanoTime() - modelStart;
+                    metrics.modelCall("research", false, failedNanos);
                     jdbc.sql("""
-                            UPDATE agent_turn SET status = 'FAILED', completed_at = clock_timestamp()
+                            UPDATE agent_turn SET status = 'FAILED', model_latency_ms = :modelMs,
+                                   completed_at = clock_timestamp()
                             WHERE merchant_id = :m AND id = :id
-                            """).param("m", merchant).param("id", turnId).update();
+                            """).param("m", merchant).param("id", turnId)
+                            .param("modelMs", RuntimeMetrics.millis(failedNanos)).update();
                     fail(merchant, surveyId, runId, ticketId, "MODEL_" + ex.getClass().getSimpleName());
                     return;
                 }
@@ -179,12 +195,14 @@ public class AgentLoop {
                 jdbc.sql("""
                         UPDATE agent_turn SET status = 'RESPONSE_COMMITTED', model_call_id = :call,
                                response_summary = :summary, tool_batch_json = CAST(:tools AS jsonb),
-                               input_tokens = :tin, output_tokens = :tout, completed_at = clock_timestamp()
+                               input_tokens = :tin, output_tokens = :tout, model_latency_ms = :modelMs,
+                               completed_at = clock_timestamp()
                         WHERE merchant_id = :m AND id = :id
                         """).param("m", merchant).param("id", turnId).param("call", infer.modelCallId())
                         .param("summary", truncate(infer.content(), 900))
                         .param("tools", mapper.writeValueAsString(toolBatch))
-                        .param("tin", infer.inputTokens()).param("tout", infer.outputTokens()).update();
+                        .param("tin", infer.inputTokens()).param("tout", infer.outputTokens())
+                        .param("modelMs", RuntimeMetrics.millis(modelNanos)).update();
             } catch (Exception ex) {
                 throw new IllegalStateException(ex);
             }

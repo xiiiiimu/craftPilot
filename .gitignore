@@ -32,6 +32,8 @@ test-results/
 surefire-reports/
 failsafe-reports/
 /.ci-output/
+# Local verification logs (r3-smoke-out.txt, r5-clean-verify.txt, ...)
+/r[0-9]-*.txt
 
 # IDE and local OS metadata
 .idea/

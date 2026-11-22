@@ -91,8 +91,8 @@
 | P0-1 ✅ | 租约只在开始时续一次（30 秒）；模型读超时 60 秒、Supervisor 子 Worker 最多等 120 秒，都长于租约，Run 中途过期后被其他 Worker 重新认领（RECOVERING）或卡在 RUNNING | `RunWorker.claimAndRun`、`AgentLoop` / `SupervisorLoop` 的 `stillOwns` | 耗时和成本里混进了换手和重跑，测不准 | 已改（批次 A）：Run 级心跳 `runtime/lease/LeaseHeartbeat`，共享调度线程池，默认每 租约/3 续一次；续租 SQL 只续活跃且未过 `execution_deadline` 的 Run；续租失败时 `LeaseHandle` 标为 LOST，Loop 在每个检查点先查内存状态再查库，旧 Worker 只写 INFO 日志 `runtime_lease_lost` 后停下；进行中的模型调用不打断。每轮续租方案未采用：单次调用就可能超过租约 |
 | P0-2 ✅ | 每轮只预留 500 token 和 $0.01（子 Worker 400 / $0.008），但上下文每轮都全量重发；原 `estimateTokens` 只数 `content` 字符 ÷4，中文严重低估 | `AgentLoop.executeResearch`、`SupervisorLoop.runWorker` 中的预留 | 预算拦截时机不对，"预留准确度"无意义 | 已改（批次 A）：`runtime/context/TokenEstimator` 按整个请求（含 `tool_calls` 参数和工具 schema）估算，ASCII ÷4、非 ASCII 每字 1 token；预留 = 估算输入 + `max_tokens`，金额用 `ChatModelGateway.estimateCost`（与结算同一套单价）。Run 的 token 预算改为可配置：`craftpilot.runtime.research-token-budget`（默认 8000）、`supervise-token-budget`（默认 16000） |
 | P0-3 ✅ | 失败原因只记成异常类名（`ApiFailure`、`SUPERVISOR_ExecutionException`），Ticket 停在非终态；预留会在三种情况下停在 HELD：Supervisor 两个子 Worker 并发时一方 `consumeTurn` 失败、预留后到结算前抛异常、结算时 `usage_ledger` 撞唯一索引被静默回滚（见下方"待办"） | `AgentLoop` / `SupervisorLoop` 的预留顺序、`RunWorker.markFailed`、`BudgetService.settleModel` | 失败原因分布统计不出来，成本虚高 | 已改（批次 A）：`BudgetService.reserveTurn` 在同一事务内先 `consumeTurn` 再预留，失败整体回滚；预留到结算之间 try/finally 释放；结算写 `usage_ledger` 改为 `ON CONFLICT DO NOTHING`；`terminal_reason` 记录业务错误码（如 `MAX_TURNS_EXCEEDED`、`SUPERVISOR_MAX_TURNS_EXCEEDED`）。原描述"超过最大轮数时预留不释放"不准确：单线程下 `reserveModel` 自己先查轮数，不会泄漏 |
-| P0-4 | 单价写死为 gpt-4o-mini；没有用量时按 $0.001 估算 | `ChatModelGateway.estimateCost` | 换模型后成本全错 | 单价放到 `model_profile` 表或配置里 |
-| P0-5 | 缺少耗时埋点：没有单独记录模型耗时、工具耗时、上下文构建耗时 | `AgentLoop`、`ToolBroker`、`ContextBuilder` | "效率"一类指标大部分算不出来 | 加 Micrometer Timer，并把耗时写入 `agent_turn` / `tool_invocation` |
+| P0-4 ✅ | 单价写死为 gpt-4o-mini；没有用量时按 $0.001 估算 | `ChatModelGateway.estimateCost` | 换模型后成本全错 | 已改（批次 B）：单价放进配置 `craftpilot.chat.pricing`（按模型名，USD/百万 token），由 `runtime/model/ChatPricing` 统一计算，预留和结算都走 `ChatModelGateway.estimateCost`。没放进 `model_profile`：Run 上的 `model_profile_id` 固定是 `chat-default-r3`，实际调用的模型来自 `craftpilot.chat.model`，单价跟着模型名配置才不会错位。没有配置的模型按 `fallback`（默认仍是 gpt-4o-mini 的价格）计算，启动时打 WARN `chat_pricing_fallback`。供应商没返回用量时，按 `TokenEstimator` 估算请求和回复的 token 再计价，`usage_ledger.accuracy` 记为 `ESTIMATED`（原来是 `UNKNOWN` 加固定 $0.001）；`model_call_attempt` 仍只记供应商报的值 |
+| P0-5 ✅ | 缺少耗时埋点：没有单独记录模型耗时、工具耗时、上下文构建耗时 | `AgentLoop`、`ToolBroker`、`ContextBuilder` | "效率"一类指标大部分算不出来 | 已改（批次 B）：迁移 `V6__eval_latency.sql` 给 `agent_turn` 加 `context_build_ms`、`model_latency_ms`，给 `tool_invocation` 加 `latency_ms`；`runtime/metrics/RuntimeMetrics` 提供 Timer `craftpilot.agent.model.latency`（loop、outcome）、`craftpilot.agent.tool.latency`（tool、outcome）、`craftpilot.agent.context.build`（loop）。research 和 Supervisor 子 Worker 都埋了点。模型耗时包含网关内部的重试；上下文构建包含组装消息、估算 token 和写 `context_snapshot` |
 
 **P0 补充说明（批次 A 落地后）**
 
@@ -106,8 +106,8 @@ PostgreSQL 的事务里只要有一条语句报错，整个事务就被标记为
 
 | 优先级 | 位置 | 状况 | 计划 |
 | --- | --- | --- | --- |
-| 高 | `OutboxDispatcher.java:162` | 在 `tx.executeWithoutResult` 里插入 `consumer_receipt` 并吞掉重复键；重复投递时整个事务被回滚，Outbox 状态更新也会丢失 | 批次 A 合并后单独开分支修，先写复现测试 |
-| 待查 | `CheckpointService.java:40` | 吞掉重复键，是否在事务内被调用需逐个调用点确认 | 随上一项一起排查 |
+| 已修 | `OutboxDispatcher.java:162` | 回执插入单独占一个事务，吞掉重复键时静默回滚的只有这条重复回执，ack 在另一个事务里照常执行，所以没有可观察的 bug（原先说"状态更新丢失"不准确）。已改为 ON CONFLICT DO NOTHING，防止以后合并事务后出问题 | fix/outbox-idempotent（PR #10），配了回归测试（不是复现测试） |
+| 已修 | `CheckpointService.java:40` | 调用点外面都没有事务，但 append 本身带 @Transactional，重复 transition_key 时 catch 里的查询会报 25P02，重复调用直接失败 | fix/outbox-idempotent（PR #10），配了复现测试 |
 | 低 | `GroupService`、`SurveyService`、`TriggerService`、`CatalogService` | 业务层的同类写法，不在 Runtime 范围内 | 逐个确认是否在事务内 |
 
 **P1：测完基线再改，用来做前后对比**
@@ -131,6 +131,8 @@ PostgreSQL 的事务里只要有一条语句报错，整个事务就被标记为
 | 检索标注集 | 商家可能问的问题，如"V2 面料的负面反馈" | 每个问题对应的相关证据 ID | 20 个问题 | 50 个问题 |
 | 调研案例集 | 一次完整调查：款式、样品图、反馈、投票 | 标准建议（PRODUCE/REVISE/TRIAL/HOLD）、必须引用的关键证据、允许的合理答案 | 10 个 | 20–30 个 |
 | 对抗案例集 | 刻意设计的难题 | 期望行为（应拒绝、应 HOLD、应失败） | 10 个 | 20 个 |
+
+实际的 v1（批次 B）比上表小：观点 50 条、调研案例 10 个、对抗案例 5 个，检索标注集还没做；全部是手工编写的模拟数据，没有从回放消息里抽取。说明和标注规则见 `backend/src/test/resources/eval/README.md`。
 
 调研案例要覆盖这几种情况，否则建议正确率没有区分度：
 

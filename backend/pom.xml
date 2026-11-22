@@ -14,6 +14,9 @@
     <java.version>21</java.version>
     <minio.version>9.0.4</minio.version>
     <okhttp.version>5.5.1</okhttp.version>
+    <!-- Evaluation tests (@Tag("eval")) stay out of the default build; run them with -Peval. -->
+    <craftpilot.test.groups></craftpilot.test.groups>
+    <craftpilot.test.excludedGroups>eval</craftpilot.test.excludedGroups>
   </properties>
   <dependencies>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
@@ -40,6 +43,8 @@
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-surefire-plugin</artifactId>
       <configuration>
+        <groups>${craftpilot.test.groups}</groups>
+        <excludedGroups>${craftpilot.test.excludedGroups}</excludedGroups>
         <!-- Live provider smoke spends quota and needs local .env keys; run manually. -->
         <excludes>
           <exclude>**/R2ProviderSmokeTest.java</exclude>
@@ -50,4 +55,14 @@
       </configuration>
     </plugin>
   </plugins></build>
+  <profiles>
+    <profile>
+      <!-- mvnw test -Peval : runs only the evaluation tests, writing to target/eval/latest by default. -->
+      <id>eval</id>
+      <properties>
+        <craftpilot.test.groups>eval</craftpilot.test.groups>
+        <craftpilot.test.excludedGroups>none</craftpilot.test.excludedGroups>
+      </properties>
+    </profile>
+  </profiles>
 </project>

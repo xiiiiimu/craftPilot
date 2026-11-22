@@ -29,7 +29,7 @@ public final class TokenEstimator {
         return estimateText(serialized) + PER_MESSAGE_OVERHEAD * (messages == null ? 0 : messages.size());
     }
 
-    static int estimateText(String text) {
+    public static int estimateText(String text) {
         if (text == null || text.isEmpty()) {
             return 0;
         }

@@ -1,6 +1,7 @@
 package com.craftpilot.runtime.model;
 
 import com.craftpilot.common.ApiFailure;
+import com.craftpilot.runtime.context.TokenEstimator;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +37,9 @@ public class ChatModelGateway {
     private final String apiKey;
     private final String model;
     private final int maxRetries;
+    private final ChatPricing pricing;
 
-    public ChatModelGateway(ObjectMapper mapper, JdbcClient jdbc,
+    public ChatModelGateway(ObjectMapper mapper, JdbcClient jdbc, ChatPricing pricing,
                             @Value("${craftpilot.chat.base-url:https://api.openai.com}") String baseUrl,
                             @Value("${craftpilot.chat.api-key:}") String apiKey,
                             @Value("${craftpilot.chat.model:gpt-4o-mini}") String model,
@@ -48,6 +50,7 @@ public class ChatModelGateway {
         this.apiKey = apiKey;
         this.model = model;
         this.maxRetries = Math.max(0, maxRetries);
+        this.pricing = pricing;
         this.http = new OkHttpClient.Builder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .readTimeout(Duration.ofSeconds(60))
@@ -165,9 +168,15 @@ public class ChatModelGateway {
                 }
                 Integer inTok = intOrNull(root.path("usage"), "prompt_tokens");
                 Integer outTok = intOrNull(root.path("usage"), "completion_tokens");
-                String accuracy = (inTok == null && outTok == null) ? "UNKNOWN" : "EXACT";
-                BigDecimal cost = estimateCost(inTok, outTok);
+                // model_call_attempt keeps what the provider reported; the ledger gets an estimate when it is missing.
                 mark(merchant, callId, "SUCCEEDED", 200, providerId, inTok, outTok, null);
+                String accuracy = "EXACT";
+                if (inTok == null && outTok == null) {
+                    accuracy = "ESTIMATED";
+                    inTok = estimateRequestTokens(body);
+                    outTok = estimateResponseTokens(content, toolCalls);
+                }
+                BigDecimal cost = estimateCost(inTok, outTok);
                 return new InferResult(callId, finish, content, List.copyOf(toolCalls), inTok, outTok,
                         providerId, accuracy, cost);
             }
@@ -198,14 +207,26 @@ public class ChatModelGateway {
                 .param("error", error).update();
     }
 
-    /** Shared by settle (actual usage) and reservation (estimated usage) so both follow the same pricing. */
-    public static BigDecimal estimateCost(Integer inTok, Integer outTok) {
-        if (inTok == null && outTok == null) {
-            return BigDecimal.valueOf(0.001);
+    /**
+     * Shared by settle (actual usage) and reservation (estimated usage) so both follow the same pricing: the
+     * configured model's entry in {@code craftpilot.chat.pricing}.
+     */
+    public BigDecimal estimateCost(Integer inTok, Integer outTok) {
+        return pricing.cost(model, inTok == null ? 0 : inTok, outTok == null ? 0 : outTok);
+    }
+
+    @SuppressWarnings("unchecked")
+    private int estimateRequestTokens(Map<String, Object> body) {
+        return TokenEstimator.estimate(mapper, (List<Map<String, Object>>) body.get("messages"),
+                (List<Map<String, Object>>) body.get("tools"));
+    }
+
+    private static int estimateResponseTokens(String content, List<ToolCall> toolCalls) {
+        StringBuilder text = new StringBuilder(content == null ? "" : content);
+        for (ToolCall call : toolCalls) {
+            text.append(call.toolName()).append(call.argumentsJson());
         }
-        double dollars = ((inTok == null ? 0 : inTok) * 0.00000015)
-                + ((outTok == null ? 0 : outTok) * 0.0000006);
-        return BigDecimal.valueOf(Math.max(dollars, 0.000001));
+        return Math.max(1, TokenEstimator.estimateText(text.toString()));
     }
 
     private String safeJson(Object value) {
