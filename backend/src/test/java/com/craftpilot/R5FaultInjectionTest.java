@@ -134,7 +134,7 @@ class R5FaultInjectionTest {
             }
             byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.getResponseHeaders().add("x-request-id", "req_r5_fault_" + chatCalls.get());
+            exchange.getResponseHeaders().add("x-request-id", "req_r5_fault_" + UUID.randomUUID());
             exchange.sendResponseHeaders(200, bytes.length);
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(bytes);

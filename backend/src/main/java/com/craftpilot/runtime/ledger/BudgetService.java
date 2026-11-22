@@ -18,6 +18,22 @@ public class BudgetService {
 
     @Transactional
     public UUID reserveModel(UUID merchant, UUID surveyId, UUID runId, int tokens, BigDecimal costUsd) {
+        return reserve(merchant, surveyId, runId, tokens, costUsd, true);
+    }
+
+    /**
+     * Consumes one turn and reserves the model spend for it atomically: if the reservation is refused (budget,
+     * terminal run) the turn is not counted either, so turns_used only reflects model calls that were allowed.
+     */
+    @Transactional
+    public UUID reserveTurn(UUID merchant, UUID surveyId, UUID runId, int tokens, BigDecimal costUsd) {
+        consumeTurn(merchant, runId);
+        // turns_used already includes this turn, so the max-turns check was done by consumeTurn.
+        return reserve(merchant, surveyId, runId, tokens, costUsd, false);
+    }
+
+    private UUID reserve(UUID merchant, UUID surveyId, UUID runId, int tokens, BigDecimal costUsd,
+                         boolean checkTurns) {
         var row = jdbc.sql("""
                 SELECT token_budget, tokens_used, cost_budget_usd, cost_used_usd, status,
                        max_turns, turns_used, max_tool_calls, tool_calls_used
@@ -34,7 +50,7 @@ public class BudgetService {
         if (row.costUsed().add(costUsd).compareTo(row.costBudget()) > 0) {
             throw ApiFailure.conflict("COST_BUDGET_EXCEEDED", "Cost budget exceeded");
         }
-        if (row.turnsUsed() >= row.maxTurns()) {
+        if (checkTurns && row.turnsUsed() >= row.maxTurns()) {
             throw ApiFailure.conflict("MAX_TURNS_EXCEEDED", "Max turns exceeded");
         }
         UUID id = UUID.randomUUID();
@@ -93,19 +109,19 @@ public class BudgetService {
                        model_call_id = :call
                 WHERE merchant_id = :m AND id = :id
                 """).param("m", merchant).param("id", reservationId).param("call", modelCallId).update();
-        try {
-            jdbc.sql("""
-                    INSERT INTO usage_ledger
-                    (merchant_id, id, survey_id, run_id, kind, provider_request_id, tokens_in, tokens_out,
-                     cost_usd, accuracy, model_call_id)
-                    VALUES (:m, :id, :survey, :run, 'MODEL', :provider, :tin, :tout, :cost, :acc, :call)
-                    """).param("m", merchant).param("id", UUID.randomUUID()).param("survey", surveyId)
-                    .param("run", runId).param("provider", providerRequestId).param("tin", tokensIn)
-                    .param("tout", tokensOut).param("cost", actual).param("acc", accuracy)
-                    .param("call", modelCallId).update();
-        } catch (org.springframework.dao.DuplicateKeyException ignored) {
-            // provider request already ledgered
-        }
+        // A provider request that is already ledgered is skipped without raising: an error inside this
+        // transaction would abort it and PostgreSQL would silently roll back the whole settle on commit.
+        jdbc.sql("""
+                INSERT INTO usage_ledger
+                (merchant_id, id, survey_id, run_id, kind, provider_request_id, tokens_in, tokens_out,
+                 cost_usd, accuracy, model_call_id)
+                VALUES (:m, :id, :survey, :run, 'MODEL', :provider, :tin, :tout, :cost, :acc, :call)
+                ON CONFLICT (merchant_id, kind, provider_request_id) WHERE provider_request_id IS NOT NULL
+                DO NOTHING
+                """).param("m", merchant).param("id", UUID.randomUUID()).param("survey", surveyId)
+                .param("run", runId).param("provider", providerRequestId).param("tin", tokensIn)
+                .param("tout", tokensOut).param("cost", actual).param("acc", accuracy)
+                .param("call", modelCallId).update();
     }
 
     @Transactional

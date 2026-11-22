@@ -140,7 +140,7 @@ class R5EvaluationHarnessTest {
             }
             byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.getResponseHeaders().add("x-request-id", "req_r5_eval_" + call);
+            exchange.getResponseHeaders().add("x-request-id", "req_r5_eval_" + UUID.randomUUID());
             exchange.sendResponseHeaders(200, bytes.length);
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(bytes);
