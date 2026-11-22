@@ -21,6 +21,15 @@ final class EvalOutput {
         return dir;
     }
 
+    /** Dataset version from {@code -Deval.dataset} (default {@code v1}); selects {@code eval/*-<version>.json}. */
+    static String datasetVersion() {
+        String version = System.getProperty("eval.dataset", "v1").trim();
+        if (!version.matches("v\\d+")) {
+            throw new IllegalStateException("eval.dataset must look like v1, v2, ... got '" + version + "'");
+        }
+        return version;
+    }
+
     static void writeCsv(Path file, List<Map<String, Object>> rows) throws IOException {
         StringBuilder out = new StringBuilder();
         if (!rows.isEmpty()) {

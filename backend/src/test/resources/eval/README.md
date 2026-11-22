@@ -1,4 +1,4 @@
-# 评测数据集 v1
+# 评测数据集（v1 / v2）
 
 > **全部是模拟数据。** 群聊消息、款式、投票数都是为评测手工编写的，不来自真实商家或用户，也没有经过第二人复核。
 > 用来跑通评测流程、得到第一版基线；数字只能用于前后对比，不能当作真实业务结论。
@@ -8,8 +8,15 @@
 | `opinions-v1.json` | 带标注的群聊观点（组件评测：观点提取 F1） | 50 条（dev 35 / test 15） |
 | `research-cases-v1.json` | 调研案例：款式、版本、群聊反馈、投票、标准建议 | 10 个（dev 7 / test 3） |
 | `adversarial-cases-v1.json` | 对抗案例：注入、伪造证据、无证据 | 5 个 |
+| `opinions-v2.json` | 同上，加难度 | 200 条（dev 140 / test 60），16 个类别每类 ≥ 10 个标签 |
+| `research-cases-v2.json` | 同上，6 种场景各 5 个 | 30 个（dev 21 / test 9） |
+| `adversarial-cases-v2.json` | 同上，5 种攻击各 2 个 | 10 个（dev 7 / test 3） |
 
-规模比 `docs/evaluation/plan.md` 里写的第一版小（plan：观点 100 条、对抗 10 个），先跑通流程再补。检索标注集（20 个问题）还没有做。
+v1 保留不动，用来复现第一版基线。检索标注集（20 个问题）还没有做。
+
+**v2 相对 v1 加的难度**：口语和网络用语（"yyds""绝绝子"）、错别字（"舒复""精至""颜涩"）、表情、反讽（带引号的"亲民""精致""高级"）、一条消息里同时有正面和负面、多个属性混在一起（最多 4 个标签）。调研案例多了 `PREFERENCE` 投票，用来区分"喜欢"和"会买"；v2 的 ID 从头编号（C01–C30、A01–A10、O001–O200），和 v1 的同名 ID 不是同一个案例。
+
+**dev / test 隔离**：v2 的 test 部分在生成时由作者写出，生成之后调提示词、规则时不再读取 test 内容，只看 dev。另外，v1 的 C08（test）在批次 C 排查问题时被看过一次。
 
 ## 怎么跑
 
@@ -20,7 +27,7 @@ python scripts/eval/eval_report.py target/eval/latest               # 生成 tar
 python scripts/eval/eval_report.py target/eval/after --baseline target/eval/before   # 两次对比
 ```
 
-可选系统属性：`-Deval.outDir=...`、`-Deval.repeats=3`（每个案例跑几次，用来算稳定性）、`-Deval.researchTokenBudget=24000`、`-Deval.stubLatencyMs=50`、`-Deval.cases=C01,A03`（只跑这些案例）。
+可选系统属性：`-Deval.dataset=v2`（默认 v1）、`-Deval.outDir=...`、`-Deval.repeats=3`（每个案例跑几次，用来算稳定性）、`-Deval.researchTokenBudget=24000`、`-Deval.stubLatencyMs=50`、`-Deval.cases=C01,A03`（只跑这些案例）。
 
 `-Peval` 只运行打了 `@Tag("eval")` 的测试；默认构建排除它们。
 

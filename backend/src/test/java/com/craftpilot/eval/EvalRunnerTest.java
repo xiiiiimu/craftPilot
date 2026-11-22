@@ -62,7 +62,8 @@ import tools.jackson.databind.ObjectMapper;
  * run with {@code mvnw test -Peval}. System properties: {@code eval.outDir} (default {@code target/eval/latest}),
  * {@code eval.repeats} (default 1), {@code eval.researchTokenBudget} (default 24000),
  * {@code eval.stubLatencyMs} (default 50), {@code eval.cases} (comma-separated case ids, default all),
- * {@code eval.mode} ({@code stub} default, or {@code live}) and {@code eval.maxCostUsd} (default 0.50).
+ * {@code eval.mode} ({@code stub} default, or {@code live}), {@code eval.maxCostUsd} (default 0.50) and
+ * {@code eval.dataset} (default {@code v1}; selects {@code eval/*-<version>.json}).
  *
  * <p>Live mode calls the real chat and embedding providers configured by {@code CRAFTPILOT_CHAT_*} /
  * {@code CRAFTPILOT_OPENAI_*} (environment or {@code .env}); MCP stays on the local stub server. It refuses to start
@@ -156,8 +157,9 @@ class EvalRunnerTest {
         Instant started = Instant.now();
         Path outDir = EvalOutput.outDir();
         minio.makeBucket(MakeBucketArgs.builder().bucket(BUCKET).build());
-        JsonNode research = readDataset("eval/research-cases-v1.json");
-        JsonNode adversarial = readDataset("eval/adversarial-cases-v1.json");
+        String dataset = EvalOutput.datasetVersion();
+        JsonNode research = readDataset("eval/research-cases-" + dataset + ".json");
+        JsonNode adversarial = readDataset("eval/adversarial-cases-" + dataset + ".json");
 
         List<JsonNode> researchCases = selected(research.path("cases"));
         List<JsonNode> adversarialCases = selected(adversarial.path("cases"));
@@ -202,7 +204,7 @@ class EvalRunnerTest {
         meta.put("datasets", Map.of(
                 "research-cases", research.path("version").asText(),
                 "adversarial-cases", adversarial.path("version").asText(),
-                "opinions", "v1"));
+                "opinions", dataset));
         meta.put("prompt", promptVersion());
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("name", SETTINGS.live() ? CHAT_MODEL : CHAT_MODEL + " (stub)");
