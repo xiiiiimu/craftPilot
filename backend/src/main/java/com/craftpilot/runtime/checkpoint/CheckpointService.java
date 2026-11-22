@@ -27,23 +27,28 @@ public class CheckpointService {
                 WHERE merchant_id = :m AND id = :run FOR UPDATE
                 """).param("m", merchant).param("run", runId).query(Long.class)
                 .optional().orElseThrow(ApiFailure::notFound);
+        // A replayed transition key is skipped without raising: a unique violation would abort this transaction
+        // and the lookup of the existing seq below would fail. Only the transition_key constraint is tolerated.
+        int inserted;
         try {
-            jdbc.sql("""
+            inserted = jdbc.sql("""
                     INSERT INTO checkpoint
                     (merchant_id, id, survey_id, run_id, seq, parent_seq, transition_key, node_id, status, state_json)
                     VALUES (:m, :id, :survey, :run, :seq, :parent, :key, :node, :status, CAST(:state AS jsonb))
+                    ON CONFLICT (merchant_id, run_id, transition_key) DO NOTHING
                     """).param("m", merchant).param("id", UUID.randomUUID()).param("survey", surveyId)
                     .param("run", runId).param("seq", next)
                     .param("parent", next > 1 ? next - 1 : null, Types.BIGINT)
                     .param("key", transitionKey).param("node", nodeId).param("status", status)
                     .param("state", mapper.writeValueAsString(state)).update();
-        } catch (org.springframework.dao.DuplicateKeyException ex) {
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+        if (inserted == 0) {
             return jdbc.sql("""
                     SELECT seq FROM checkpoint WHERE merchant_id = :m AND run_id = :run AND transition_key = :key
                     """).param("m", merchant).param("run", runId).param("key", transitionKey)
                     .query(Long.class).single();
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
         }
         jdbc.sql("""
                 UPDATE agent_run SET checkpoint_head = :seq, current_node = :node, updated_at = clock_timestamp()

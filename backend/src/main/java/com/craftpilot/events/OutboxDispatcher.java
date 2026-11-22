@@ -152,17 +152,14 @@ public class OutboxDispatcher {
             LOG.debug("runtime_outbox_event type={} id={}", claim.eventType(), claim.id());
         }
 
-        tx.executeWithoutResult(status -> {
-            try {
-                jdbc.sql("""
-                        INSERT INTO consumer_receipt (merchant_id, consumer_name, event_id, effect_key)
-                        VALUES (:merchant, 'ws-fanout', :event, :effect)
-                        """).param("merchant", claim.merchantId()).param("event", claim.id())
-                        .param("effect", effectKey).update();
-            } catch (org.springframework.dao.DuplicateKeyException ignored) {
-                // idempotent consumer
-            }
-        });
+        // Idempotent consumer: a receipt already written by another worker is skipped without raising, so the
+        // transaction is never aborted. Only the (merchant_id, consumer_name, event_id) key is tolerated.
+        tx.executeWithoutResult(status -> jdbc.sql("""
+                INSERT INTO consumer_receipt (merchant_id, consumer_name, event_id, effect_key)
+                VALUES (:merchant, 'ws-fanout', :event, :effect)
+                ON CONFLICT (merchant_id, consumer_name, event_id) DO NOTHING
+                """).param("merchant", claim.merchantId()).param("event", claim.id())
+                .param("effect", effectKey).update());
     }
 
     private void ack(Claim claim, boolean success, String error) {
