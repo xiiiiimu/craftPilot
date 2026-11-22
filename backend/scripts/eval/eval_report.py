@@ -18,6 +18,7 @@ from collections import Counter, OrderedDict, defaultdict
 from pathlib import Path
 
 RECOMMENDATIONS = ["PRODUCE", "REVISE", "TRIAL", "HOLD"]
+SKIPPED_BUDGET = "SKIPPED_BUDGET"
 POLARITIES = ["POSITIVE", "NEGATIVE", "NEUTRAL"]
 
 
@@ -34,10 +35,13 @@ def load(directory):
     directory = Path(directory)
     meta_path = directory / "eval-meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+    all_runs = read_csv(directory / "eval-runs.csv")
     return {
         "dir": directory,
         "meta": meta,
-        "runs": read_csv(directory / "eval-runs.csv"),
+        # Runs skipped by the cost cap never started: keep them out of every metric, report them separately.
+        "runs": [r for r in all_runs if r["status"] != SKIPPED_BUDGET],
+        "skipped": [r for r in all_runs if r["status"] == SKIPPED_BUDGET],
         "turns": read_csv(directory / "eval-turns.csv"),
         "opinions": read_csv(directory / "eval-opinions.csv"),
     }
@@ -297,8 +301,9 @@ def sections(data):
     return out
 
 
-def header(meta, runs):
+def header(meta, runs, skipped=()):
     model = meta.get("model", {})
+    spend = meta.get("spend", {})
     prompt = meta.get("prompt", {})
     git = meta.get("git", {})
     machine = meta.get("machine", {})
@@ -316,6 +321,13 @@ def header(meta, runs):
         f"- 时间：{meta.get('startedAt', '?')} → {meta.get('finishedAt', '?')}",
         f"- 本次总花费：{fmt(sum(num(r['cost_usd']) for r in runs), money=True)}",
     ]
+    if spend:
+        enforced = "生效" if spend.get("enforced") else "仅记录，桩模型不花钱"
+        lines.append(f"- 花费上限：${spend.get('capUsd', '?')}（{enforced}）；单个 Run 最坏 ${spend.get('perRunCeilingUsd', '?')}，"
+                     f"计划 {spend.get('plannedRuns', '?')} 个 Run，最坏合计 ${spend.get('worstCaseUsd', '?')}")
+    if skipped:
+        ids = "、".join(sorted({r["case_id"] for r in skipped}))
+        lines.append(f"- **因花费上限跳过 {len(skipped)} 个 Run**（{ids}），不计入下面任何指标")
     return "\n".join(lines)
 
 
@@ -392,7 +404,7 @@ def render(data, baseline=None):
     current = sections(data)
     base = sections(baseline) if baseline else {}
     title_suffix = "（离线桩模型：质量数字只验证流程，不代表模型效果）" if meta.get("mode") == "offline-stub" else ""
-    out = [f"# CraftPilot 评测报告{title_suffix}", "", header(meta, runs), ""]
+    out = [f"# CraftPilot 评测报告{title_suffix}", "", header(meta, runs, data.get("skipped", ())), ""]
     if baseline:
         out += [f"对比基线：`{baseline['dir']}`（git {baseline['meta'].get('git', {}).get('commit', '?')}）", ""]
     names = OrderedDict([("quality", "1. 质量"), ("efficiency", "2. 效率"), ("cost", "3. 成本"),
@@ -425,7 +437,7 @@ def main(argv=None):
 
     data = load(args.run_dir)
     if not data["runs"]:
-        print(f"no eval-runs.csv in {args.run_dir}", file=sys.stderr)
+        print(f"no completed runs in {args.run_dir}/eval-runs.csv", file=sys.stderr)
         return 1
     baseline = load(args.baseline) if args.baseline else None
     output = Path(args.output) if args.output else Path(args.run_dir) / "report.md"

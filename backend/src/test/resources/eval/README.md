@@ -20,9 +20,25 @@ python scripts/eval/eval_report.py target/eval/latest               # 生成 tar
 python scripts/eval/eval_report.py target/eval/after --baseline target/eval/before   # 两次对比
 ```
 
-可选系统属性：`-Deval.outDir=...`、`-Deval.repeats=3`（每个案例跑几次，用来算稳定性）、`-Deval.researchTokenBudget=24000`、`-Deval.stubLatencyMs=50`。
+可选系统属性：`-Deval.outDir=...`、`-Deval.repeats=3`（每个案例跑几次，用来算稳定性）、`-Deval.researchTokenBudget=24000`、`-Deval.stubLatencyMs=50`、`-Deval.cases=C01,A03`（只跑这些案例）。
 
-`-Peval` 只运行打了 `@Tag("eval")` 的测试；默认构建排除它们。目前只有离线桩模型模式：桩模型的建议规则很粗糙（关键词计数），**报告里的质量数字只验证流程，不代表模型效果**。效率、成本、可靠性的数字反映的是系统本身（桩模型固定延迟、用量按字符数 ÷ 4 计）。
+`-Peval` 只运行打了 `@Tag("eval")` 的测试；默认构建排除它们。
+
+**桩模型模式（默认）**：桩模型的建议规则很粗糙（关键词计数），**报告里的质量数字只验证流程，不代表模型效果**。效率、成本、可靠性的数字反映的是系统本身（桩模型固定延迟、用量按字符数 ÷ 4 计）。
+
+**真实模型模式**（会产生费用）：
+
+```powershell
+.\mvnw.cmd -B -ntp test -Peval "-Dtest=EvalRunnerTest" "-Deval.mode=live" "-Deval.cases=C01" "-Deval.outDir=target/eval/live-c01"
+.\mvnw.cmd -B -ntp test -Peval "-Dtest=EvalRunnerTest" "-Deval.mode=live" "-Deval.repeats=3" "-Deval.maxCostUsd=0.50" "-Deval.outDir=target/eval/live-baseline"
+```
+
+- 对话和 Embedding 走 `CRAFTPILOT_CHAT_*` / `CRAFTPILOT_OPENAI_*`（环境变量优先，其次仓库根目录的 `.env`）；MCP 仍用本地桩服务器。
+- 缺 key（对话 key 和 Embedding key）或 `eval.maxCostUsd` 不是正数时拒绝运行。默认上限 $0.50。
+- 开跑前按“计划 Run 数 × 单个 Run 最坏花费”检查，超过上限就拒绝，并提示能跑几个。单个 Run 最坏花费 = 用满 research 预算、8 轮 × 800 输出 token，按当前单价计算。
+- 运行中每跑完一个 Run 累计 `usage_ledger` 的模型花费；再跑一个可能超过上限时停止，剩下的 Run 在 `eval-runs.csv` 里标 `SKIPPED_BUDGET`，`eval-meta.json` 的 `spend` 记录上限和停止原因。报告不把跳过的 Run 算进任何指标。
+- 这是程序里的软上限；真正的硬上限请在模型服务商后台给评测用的 key 设月度花费限额。
+- 只有 `EvalRunnerTest` 调用模型；`OpinionExtractorEvalTest` 不花钱，所以真实模式命令里用 `-Dtest` 只跑运行器。
 
 ## 标注规则（一页说明）
 
