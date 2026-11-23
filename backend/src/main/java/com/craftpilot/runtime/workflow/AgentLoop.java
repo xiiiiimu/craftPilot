@@ -252,13 +252,18 @@ public class AgentLoop {
 
             // final answer path
             Map<String, Object> finalOutput = parseFinal(infer.content());
+            if (finalOutput == null) {
+                fail(merchant, surveyId, runId, ticketId, "FINAL_PARSE_FAILED");
+                return;
+            }
             if (!RECOMMENDATIONS.contains(finalOutput.get("recommendation"))) {
                 fail(merchant, surveyId, runId, ticketId, "INVALID_RECOMMENDATION");
                 return;
             }
             List<UUID> claimed = extractEvidenceIds(finalOutput, infer.content());
+            boolean malformedIds = Boolean.TRUE.equals(finalOutput.remove("malformedEvidenceIds"));
             var verified = evidence.verify(actor, merchant, surveyId, new EvidenceVerifyRequest(claimed));
-            if (!verified.invalidIds().isEmpty() || claimed.isEmpty()) {
+            if (malformedIds || !verified.invalidIds().isEmpty() || claimed.isEmpty()) {
                 fail(merchant, surveyId, runId, ticketId, "EVIDENCE_VALIDATION_FAILED");
                 return;
             }
@@ -268,39 +273,49 @@ public class AgentLoop {
         }
     }
 
+    /**
+     * Parses the final answer, or returns {@code null} when there is no JSON object or it has no textual
+     * recommendation; the caller fails the run with FINAL_PARSE_FAILED instead of assuming HOLD. Evidence ids that
+     * are not UUIDs are flagged ({@code malformedEvidenceIds}) so they fail evidence validation, not parsing.
+     */
     private Map<String, Object> parseFinal(String content) {
-        Map<String, Object> out = new LinkedHashMap<>();
-        if (content == null) {
-            out.put("recommendation", "HOLD");
-            out.put("summary", "");
-            return out;
-        }
-        try {
+        JsonNode node = null;
+        if (content != null) {
             // Structured output makes the whole content one JSON object; the brace scan stays as a fallback for
             // providers that ignore response_format.
             int start = content.indexOf('{');
             int end = content.lastIndexOf('}');
             if (start >= 0 && end > start) {
-                JsonNode node = mapper.readTree(content.substring(start, end + 1));
-                out.put("recommendation", node.path("recommendation").asText("HOLD"));
-                out.put("summary", node.path("summary").asText(content));
-                List<UUID> ids = new ArrayList<>();
-                if (node.path("evidenceIds").isArray()) {
-                    for (JsonNode n : node.path("evidenceIds")) {
-                        ids.add(UUID.fromString(n.asText()));
-                    }
+                try {
+                    node = mapper.readTree(content.substring(start, end + 1));
+                } catch (Exception ignored) {
+                    node = null;
                 }
-                out.put("evidenceIds", ids);
-                metrics.finalParse("research", true);
-                return out;
             }
-        } catch (Exception ignored) {
-            // fall through
         }
-        metrics.finalParse("research", false);
-        out.put("recommendation", "HOLD");
-        out.put("summary", content);
-        out.put("evidenceIds", List.of());
+        if (node == null || !node.isObject() || !node.path("recommendation").isString()) {
+            metrics.finalParse("research", false);
+            return null;
+        }
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("recommendation", node.path("recommendation").asText());
+        out.put("summary", node.path("summary").asText(content));
+        List<UUID> ids = new ArrayList<>();
+        boolean malformed = false;
+        if (node.path("evidenceIds").isArray()) {
+            for (JsonNode n : node.path("evidenceIds")) {
+                try {
+                    ids.add(UUID.fromString(n.asText()));
+                } catch (IllegalArgumentException ex) {
+                    malformed = true;
+                }
+            }
+        }
+        out.put("evidenceIds", ids);
+        if (malformed) {
+            out.put("malformedEvidenceIds", true);
+        }
+        metrics.finalParse("research", true);
         return out;
     }
 

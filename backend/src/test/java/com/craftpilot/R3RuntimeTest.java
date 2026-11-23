@@ -65,7 +65,8 @@ class R3RuntimeTest {
     private static final java.util.concurrent.atomic.AtomicReference<String> activeEvidence =
             new java.util.concurrent.atomic.AtomicReference<>();
     // 0: tool then final; 1: rate limit then ok; 2: bad json final; 3: fabricated evidence;
-    // 4: final with a recommendation outside PRODUCE/REVISE/TRIAL/HOLD
+    // 4: final with a recommendation outside PRODUCE/REVISE/TRIAL/HOLD;
+    // 5: final JSON without a recommendation; 6: final with null content
 
     @Container
     static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
@@ -115,6 +116,11 @@ class R3RuntimeTest {
                 body = finalBody(UUID.randomUUID().toString());
             } else if (mode == 4) {
                 body = finalBody(activeEvidence.get(), "HOLD (split)");
+            } else if (mode == 5) {
+                body = rawFinalBody("\"{\\\"summary\\\":\\\"no recommendation\\\",\\\"evidenceIds\\\":[\\\""
+                        + activeEvidence.get() + "\\\"]}\"");
+            } else if (mode == 6) {
+                body = rawFinalBody("null");
             } else {
                 body = finalBody(activeEvidence.get());
             }
@@ -371,6 +377,24 @@ class R3RuntimeTest {
         chatMode.set(0);
     }
 
+    @Test
+    @Order(8)
+    void unparseableOrIncompleteFinalAnswerFailsTheRun() {
+        for (int mode : new int[] {2, 5, 6}) {
+            chatMode.set(mode);
+            chatCalls.set(0);
+            var created = postTicket(UUID.randomUUID(), "Final parse path " + mode);
+            UUID run = UUID.fromString(created.getBody().path("runId").asText());
+            worker.claimAndRun(1);
+            assertThat(get("/merchants/" + merchant + "/runtime/runs/" + run).getBody().path("status").asText())
+                    .as("mode %d", mode).isEqualTo("FAILED");
+            assertThat(jdbc.sql("SELECT terminal_reason FROM agent_run WHERE merchant_id = :m AND id = :id")
+                    .param("m", merchant).param("id", run).query(String.class).single())
+                    .as("mode %d", mode).isEqualTo("FINAL_PARSE_FAILED");
+        }
+        chatMode.set(0);
+    }
+
     private void assertThatThrownByDuplicateReceipt(UUID eventId) {
         try {
             jdbc.sql("""
@@ -453,6 +477,12 @@ class R3RuntimeTest {
         return "{\"id\":\"chatcmpl-final\",\"choices\":[{\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\""
                 + contentEscaped
                 + "\"}}],\"usage\":{\"prompt_tokens\":30,\"completion_tokens\":40}}";
+    }
+
+    /** A final (non tool-call) completion whose message content is the given raw JSON value. */
+    private static String rawFinalBody(String contentJson) {
+        return "{\"id\":\"chatcmpl-final\",\"choices\":[{\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":"
+                + contentJson + "}}],\"usage\":{\"prompt_tokens\":30,\"completion_tokens\":40}}";
     }
 
     private static String vectorJson(float seed) {
