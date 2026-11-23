@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
  *   <li>{@code craftpilot.agent.model.latency} (loop, outcome): one chat inference, including gateway retries.</li>
  *   <li>{@code craftpilot.agent.tool.latency} (tool, outcome): one tool execution inside the broker.</li>
  *   <li>{@code craftpilot.agent.context.build} (loop): building, estimating and persisting a turn's context.</li>
+ *   <li>{@code craftpilot.agent.final.parse} (loop, outcome): final answers that parsed as JSON vs. fell back.</li>
  * </ul>
  */
 @Component
@@ -39,6 +40,11 @@ public class RuntimeMetrics {
         Timer.builder("craftpilot.agent.context.build")
                 .tag("loop", loop)
                 .register(registry).record(Duration.ofNanos(nanos));
+    }
+
+    public void finalParse(String loop, boolean parsed) {
+        registry.counter("craftpilot.agent.final.parse", "loop", loop, "outcome", parsed ? "parsed" : "fallback")
+                .increment();
     }
 
     public static int millis(long nanos) {

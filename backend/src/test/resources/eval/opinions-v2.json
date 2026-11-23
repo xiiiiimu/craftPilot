@@ -1355,8 +1355,12 @@
       "text": "贵是贵点但物有所值",
       "labels": [
         {
-          "polarity": "POSITIVE",
+          "polarity": "NEGATIVE",
           "attribute": "price"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
         }
       ]
     },
@@ -2389,12 +2393,12 @@
       "text": "有点小贵，不过手感值这个价",
       "labels": [
         {
-          "polarity": "POSITIVE",
-          "attribute": "fabric"
+          "polarity": "NEGATIVE",
+          "attribute": "price"
         },
         {
           "polarity": "POSITIVE",
-          "attribute": "price"
+          "attribute": "fabric"
         }
       ]
     },
@@ -2549,7 +2553,7 @@
       "text": "价格有点高，但是能理解手工成本",
       "labels": [
         {
-          "polarity": "NEUTRAL",
+          "polarity": "NEGATIVE",
           "attribute": "price"
         }
       ]
@@ -2591,6 +2595,12 @@
         }
       ],
       "purchaseIntent": "LOW"
+    }
+  ],
+  "revisions": [
+    {
+      "date": "2026-11-23",
+      "note": "price/shrink/question labeling rules unified; O108, O185, O197 relabelled"
     }
   ]
 }

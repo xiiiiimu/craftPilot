@@ -139,7 +139,7 @@
 
 ## 6. 观点提取（组件评测）
 
-**全部**：200 条，macro-F1 = 0.063
+**全部**：200 条，macro-F1 = 0.062
 **测试集（split=test）**：60 条，macro-F1 = 0.071
 
 | 标签（极性:属性） | 标注数 | 精确率 | 召回率 | F1 |
@@ -147,17 +147,17 @@
 | NEGATIVE:color | 13 | n/a | 0.0% | 0 |
 | NEGATIVE:fabric | 15 | 100.0% | 6.7% | 0.125 |
 | NEGATIVE:overall | 10 | 16.7% | 10.0% | 0.125 |
-| NEGATIVE:price | 17 | n/a | 0.0% | 0 |
+| NEGATIVE:price | 20 | n/a | 0.0% | 0 |
 | NEGATIVE:size | 16 | n/a | 0.0% | 0 |
 | NEGATIVE:workmanship | 12 | n/a | 0.0% | 0 |
 | NEUTRAL:color | 12 | n/a | 0.0% | 0 |
 | NEUTRAL:fabric | 11 | 33.3% | 36.4% | 0.348 |
 | NEUTRAL:overall | 12 | 7.3% | 100.0% | 0.136 |
-| NEUTRAL:price | 15 | n/a | 0.0% | 0 |
+| NEUTRAL:price | 14 | n/a | 0.0% | 0 |
 | POSITIVE:color | 19 | n/a | 0.0% | 0 |
 | POSITIVE:fabric | 17 | n/a | 0.0% | 0 |
-| POSITIVE:overall | 25 | 30.0% | 24.0% | 0.267 |
-| POSITIVE:price | 14 | n/a | 0.0% | 0 |
+| POSITIVE:overall | 26 | 30.0% | 23.1% | 0.261 |
+| POSITIVE:price | 12 | n/a | 0.0% | 0 |
 | POSITIVE:size | 13 | n/a | 0.0% | 0 |
 | POSITIVE:workmanship | 19 | n/a | 0.0% | 0 |
 
@@ -165,12 +165,24 @@
 
 | 标注 \ 预测 | POSITIVE | NEGATIVE | NEUTRAL | MISSING |
 | --- | --- | --- | --- | --- |
-| **POSITIVE** | 6 | 1 | 19 | 81 |
-| **NEGATIVE** | 2 | 2 | 11 | 68 |
-| **NEUTRAL** | 0 | 0 | 16 | 34 |
+| **POSITIVE** | 6 | 1 | 20 | 79 |
+| **NEGATIVE** | 2 | 2 | 11 | 71 |
+| **NEUTRAL** | 0 | 0 | 16 | 33 |
 
 ## 说明
 
 - 端到端耗时 = Run 创建到终态；系统自身开销 = 端到端 − 模型 − 工具 − 上下文构建。
 - lease_epoch 在 HITL resume 和取消时也会 +1，大于 1 不一定是租约换手。
 - 限流重试次数暂未采集：网关在同一条 model_call_attempt 上重试，最终状态会覆盖 429。
+
+## 标注修正（2026-11-23）
+
+抽查后统一了价格、缩水、纯提问的标注规则（写进 `backend/src/test/resources/eval/README.md`），按规则检查了 dev 和 test 的同类标签。只重算了观点提取（第 6 节），Agent 部分（第 1–5 节）没有重跑，数据与修正前相同。
+
+| ID | 切分 | 原文 | 修正前 | 修正后 |
+| --- | --- | --- | --- | --- |
+| O108 | dev | 贵是贵点但物有所值 | POSITIVE:price | NEGATIVE:price + POSITIVE:overall |
+| O185 | dev | 有点小贵，不过手感值这个价 | POSITIVE:fabric + POSITIVE:price | NEGATIVE:price + POSITIVE:fabric |
+| O197 | dev | 价格有点高，但是能理解手工成本 | NEUTRAL:price | NEGATIVE:price |
+
+观点提取 macro-F1：全部 0.063 → 0.062，测试集 0.071 不变（三条都在 dev）。缩水（O014）和纯提问（问价格、问颜色、问面料的条目）原来就符合新规则，没有改。

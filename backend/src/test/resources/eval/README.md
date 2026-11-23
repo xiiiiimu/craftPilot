@@ -1,4 +1,4 @@
-# 评测数据集（v1 / v2）
+# 评测数据集（v1 / v2 / v3）
 
 > **全部是模拟数据。** 群聊消息、款式、投票数都是为评测手工编写的，不来自真实商家或用户，也没有经过第二人复核。
 > 用来跑通评测流程、得到第一版基线；数字只能用于前后对比，不能当作真实业务结论。
@@ -11,12 +11,26 @@
 | `opinions-v2.json` | 同上，加难度 | 200 条（dev 140 / test 60），16 个类别每类 ≥ 10 个标签 |
 | `research-cases-v2.json` | 同上，6 种场景各 5 个 | 30 个（dev 21 / test 9） |
 | `adversarial-cases-v2.json` | 同上，5 种攻击各 2 个 | 10 个（dev 7 / test 3） |
+| `opinions-v3.json` / `research-cases-v3.json` / `adversarial-cases-v3.json` | v3 dev：v2 的全部内容（原 dev + 原 test），调研案例加了 `fold`（1–3） | 200 条 / 30 个 / 10 个，全部 dev |
+| `opinions-v3-test.json` / `research-cases-v3-test.json` / `adversarial-cases-v3-test.json` | v3 test：全新生成 | 60 条 / 30 个（6 种场景各 5 个）/ 6 个 |
 
 v1 保留不动，用来复现第一版基线。检索标注集（20 个问题）还没有做。
 
 **v2 相对 v1 加的难度**：口语和网络用语（"yyds""绝绝子"）、错别字（"舒复""精至""颜涩"）、表情、反讽（带引号的"亲民""精致""高级"）、一条消息里同时有正面和负面、多个属性混在一起（最多 4 个标签）。调研案例多了 `PREFERENCE` 投票，用来区分"喜欢"和"会买"；v2 的 ID 从头编号（C01–C30、A01–A10、O001–O200），和 v1 的同名 ID 不是同一个案例。
 
+**已知偏差**：v2 的反讽句大多用引号标出反话（"亲民""精致""高级""透气""独特"），这会让反讽比真实群聊里更容易识别，反讽相关的 F1 可能偏乐观。
+
+**v2 修订（2026-11-23）**：统一价格、缩水、纯提问的标注规则（见下方"标注规则"），按规则检查了 dev 和 test 的同类标签，改了 O108、O185、O197 三条（都在 dev）。
+
 **dev / test 隔离**：v2 的 test 部分在生成时由作者写出，生成之后调提示词、规则时不再读取 test 内容，只看 dev。另外，v1 的 C08（test）在批次 C 排查问题时被看过一次。
+
+**v3（2026-11-23，第 2 轮）**：
+- v2 的 test 结果在第 1 轮已经看过，所以整体并入 dev（字段 `origin` 记录原来属于 v2 的 dev 还是 test）。
+- 新 test 集在一个单独的步骤里生成，放在单独的 `*-v3-test.json` 文件里，生成后立即提交，之后调提示词时不再读取。新 test 只在提示词 v3 定稿后评测一次。
+- 观点 ID 为 T001–T060，调研案例 ID 为 T01–T30，对抗案例 ID 为 X01–X06，和 v2 的 ID 不重复。
+- 新 test 的对抗案例：注入 2 个，其他 4 种攻击各 1 个。
+- 3 折交叉验证：每个场景的 5 个案例按 2/2/1 分到 3 折，并轮换起点，每折 10 个案例。调参时只看两折的错误，用剩下一折检查过拟合。
+- 运行器读 `<名称>-v3.json`，并在文件存在时同时读 `<名称>-v3-test.json`。`-Deval.split=dev` 时不打开 test 文件，`-Deval.split=test` 时只跑 test。
 
 ## 怎么跑
 
@@ -73,6 +87,9 @@ python scripts/eval/eval_report.py target/eval/after --baseline target/eval/befo
 - 只说喜欢或不喜欢、没有指向具体属性 → `overall`。
 - 购买意愿单独记在 `purchaseIntent`（`HIGH` / `LOW`），不参与 F1；"喜欢但不会买"只标 `POSITIVE:overall`，`purchaseIntent: LOW`。
 - 有明确原因的不买（"太贵不买"）同时标原因属性（`NEGATIVE:price`）。
+- **价格**：只要说了"贵""高""小贵"，就标 `NEGATIVE:price`，即使后面说"值""能理解"。"值这个价"夸的是面料、手工等，标在对应属性上；没有指向具体属性时归 `overall`。例：O185"有点小贵，不过手感值这个价" → `NEGATIVE:price` + `POSITIVE:fabric`；O197"价格有点高，但是能理解手工成本" → `NEGATIVE:price`；O108"贵是贵点但物有所值" → `NEGATIVE:price` + `POSITIVE:overall`。
+- **缩水**一律归 `NEGATIVE:fabric`。
+- **纯提问**（问价格、问颜色、问面料）标 `NEUTRAL`；带了评价或购买意愿的问句（"什么时候补货？上次没抢到"）按评价标。
 - 消息里的版本（V1/V2）以 `revision` 字段为准，正文里提到的版本号只是写法。
 
 ## 调研案例的标注

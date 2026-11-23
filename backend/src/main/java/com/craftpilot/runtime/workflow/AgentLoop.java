@@ -9,6 +9,7 @@ import com.craftpilot.runtime.context.TokenEstimator;
 import com.craftpilot.runtime.lease.LeaseHandle;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.metrics.RuntimeMetrics;
+import com.craftpilot.runtime.release.AgentSpecResolver;
 import com.craftpilot.runtime.model.ChatModelGateway;
 import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
 import com.craftpilot.runtime.model.ChatModelGateway.ToolCall;
@@ -24,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -36,6 +38,23 @@ public class AgentLoop {
     private static final Pattern UUID_RE = Pattern.compile(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     static final int MAX_OUTPUT_TOKENS = 800;
+    /** The only recommendations a final answer may carry; anything else fails the run (INVALID_RECOMMENDATION). */
+    static final List<String> RECOMMENDATIONS = List.of("PRODUCE", "REVISE", "TRIAL", "HOLD");
+    /**
+     * P1-3: strict JSON Schema for the final answer instead of scraping the first '{' .. last '}'. Off by default
+     * ({@code craftpilot.runtime.structured-final-output}): with gpt-4o-mini, sending it together with tools made the
+     * model keep calling tools until a budget ran out (evaluation, dataset v2 dev split).
+     */
+    static final Map<String, Object> FINAL_FORMAT = Map.of("type", "json_schema", "json_schema", Map.of(
+            "name", "research_final", "strict", true, "schema", Map.of(
+                    "type", "object",
+                    "properties", Map.of(
+                            "recommendation", Map.of("type", "string",
+                                    "enum", RECOMMENDATIONS),
+                            "summary", Map.of("type", "string"),
+                            "evidenceIds", Map.of("type", "array", "items", Map.of("type", "string"))),
+                    "required", List.of("recommendation", "summary", "evidenceIds"),
+                    "additionalProperties", false)));
     /** Budget refusals that end the run with their own code as terminal_reason. */
     static final Set<String> BUDGET_CODES = Set.of(
             "MAX_TURNS_EXCEEDED", "TOKEN_BUDGET_EXCEEDED", "COST_BUDGET_EXCEEDED");
@@ -50,10 +69,14 @@ public class AgentLoop {
     private final CheckpointService checkpoints;
     private final EvidenceService evidence;
     private final RuntimeMetrics metrics;
+    private final AgentSpecResolver specs;
+    private final boolean structuredFinalOutput;
 
     public AgentLoop(JdbcClient jdbc, ObjectMapper mapper, TransactionTemplate tx, ChatModelGateway chat,
                      ContextBuilder contexts, ToolBroker tools, BudgetService budget,
-                     CheckpointService checkpoints, EvidenceService evidence, RuntimeMetrics metrics) {
+                     CheckpointService checkpoints, EvidenceService evidence, RuntimeMetrics metrics,
+                     AgentSpecResolver specs,
+                     @Value("${craftpilot.runtime.structured-final-output:false}") boolean structuredFinalOutput) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.tx = tx;
@@ -64,12 +87,13 @@ public class AgentLoop {
         this.checkpoints = checkpoints;
         this.evidence = evidence;
         this.metrics = metrics;
+        this.specs = specs;
+        this.structuredFinalOutput = structuredFinalOutput;
     }
 
     public void executeResearch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
                                 long leaseEpoch, LeaseHandle lease) {
-        String instructions = jdbc.sql("SELECT instructions FROM agent_spec WHERE id = 'research-agent-r3'")
-                .query(String.class).single();
+        String instructions = specs.research().instructions();
         var ticket = jdbc.sql("""
                 SELECT r.ticket_id, t.objective
                 FROM agent_run r JOIN ticket t ON t.merchant_id = r.merchant_id AND t.id = r.ticket_id
@@ -150,7 +174,8 @@ public class AgentLoop {
 
                 long modelStart = System.nanoTime();
                 try {
-                    infer = chat.infer(merchant, messages, toolSchemas, MAX_OUTPUT_TOKENS);
+                    infer = chat.infer(merchant, messages, toolSchemas, MAX_OUTPUT_TOKENS,
+                            structuredFinalOutput ? FINAL_FORMAT : null);
                     modelNanos = System.nanoTime() - modelStart;
                     metrics.modelCall("research", true, modelNanos);
                 } catch (RuntimeException ex) {
@@ -227,9 +252,18 @@ public class AgentLoop {
 
             // final answer path
             Map<String, Object> finalOutput = parseFinal(infer.content());
+            if (finalOutput == null) {
+                fail(merchant, surveyId, runId, ticketId, "FINAL_PARSE_FAILED");
+                return;
+            }
+            if (!RECOMMENDATIONS.contains(finalOutput.get("recommendation"))) {
+                fail(merchant, surveyId, runId, ticketId, "INVALID_RECOMMENDATION");
+                return;
+            }
             List<UUID> claimed = extractEvidenceIds(finalOutput, infer.content());
+            boolean malformedIds = Boolean.TRUE.equals(finalOutput.remove("malformedEvidenceIds"));
             var verified = evidence.verify(actor, merchant, surveyId, new EvidenceVerifyRequest(claimed));
-            if (!verified.invalidIds().isEmpty() || claimed.isEmpty()) {
+            if (malformedIds || !verified.invalidIds().isEmpty() || claimed.isEmpty()) {
                 fail(merchant, surveyId, runId, ticketId, "EVIDENCE_VALIDATION_FAILED");
                 return;
             }
@@ -239,35 +273,49 @@ public class AgentLoop {
         }
     }
 
+    /**
+     * Parses the final answer, or returns {@code null} when there is no JSON object or it has no textual
+     * recommendation; the caller fails the run with FINAL_PARSE_FAILED instead of assuming HOLD. Evidence ids that
+     * are not UUIDs are flagged ({@code malformedEvidenceIds}) so they fail evidence validation, not parsing.
+     */
     private Map<String, Object> parseFinal(String content) {
-        Map<String, Object> out = new LinkedHashMap<>();
-        if (content == null) {
-            out.put("recommendation", "HOLD");
-            out.put("summary", "");
-            return out;
-        }
-        try {
+        JsonNode node = null;
+        if (content != null) {
+            // Structured output makes the whole content one JSON object; the brace scan stays as a fallback for
+            // providers that ignore response_format.
             int start = content.indexOf('{');
             int end = content.lastIndexOf('}');
             if (start >= 0 && end > start) {
-                JsonNode node = mapper.readTree(content.substring(start, end + 1));
-                out.put("recommendation", node.path("recommendation").asText("HOLD"));
-                out.put("summary", node.path("summary").asText(content));
-                List<UUID> ids = new ArrayList<>();
-                if (node.path("evidenceIds").isArray()) {
-                    for (JsonNode n : node.path("evidenceIds")) {
-                        ids.add(UUID.fromString(n.asText()));
-                    }
+                try {
+                    node = mapper.readTree(content.substring(start, end + 1));
+                } catch (Exception ignored) {
+                    node = null;
                 }
-                out.put("evidenceIds", ids);
-                return out;
             }
-        } catch (Exception ignored) {
-            // fall through
         }
-        out.put("recommendation", "HOLD");
-        out.put("summary", content);
-        out.put("evidenceIds", List.of());
+        if (node == null || !node.isObject() || !node.path("recommendation").isString()) {
+            metrics.finalParse("research", false);
+            return null;
+        }
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("recommendation", node.path("recommendation").asText());
+        out.put("summary", node.path("summary").asText(content));
+        List<UUID> ids = new ArrayList<>();
+        boolean malformed = false;
+        if (node.path("evidenceIds").isArray()) {
+            for (JsonNode n : node.path("evidenceIds")) {
+                try {
+                    ids.add(UUID.fromString(n.asText()));
+                } catch (IllegalArgumentException ex) {
+                    malformed = true;
+                }
+            }
+        }
+        out.put("evidenceIds", ids);
+        if (malformed) {
+            out.put("malformedEvidenceIds", true);
+        }
+        metrics.finalParse("research", true);
         return out;
     }
 
