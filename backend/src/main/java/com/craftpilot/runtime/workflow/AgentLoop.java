@@ -16,6 +16,7 @@ import com.craftpilot.runtime.model.ChatModelGateway.ToolCall;
 import com.craftpilot.runtime.tool.ToolBroker;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,12 +72,15 @@ public class AgentLoop {
     private final RuntimeMetrics metrics;
     private final AgentSpecResolver specs;
     private final boolean structuredFinalOutput;
+    /** Round 3: check pollReadings / concerns against the tool results, one corrective turn (default off). */
+    private final boolean finalConsistencyCheck;
 
     public AgentLoop(JdbcClient jdbc, ObjectMapper mapper, TransactionTemplate tx, ChatModelGateway chat,
                      ContextBuilder contexts, ToolBroker tools, BudgetService budget,
                      CheckpointService checkpoints, EvidenceService evidence, RuntimeMetrics metrics,
                      AgentSpecResolver specs,
-                     @Value("${craftpilot.runtime.structured-final-output:false}") boolean structuredFinalOutput) {
+                     @Value("${craftpilot.runtime.structured-final-output:false}") boolean structuredFinalOutput,
+                     @Value("${craftpilot.runtime.final-consistency-check:false}") boolean finalConsistencyCheck) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.tx = tx;
@@ -89,6 +93,7 @@ public class AgentLoop {
         this.metrics = metrics;
         this.specs = specs;
         this.structuredFinalOutput = structuredFinalOutput;
+        this.finalConsistencyCheck = finalConsistencyCheck;
     }
 
     public void executeResearch(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
@@ -260,6 +265,13 @@ public class AgentLoop {
                 fail(merchant, surveyId, runId, ticketId, "INVALID_RECOMMENDATION");
                 return;
             }
+            if (finalConsistencyCheck
+                    && !consistent(merchant, surveyId, runId, ticketId, turnId, finalOutput)) {
+                if (isTerminal(merchant, runId)) {
+                    return; // second inconsistent answer: the run already failed
+                }
+                continue; // one corrective turn
+            }
             List<UUID> claimed = extractEvidenceIds(finalOutput, infer.content());
             boolean malformedIds = Boolean.TRUE.equals(finalOutput.remove("malformedEvidenceIds"));
             var verified = evidence.verify(actor, merchant, surveyId, new EvidenceVerifyRequest(claimed));
@@ -312,11 +324,121 @@ public class AgentLoop {
             }
         }
         out.put("evidenceIds", ids);
+        // round 3 structured fields, kept as given (checked only when the consistency check is on)
+        for (String key : List.of("pollReadings", "concerns")) {
+            if (node.path(key).isArray()) {
+                out.put(key, mapper.convertValue(node.path(key), List.class));
+            }
+        }
         if (malformed) {
             out.put("malformedEvidenceIds", true);
         }
         metrics.finalParse("research", true);
         return out;
+    }
+
+    /**
+     * Round 3 consistency check. Returns true when the answer may proceed to evidence validation. On the first
+     * inconsistent answer it stores the correction on this turn (shown to the model by the next context build) and
+     * returns false; on a second one it fails the run with INCONSISTENT_FINAL. The outcome is recorded as a
+     * FINAL_CONSISTENCY runtime event: PASSED, CORRECTED_SAME_RECOMMENDATION (only the numbers changed),
+     * CORRECTED_CHANGED_RECOMMENDATION (the conclusion changed too) or FAILED.
+     */
+    private boolean consistent(UUID merchant, UUID surveyId, UUID runId, UUID ticketId, UUID turnId,
+                               Map<String, Object> finalOutput) {
+        JsonNode answer = mapper.valueToTree(finalOutput);
+        List<String> problems = FinalConsistencyCheck.check(answer, seenPolls(merchant, runId),
+                concernAuthors(merchant, surveyId, FinalConsistencyCheck.concernEvidenceIds(answer)));
+        String recommendation = String.valueOf(finalOutput.get("recommendation"));
+        String firstRecommendation = jdbc.sql("""
+                SELECT consistency_feedback ->> 'firstRecommendation' FROM agent_turn
+                WHERE merchant_id = :m AND run_id = :run AND consistency_feedback IS NOT NULL
+                ORDER BY turn_no LIMIT 1
+                """).param("m", merchant).param("run", runId).query(String.class).optional().orElse(null);
+        boolean retried = firstRecommendation != null;
+
+        if (!problems.isEmpty() && !retried) {
+            Map<String, Object> feedback = new LinkedHashMap<>();
+            feedback.put("message", correction(problems));
+            feedback.put("firstRecommendation", recommendation);
+            feedback.put("problems", problems);
+            jdbc.sql("""
+                    UPDATE agent_turn SET consistency_feedback = CAST(:feedback AS jsonb)
+                    WHERE merchant_id = :m AND id = :id
+                    """).param("m", merchant).param("id", turnId).param("feedback", write(feedback)).update();
+            checkpoints.appendEvent(merchant, surveyId, runId, "FINAL_CONSISTENCY_RETRY", Map.of(
+                    "firstRecommendation", recommendation, "problems", problems));
+            metrics.finalConsistency("research", "RETRY");
+            return false;
+        }
+        String outcome = !problems.isEmpty() ? "FAILED"
+                : !retried ? "PASSED"
+                : firstRecommendation.equals(recommendation) ? "CORRECTED_SAME_RECOMMENDATION"
+                : "CORRECTED_CHANGED_RECOMMENDATION";
+        Map<String, Object> event = new LinkedHashMap<>();
+        event.put("outcome", outcome);
+        event.put("recommendation", recommendation);
+        if (retried) {
+            event.put("firstRecommendation", firstRecommendation);
+        }
+        event.put("problems", problems);
+        checkpoints.appendEvent(merchant, surveyId, runId, "FINAL_CONSISTENCY", event);
+        metrics.finalConsistency("research", outcome);
+        if (!problems.isEmpty()) {
+            fail(merchant, surveyId, runId, ticketId, "INCONSISTENT_FINAL");
+            return false;
+        }
+        return true;
+    }
+
+    private static String correction(List<String> problems) {
+        StringBuilder text = new StringBuilder(
+                "Your final answer failed the consistency check and was not accepted:");
+        for (String problem : problems) {
+            text.append("\n- ").append(problem);
+        }
+        return text.append("\nRe-read the survey_get_stats result and the evidence, fix pollReadings and concerns, ")
+                .append("make sure the recommendation and summary follow from the corrected numbers, and return the ")
+                .append("complete final JSON object again.").toString();
+    }
+
+    /** Polls returned by this run's successful survey_get_stats calls; a later result for the same poll wins. */
+    private List<JsonNode> seenPolls(UUID merchant, UUID runId) {
+        Map<String, JsonNode> polls = new LinkedHashMap<>();
+        for (String body : jdbc.sql("""
+                SELECT result_json::text FROM tool_invocation
+                WHERE merchant_id = :m AND run_id = :run AND tool_name = 'survey_get_stats'
+                  AND status = 'SUCCEEDED' AND result_json IS NOT NULL
+                ORDER BY created_at, ordinal
+                """).param("m", merchant).param("run", runId).query(String.class).list()) {
+            for (JsonNode poll : mapper.readTree(body).path("polls")) {
+                polls.put(poll.path("pollId").asText(), poll);
+            }
+        }
+        return new ArrayList<>(polls.values());
+    }
+
+    /** Author of each cited opinion evidence of this survey (other evidence has no author and is left out). */
+    private Map<UUID, UUID> concernAuthors(UUID merchant, UUID surveyId, List<UUID> evidenceIds) {
+        if (evidenceIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<UUID, UUID> authors = new HashMap<>();
+        jdbc.sql("""
+                SELECT e.id, o.author_id FROM evidence_ref e
+                JOIN feedback_opinion o ON o.merchant_id = e.merchant_id AND o.id = e.source_id
+                WHERE e.merchant_id = :m AND e.survey_id = :survey AND e.source_type = 'FEEDBACK_OPINION'
+                  AND e.visibility = 'ACTIVE' AND e.id IN (:ids)
+                """).param("m", merchant).param("survey", surveyId).param("ids", List.copyOf(Set.copyOf(evidenceIds)))
+                .query((rs, i) -> Map.entry(rs.getObject("id", UUID.class), rs.getObject("author_id", UUID.class)))
+                .list().forEach(e -> authors.put(e.getKey(), e.getValue()));
+        return authors;
+    }
+
+    private boolean isTerminal(UUID merchant, UUID runId) {
+        return jdbc.sql("SELECT status FROM agent_run WHERE merchant_id = :m AND id = :run")
+                .param("m", merchant).param("run", runId).query(String.class).optional()
+                .map(status -> List.of("FAILED", "SUCCEEDED", "CANCELLED").contains(status)).orElse(true);
     }
 
     private List<UUID> extractEvidenceIds(Map<String, Object> finalOutput, String content) {

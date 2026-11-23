@@ -57,7 +57,8 @@ public class ContextBuilder {
 
         List<Map<String, Object>> history = taskId == null
                 ? jdbc.sql("""
-                        SELECT turn_no, response_summary, tool_batch_json::text AS tools
+                        SELECT turn_no, response_summary, tool_batch_json::text AS tools,
+                               consistency_feedback ->> 'message' AS feedback
                         FROM agent_turn
                         WHERE merchant_id = :m AND run_id = :run AND status = 'RESPONSE_COMMITTED'
                         ORDER BY turn_no
@@ -67,10 +68,12 @@ public class ContextBuilder {
                             row.put("turn", rs.getInt("turn_no"));
                             row.put("response", rs.getString("response_summary"));
                             row.put("tools", rs.getString("tools"));
+                            row.put("feedback", rs.getString("feedback"));
                             return row;
                         }).list()
                 : jdbc.sql("""
-                        SELECT turn_no, response_summary, tool_batch_json::text AS tools
+                        SELECT turn_no, response_summary, tool_batch_json::text AS tools,
+                               consistency_feedback ->> 'message' AS feedback
                         FROM agent_turn
                         WHERE merchant_id = :m AND run_id = :run AND task_id = :task
                           AND status = 'RESPONSE_COMMITTED'
@@ -81,6 +84,7 @@ public class ContextBuilder {
                             row.put("turn", rs.getInt("turn_no"));
                             row.put("response", rs.getString("response_summary"));
                             row.put("tools", rs.getString("tools"));
+                            row.put("feedback", rs.getString("feedback"));
                             return row;
                         }).list();
 
@@ -129,6 +133,15 @@ public class ContextBuilder {
                         "role", "tool",
                         "tool_call_id", tr.get("providerCallId"),
                         "content", String.valueOf(tr.get("content"))));
+            }
+            // Round 3: a final answer rejected by the consistency check (no tool calls) is shown again together with
+            // the correction, so the next turn can fix it.
+            Object feedback = turn.get("feedback");
+            if (feedback != null) {
+                if (response != null && !response.isBlank() && !"null".equals(response)) {
+                    messages.add(Map.of("role", "assistant", "content", response));
+                }
+                messages.add(Map.of("role", "user", "content", feedback.toString()));
             }
         }
         return messages;

@@ -249,6 +249,17 @@ class ResearchReleaseV2Test {
     }
 
     @Test
+    void promptV4IsStoredAsARevisionWithoutChangingTheDefault() {
+        AgentSpecResolver.ResolvedSpec v4 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4"));
+        assertThat(v4.contentHash()).isEqualTo("sha256:research-agent-r3-v4");
+        assertThat(v4.instructions()).startsWith("You are CraftPilot research agent.")
+                .contains("pollReadings", "concerns", "mentionedBy", "Buying as a gift counts as buying")
+                // v4 judges purchase intent as a whole instead of triggering TRIAL on keywords
+                .doesNotContain("\"用不上\"", "\"放不下\"");
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
     void researchRunUsesTheLatestPromptAndAsksForStructuredFinalOutput() throws Exception {
         double parsedBefore = meters.counter("craftpilot.agent.final.parse", "loop", "research", "outcome", "parsed")
                 .count();
