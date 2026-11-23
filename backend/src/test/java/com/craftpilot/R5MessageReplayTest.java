@@ -67,8 +67,13 @@ class R5MessageReplayTest {
     private static final String MINIO_PASSWORD = UUID.randomUUID().toString();
     private static final String BUCKET = "craftpilot-r5-replay";
     private static final String PASSWORD = "r5-replay-" + UUID.randomUUID();
-    private static final Path RESULTS = Path.of("..").toAbsolutePath().normalize()
-            .resolve("docs/development/R5-1200-message-replay-results.md");
+    /**
+     * Results go to target/ so a normal build does not touch the checked-in report; pass
+     * {@code -Dreplay.writeDocs=true} to refresh docs/development/ on purpose.
+     */
+    private static final Path RESULTS = Boolean.getBoolean("replay.writeDocs")
+            ? Path.of("..").toAbsolutePath().normalize().resolve("docs/development/R5-1200-message-replay-results.md")
+            : Path.of("target/R5-1200-message-replay-results.md").toAbsolutePath();
     private static final Map<String, String> METRICS = new LinkedHashMap<>();
 
     @Container
