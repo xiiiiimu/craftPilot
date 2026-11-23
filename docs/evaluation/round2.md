@@ -77,7 +77,7 @@ gpt-4o 用 v3a 跑 dev（repeats=1）：66.7%，第 1 折 6/10，TRIAL 3/5、两
 
 - mini 的错误：PRODUCE 被判成 TRIAL（3 次），TRIAL 被判成 HOLD（4 次），hold_sparse 被判成 TRIAL（3 次）或被证据校验拒绝（3 次）。
 - **gpt-4o 更保守**：v2 是按 mini 调出来的。gpt-4o 把 12/15 个 REVISE 和 7/15 个 PRODUCE 判成了 HOLD。它的关键证据召回更高、速度快近一倍，但花费是 15 倍。
-- gpt-4o 有一次直接输出了提示词里的小标题 `HOLD (split)` 作为建议，被算作错误。原因是最终答案的解析没有校验取值范围；结构化输出（P1-3）能解决这个问题，但目前默认关闭。
+- gpt-4o 有一次直接输出了提示词里的小标题 `HOLD (split)` 作为建议，被算作错误。原因是最终答案的解析没有校验取值范围。评测之后已修复：recommendation 不是 PRODUCE / REVISE / TRIAL / HOLD 之一时，Run 判为失败，`terminal_reason` 记为 `INVALID_RECOMMENDATION`（`R3RuntimeTest` 覆盖了 `HOLD (split)`）。本节数字是修复前跑的，这次 Run 在修复后会算作失败，正确率不变。
 - 对抗案例两种配置都是 18/18，其中各有 3 次是伪造或跨租户证据被证据校验拒绝，属于预期结果。调研案例里也有被证据校验拒绝的 Run：mini 4 次（3 次 hold_sparse、1 次 trial），gpt-4o 3 次，原因是引用了不该引用的证据。
 
 **观点提取**（新 test 60 条）：v1（模型）macro-F1 **0.922**，v0（规则）0.081；v1 花费 $0.006，0 条回退。和第 1 轮 v2 test 的 0.922 一致。

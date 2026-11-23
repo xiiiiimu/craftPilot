@@ -64,7 +64,8 @@ class R3RuntimeTest {
             new java.util.concurrent.atomic.AtomicReference<>();
     private static final java.util.concurrent.atomic.AtomicReference<String> activeEvidence =
             new java.util.concurrent.atomic.AtomicReference<>();
-    // 0: tool then final; 1: rate limit then ok; 2: bad json final; 3: fabricated evidence
+    // 0: tool then final; 1: rate limit then ok; 2: bad json final; 3: fabricated evidence;
+    // 4: final with a recommendation outside PRODUCE/REVISE/TRIAL/HOLD
 
     @Container
     static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
@@ -112,6 +113,8 @@ class R3RuntimeTest {
                 body = toolCallBody(activeRevision.get());
             } else if (mode == 3) {
                 body = finalBody(UUID.randomUUID().toString());
+            } else if (mode == 4) {
+                body = finalBody(activeEvidence.get(), "HOLD (split)");
             } else {
                 body = finalBody(activeEvidence.get());
             }
@@ -350,6 +353,24 @@ class R3RuntimeTest {
         assertThat(cp).isGreaterThan(0L);
     }
 
+    @Test
+    @Order(7)
+    void recommendationOutsideTheFourValuesFailsTheRun() {
+        chatMode.set(4);
+        chatCalls.set(0);
+        var created = postTicket(UUID.randomUUID(), "Invalid recommendation path");
+        UUID run4 = UUID.fromString(created.getBody().path("runId").asText());
+        worker.claimAndRun(1);
+        var run = get("/merchants/" + merchant + "/runtime/runs/" + run4);
+        assertThat(run.getBody().path("status").asText()).isEqualTo("FAILED");
+        assertThat(jdbc.sql("SELECT terminal_reason FROM agent_run WHERE merchant_id = :m AND id = :id")
+                .param("m", merchant).param("id", run4).query(String.class).single())
+                .isEqualTo("INVALID_RECOMMENDATION");
+        assertThat(jdbc.sql("SELECT final_output_json IS NULL FROM agent_run WHERE merchant_id = :m AND id = :id")
+                .param("m", merchant).param("id", run4).query(Boolean.class).single()).isTrue();
+        chatMode.set(0);
+    }
+
     private void assertThatThrownByDuplicateReceipt(UUID eventId) {
         try {
             jdbc.sql("""
@@ -419,9 +440,14 @@ class R3RuntimeTest {
     }
 
     private static String finalBody(String evidenceId) {
+        return finalBody(evidenceId, "REVISE");
+    }
+
+    private static String finalBody(String evidenceId, String recommendation) {
         String id = evidenceId == null || evidenceId.isBlank()
                 ? "00000000-0000-0000-0000-000000000000" : evidenceId;
-        String content = "{\"recommendation\":\"REVISE\",\"summary\":\"Fabric feedback supports revise\",\"evidenceIds\":[\""
+        String content = "{\"recommendation\":\"" + recommendation
+                + "\",\"summary\":\"Fabric feedback supports revise\",\"evidenceIds\":[\""
                 + id + "\"]}";
         String contentEscaped = content.replace("\\", "\\\\").replace("\"", "\\\"");
         return "{\"id\":\"chatcmpl-final\",\"choices\":[{\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\""

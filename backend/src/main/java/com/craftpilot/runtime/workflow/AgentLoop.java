@@ -38,6 +38,8 @@ public class AgentLoop {
     private static final Pattern UUID_RE = Pattern.compile(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     static final int MAX_OUTPUT_TOKENS = 800;
+    /** The only recommendations a final answer may carry; anything else fails the run (INVALID_RECOMMENDATION). */
+    static final List<String> RECOMMENDATIONS = List.of("PRODUCE", "REVISE", "TRIAL", "HOLD");
     /**
      * P1-3: strict JSON Schema for the final answer instead of scraping the first '{' .. last '}'. Off by default
      * ({@code craftpilot.runtime.structured-final-output}): with gpt-4o-mini, sending it together with tools made the
@@ -48,7 +50,7 @@ public class AgentLoop {
                     "type", "object",
                     "properties", Map.of(
                             "recommendation", Map.of("type", "string",
-                                    "enum", List.of("PRODUCE", "REVISE", "TRIAL", "HOLD")),
+                                    "enum", RECOMMENDATIONS),
                             "summary", Map.of("type", "string"),
                             "evidenceIds", Map.of("type", "array", "items", Map.of("type", "string"))),
                     "required", List.of("recommendation", "summary", "evidenceIds"),
@@ -250,6 +252,10 @@ public class AgentLoop {
 
             // final answer path
             Map<String, Object> finalOutput = parseFinal(infer.content());
+            if (!RECOMMENDATIONS.contains(finalOutput.get("recommendation"))) {
+                fail(merchant, surveyId, runId, ticketId, "INVALID_RECOMMENDATION");
+                return;
+            }
             List<UUID> claimed = extractEvidenceIds(finalOutput, infer.content());
             var verified = evidence.verify(actor, merchant, surveyId, new EvidenceVerifyRequest(claimed));
             if (!verified.invalidIds().isEmpty() || claimed.isEmpty()) {
