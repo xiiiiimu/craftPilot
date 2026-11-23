@@ -82,6 +82,9 @@ craftpilot:
         "[gpt-4o-mini]":
           input-usd-per-mtok: 0.15
           output-usd-per-mtok: 0.60
+        "[gpt-4o]":
+          input-usd-per-mtok: 2.50
+          output-usd-per-mtok: 10.00
   runtime:
     worker-enabled: ${CRAFTPILOT_RUNTIME_WORKER_ENABLED:true}
     worker-id: ${CRAFTPILOT_RUNTIME_WORKER_ID:}

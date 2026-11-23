@@ -1,0 +1,457 @@
+[
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T01,T02,T03,T04,T05",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.34666,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:38:48.451209700Z",
+    "finishedAt": "2026-11-23T07:42:05.207296300Z",
+    "datasets": {
+      "adversarial-cases": "v3",
+      "research-cases": "v3",
+      "opinions": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t1a"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T06,T07,T08,T09,T10",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.339313,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:42:31.275044200Z",
+    "finishedAt": "2026-11-23T07:45:55.911595700Z",
+    "datasets": {
+      "research-cases": "v3",
+      "adversarial-cases": "v3",
+      "opinions": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t1b"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T11,T12,T13,T14,T15",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.34058,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:46:21.650817800Z",
+    "finishedAt": "2026-11-23T07:49:49.654138100Z",
+    "datasets": {
+      "adversarial-cases": "v3",
+      "opinions": "v3",
+      "research-cases": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t2a"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T16,T17,T18,T19,T20",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.269767,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:50:15.027647600Z",
+    "finishedAt": "2026-11-23T07:53:10.649406700Z",
+    "datasets": {
+      "adversarial-cases": "v3",
+      "opinions": "v3",
+      "research-cases": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t2b"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T21,T22,T23,T24,T25",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.340769,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:53:35.813539600Z",
+    "finishedAt": "2026-11-23T07:56:58.421135500Z",
+    "datasets": {
+      "research-cases": "v3",
+      "opinions": "v3",
+      "adversarial-cases": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t3a"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 1.7,
+      "cases": "T26,T27,T28,T29,T30",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 1.7,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 15,
+      "worstCaseUsd": 1.62,
+      "spentUsd": 0.305537,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T07:57:23.215449900Z",
+    "finishedAt": "2026-11-23T08:00:31.788971200Z",
+    "datasets": {
+      "adversarial-cases": "v3",
+      "opinions": "v3",
+      "research-cases": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-t3b"
+  },
+  {
+    "mode": "live",
+    "settings": {
+      "mode": "live",
+      "maxCostUsd": 2.0,
+      "cases": "X01,X02,X03,X04,X05,X06",
+      "chatBaseUrl": "https://api.openai.com",
+      "chatKey": "CONFIGURED",
+      "embeddingsBaseUrl": "https://api.openai.com",
+      "embeddingsKey": "CONFIGURED"
+    },
+    "spend": {
+      "capUsd": 2.0,
+      "perRunCeilingUsd": 0.108,
+      "plannedRuns": 18,
+      "worstCaseUsd": 1.944,
+      "spentUsd": 0.321413,
+      "enforced": true,
+      "skippedRuns": 0,
+      "stopReason": ""
+    },
+    "startedAt": "2026-11-23T08:00:57.941516400Z",
+    "finishedAt": "2026-11-23T08:03:53.318352600Z",
+    "datasets": {
+      "research-cases": "v3",
+      "opinions": "v3",
+      "adversarial-cases": "v3"
+    },
+    "split": "test",
+    "prompt": {
+      "id": "research-agent-r3",
+      "version": "2",
+      "content_hash": "sha256:research-agent-r3-v2",
+      "pinned": true
+    },
+    "tools": {
+      "evidence_search": "1",
+      "evidence_verify": "1",
+      "mcp_material_lookup": "1",
+      "sample_get_snapshot": "1",
+      "survey_get_stats": "2",
+      "vision_get_comparison": "1"
+    },
+    "toolPins": {},
+    "model": {
+      "name": "gpt-4o",
+      "temperature": 0.1,
+      "inputUsdPerMtok": 2.5,
+      "outputUsdPerMtok": 10.0
+    },
+    "researchTokenBudget": 24000,
+    "repeats": 3,
+    "git": {
+      "commit": "17fadda",
+      "dirty": true
+    },
+    "machine": {
+      "os": "Windows 11 10.0",
+      "arch": "amd64",
+      "cpus": 16,
+      "maxHeapMb": 1024,
+      "java": "21.0.11"
+    },
+    "part": "test-v2-4o-tadv"
+  }
+]

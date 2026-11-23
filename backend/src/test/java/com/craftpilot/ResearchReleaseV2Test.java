@@ -236,6 +236,19 @@ class ResearchReleaseV2Test {
     }
 
     @Test
+    void promptV3CandidatesAreStoredAsRevisionsWithoutChangingTheDefault() {
+        for (String version : List.of("3a", "3b", "3c")) {
+            AgentSpecResolver.ResolvedSpec v3 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of(version));
+            assertThat(v3.contentHash()).isEqualTo("sha256:research-agent-r3-v" + version);
+            assertThat(v3.instructions()).startsWith("You are CraftPilot research agent.")
+                    .contains("Appeal", "Purchase intent", "Problem concentration", "Evidence sufficiency");
+        }
+        assertThat(specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("3c")).instructions())
+                .contains("Polarized opinions");
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
     void researchRunUsesTheLatestPromptAndAsksForStructuredFinalOutput() throws Exception {
         double parsedBefore = meters.counter("craftpilot.agent.final.parse", "loop", "research", "outcome", "parsed")
                 .count();
