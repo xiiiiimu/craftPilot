@@ -1,6 +1,7 @@
 package com.craftpilot.eval;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,10 +10,52 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /** Output directory, CSV writing and environment metadata shared by the evaluation tests. */
 final class EvalOutput {
     private EvalOutput() {
+    }
+
+    /**
+     * Items of one dataset: {@code eval/<name>-<version>.json} plus, when it exists, the separately generated
+     * {@code eval/<name>-<version>-test.json}, filtered by {@code -Deval.split=dev|test} (default all). With
+     * {@code eval.split=dev} the test file is not opened at all.
+     */
+    static List<JsonNode> datasetItems(ObjectMapper mapper, String name, String arrayField) throws IOException {
+        String split = split();
+        String version = datasetVersion();
+        List<JsonNode> out = new ArrayList<>();
+        List<String> resources = new ArrayList<>(List.of("eval/" + name + "-" + version + ".json"));
+        if (!split.equals("dev")) {
+            resources.add("eval/" + name + "-" + version + "-test.json");
+        }
+        for (int i = 0; i < resources.size(); i++) {
+            try (InputStream in = EvalOutput.class.getClassLoader().getResourceAsStream(resources.get(i))) {
+                if (in == null) {
+                    if (i == 0) {
+                        throw new IllegalStateException("missing dataset " + resources.get(i));
+                    }
+                    continue;
+                }
+                for (JsonNode item : mapper.readTree(in).path(arrayField)) {
+                    if (split.isEmpty() || split.equals(item.path("split").asText())) {
+                        out.add(item);
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    /** {@code -Deval.split}: empty (all), {@code dev} or {@code test}. */
+    static String split() {
+        String split = System.getProperty("eval.split", "").trim();
+        if (!split.isEmpty() && !split.equals("dev") && !split.equals("test")) {
+            throw new IllegalStateException("eval.split must be dev or test, got '" + split + "'");
+        }
+        return split;
     }
 
     static Path outDir() throws IOException {

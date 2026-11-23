@@ -1,0 +1,782 @@
+{
+  "version": "v3",
+  "split": "test",
+  "simulated": true,
+  "note": "generated in a separate step before prompt v3; evaluated once after the prompt was frozen",
+  "dataset": "opinions",
+  "attributes": [
+    "fabric",
+    "workmanship",
+    "size",
+    "color",
+    "price",
+    "overall"
+  ],
+  "polarities": [
+    "POSITIVE",
+    "NEGATIVE",
+    "NEUTRAL"
+  ],
+  "items": [
+    {
+      "id": "T001",
+      "split": "test",
+      "revision": "V1",
+      "text": "棉麻的料子越洗越软，好评",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T002",
+      "split": "test",
+      "revision": "V1",
+      "text": "摸起来凉凉的，夏天很舒服",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T003",
+      "split": "test",
+      "revision": "V1",
+      "text": "羊绒的手感真的不一样，软到心里",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T004",
+      "split": "test",
+      "revision": "V1",
+      "text": "洗了一次就缩到孩子穿的尺寸了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T005",
+      "split": "test",
+      "revision": "V1",
+      "text": "布料有股怪味，晾了三天还在",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T006",
+      "split": "test",
+      "revision": "V1",
+      "text": "膝盖那块穿两次就磨白了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T007",
+      "split": "test",
+      "revision": "V1",
+      "text": "这款能烘干吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T008",
+      "split": "test",
+      "revision": "V1",
+      "text": "里衬是什么材质的",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T009",
+      "split": "test",
+      "revision": "V1",
+      "text": "面料薄厚适中吧，没什么特别感觉",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T010",
+      "split": "test",
+      "revision": "V1",
+      "text": "针脚细密，翻过来背面也很干净",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T011",
+      "split": "test",
+      "revision": "V1",
+      "text": "五金件打磨得很光滑",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T012",
+      "split": "test",
+      "revision": "V1",
+      "text": "接缝对得特别齐，看得出是老师傅做的",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T013",
+      "split": "test",
+      "revision": "V1",
+      "text": "包带的铆钉松了，晃一晃就响",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T014",
+      "split": "test",
+      "revision": "V1",
+      "text": "胶水溢出来了，边上一圈黄印",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T015",
+      "split": "test",
+      "revision": "V1",
+      "text": "纽扣眼开得太小，扣子塞不进去",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T016",
+      "split": "test",
+      "revision": "V1",
+      "text": "腰身收得刚好，不松不紧",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T017",
+      "split": "test",
+      "revision": "V1",
+      "text": "长度到膝盖，正合适",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T018",
+      "split": "test",
+      "revision": "V1",
+      "text": "155 穿均码也不拖地，开心",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T019",
+      "split": "test",
+      "revision": "V1",
+      "text": "肩膀太窄了，抬手都费劲",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T020",
+      "split": "test",
+      "revision": "V1",
+      "text": "裤腿短了一截，不是我想要的九分",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T021",
+      "split": "test",
+      "revision": "V1",
+      "text": "说是均码，我 120 斤根本扣不上",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T022",
+      "split": "test",
+      "revision": "V1",
+      "text": "这个雾霾蓝好温柔",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T023",
+      "split": "test",
+      "revision": "V1",
+      "text": "配色很有层次感",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T024",
+      "split": "test",
+      "revision": "V1",
+      "text": "上身显白，黄皮也能穿",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T025",
+      "split": "test",
+      "revision": "V1",
+      "text": "颜色暗沉，显得人没精神",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T026",
+      "split": "test",
+      "revision": "V1",
+      "text": "两只袖子颜色不一样深",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T027",
+      "split": "test",
+      "revision": "V1",
+      "text": "实物绿得发灰，跟图不是一个色",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T028",
+      "split": "test",
+      "revision": "V1",
+      "text": "还有别的颜色吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T029",
+      "split": "test",
+      "revision": "V1",
+      "text": "这个是米白还是奶白",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T030",
+      "split": "test",
+      "revision": "V1",
+      "text": "颜色中规中矩，不惊艳也不难看",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T031",
+      "split": "test",
+      "revision": "V1",
+      "text": "这个价格买手工的，很划算",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T032",
+      "split": "test",
+      "revision": "V1",
+      "text": "比专柜便宜一半，冲",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T033",
+      "split": "test",
+      "revision": "V1",
+      "text": "价格很亲民",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T034",
+      "split": "test",
+      "revision": "V1",
+      "text": "三百多买个杯子，下不去手",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T035",
+      "split": "test",
+      "revision": "V1",
+      "text": "价格小贵，学生党观望",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T036",
+      "split": "test",
+      "revision": "V1",
+      "text": "贵是贵，不过做工确实好",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T037",
+      "split": "test",
+      "revision": "V1",
+      "text": "会员有折扣吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T038",
+      "split": "test",
+      "revision": "V1",
+      "text": "定价出来没",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T039",
+      "split": "test",
+      "revision": "V1",
+      "text": "运费谁出呀",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T040",
+      "split": "test",
+      "revision": "V1",
+      "text": "整体很有感觉，想要",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T041",
+      "split": "test",
+      "revision": "V1",
+      "text": "这一版比上一版好看太多",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T042",
+      "split": "test",
+      "revision": "V1",
+      "text": "简约大方，什么场合都能穿",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T043",
+      "split": "test",
+      "revision": "V1",
+      "text": "整体看着有点廉价",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T044",
+      "split": "test",
+      "revision": "V1",
+      "text": "风格太老气了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T045",
+      "split": "test",
+      "revision": "V1",
+      "text": "说实话不太喜欢这个设计",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T046",
+      "split": "test",
+      "revision": "V1",
+      "text": "再观望一下",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T047",
+      "split": "test",
+      "revision": "V1",
+      "text": "有上身图吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T048",
+      "split": "test",
+      "revision": "V1",
+      "text": "还行吧，没什么特别的",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T049",
+      "split": "test",
+      "revision": "V1",
+      "text": "颜色绝美，但袖子长出一截",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T050",
+      "split": "test",
+      "revision": "V1",
+      "text": "料子舒服，就是线头有点多",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    },
+    {
+      "id": "T051",
+      "split": "test",
+      "revision": "V1",
+      "text": "做工没毛病，可惜价格劝退",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ]
+    },
+    {
+      "id": "T052",
+      "split": "test",
+      "revision": "V1",
+      "text": "款式我爱，面料起球太快",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T053",
+      "split": "test",
+      "revision": "V1",
+      "text": "尺码合适，颜色也耐看，会买",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T054",
+      "split": "test",
+      "revision": "V1",
+      "text": "这色儿真高级，跟抹布一个色",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ]
+    },
+    {
+      "id": "T055",
+      "split": "test",
+      "revision": "V1",
+      "text": "走线很直，皮子也厚实",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T056",
+      "split": "test",
+      "revision": "V1",
+      "text": "肩宽刚好，但腰那里有点紧",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ]
+    },
+    {
+      "id": "T057",
+      "split": "test",
+      "revision": "V1",
+      "text": "颜色有几个选择？面料是全棉吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        },
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T058",
+      "split": "test",
+      "revision": "V1",
+      "text": "手感很好，值这个价",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "T059",
+      "split": "test",
+      "revision": "V1",
+      "text": "喜欢是喜欢，但我用不上",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ]
+    },
+    {
+      "id": "T060",
+      "split": "test",
+      "revision": "V1",
+      "text": "这做工，两天开线三次，可以说是很稳定了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ]
+    }
+  ]
+}

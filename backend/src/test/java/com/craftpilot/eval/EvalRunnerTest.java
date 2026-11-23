@@ -10,7 +10,6 @@ import com.craftpilot.runtime.worker.RunWorker;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -166,11 +165,8 @@ class EvalRunnerTest {
         Path outDir = EvalOutput.outDir();
         minio.makeBucket(MakeBucketArgs.builder().bucket(BUCKET).build());
         String dataset = EvalOutput.datasetVersion();
-        JsonNode research = readDataset("eval/research-cases-" + dataset + ".json");
-        JsonNode adversarial = readDataset("eval/adversarial-cases-" + dataset + ".json");
-
-        List<JsonNode> researchCases = selected(research.path("cases"));
-        List<JsonNode> adversarialCases = selected(adversarial.path("cases"));
+        List<JsonNode> researchCases = selected(EvalOutput.datasetItems(mapper, "research-cases", "cases"));
+        List<JsonNode> adversarialCases = selected(EvalOutput.datasetItems(mapper, "adversarial-cases", "cases"));
         int plannedRuns = (researchCases.size() + adversarialCases.size()) * REPEATS;
         assertThat(plannedRuns).as("eval.cases matched no case ids").isPositive();
         EvalBudget budget = new EvalBudget(SETTINGS.maxCostUsd(), EvalBudget.perRunCeiling(
@@ -210,9 +206,10 @@ class EvalRunnerTest {
         meta.put("startedAt", started.toString());
         meta.put("finishedAt", Instant.now().toString());
         meta.put("datasets", Map.of(
-                "research-cases", research.path("version").asText(),
-                "adversarial-cases", adversarial.path("version").asText(),
+                "research-cases", dataset,
+                "adversarial-cases", dataset,
                 "opinions", dataset));
+        meta.put("split", EvalOutput.split().isEmpty() ? "all" : EvalOutput.split());
         meta.put("prompt", promptVersion());
         meta.put("tools", toolVersions());
         meta.put("toolPins", versions.toolPins());
@@ -252,7 +249,7 @@ class EvalRunnerTest {
         }
     }
 
-    private List<JsonNode> selected(JsonNode cases) {
+    private List<JsonNode> selected(List<JsonNode> cases) {
         List<JsonNode> out = new ArrayList<>();
         for (JsonNode c : cases) {
             if (SETTINGS.includes(c.path("id").asText())) {
@@ -748,13 +745,6 @@ class EvalRunnerTest {
 
     private static Object nullToEmpty(Object value) {
         return value == null ? "" : value;
-    }
-
-    private JsonNode readDataset(String resource) throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
-            assertThat(in).as(resource).isNotNull();
-            return mapper.readTree(in);
-        }
     }
 
     private static UUID id(JsonNode body) {

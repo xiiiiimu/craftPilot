@@ -1,0 +1,2801 @@
+{
+  "dataset": "opinions",
+  "version": "v3",
+  "simulated": true,
+  "attributes": [
+    "fabric",
+    "workmanship",
+    "size",
+    "color",
+    "price",
+    "overall"
+  ],
+  "polarities": [
+    "POSITIVE",
+    "NEGATIVE",
+    "NEUTRAL"
+  ],
+  "items": [
+    {
+      "id": "O001",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料摸着好舒复啊，软软糯糯的",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O002",
+      "split": "dev",
+      "revision": "V1",
+      "text": "亚麻居然一点都不扎，惊喜🥰",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O003",
+      "split": "dev",
+      "revision": "V1",
+      "text": "透气性绝了，夏天穿刚好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O004",
+      "split": "dev",
+      "revision": "V1",
+      "text": "洗了两次没起球没缩水👍",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O005",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子厚实有垂感，不是那种薄透的",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O006",
+      "split": "dev",
+      "revision": "V1",
+      "text": "手感滑滑的，跟大牌一个level",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O007",
+      "split": "dev",
+      "revision": "V1",
+      "text": "棉质亲肤，宝宝穿也放心",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O008",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个羊毛不刺挠，敏感肌友好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O009",
+      "split": "dev",
+      "revision": "V1",
+      "text": "布料挺括有型，版型也撑得起来",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O010",
+      "split": "dev",
+      "revision": "V1",
+      "text": "摸起来很高级，就是颜色有点暗",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O011",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子不错哦",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O012",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料有点硬邦邦的，穿着磨脖子",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O013",
+      "split": "dev",
+      "revision": "V1",
+      "text": "起球也太快了吧，穿一天就一堆小球球😭",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O014",
+      "split": "dev",
+      "revision": "V1",
+      "text": "洗完缩了一个码……无语",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O015",
+      "split": "dev",
+      "revision": "V1",
+      "text": "透得能看见内衣，不敢穿出门",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O016",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子好薄，感觉一扯就破",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O017",
+      "split": "dev",
+      "revision": "V1",
+      "text": "真是“透气”啊，风一吹就透心凉😅",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O018",
+      "split": "dev",
+      "revision": "V1",
+      "text": "化纤味好重，闷得慌",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O019",
+      "split": "dev",
+      "revision": "V1",
+      "text": "款式绝美但是面料扎人，劝退",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O020",
+      "split": "dev",
+      "revision": "V1",
+      "text": "摸着糙糙的，对不起这个价",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O021",
+      "split": "dev",
+      "revision": "V1",
+      "text": "掉毛掉得我黑裤子全是毛",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O022",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个是纯棉还是混纺的呀？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O023",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料成分有吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O024",
+      "split": "dev",
+      "revision": "V1",
+      "text": "会不会起球啊，有没有人洗过",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O025",
+      "split": "dev",
+      "revision": "V1",
+      "text": "冬天穿会冷吗，厚度怎么样",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O026",
+      "split": "dev",
+      "revision": "V1",
+      "text": "手感一般般吧，说不上好坏",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O027",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子还行，中规中矩",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O028",
+      "split": "dev",
+      "revision": "V1",
+      "text": "能机洗不，还是只能手洗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O029",
+      "split": "dev",
+      "revision": "V1",
+      "text": "亚麻的会皱吗？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O030",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个材质夏天穿热不热",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O031",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料跟上一版比有区别吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O032",
+      "split": "dev",
+      "revision": "V1",
+      "text": "走线超整齐，一个线头都没有",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O033",
+      "split": "dev",
+      "revision": "V1",
+      "text": "做工很精至，细节控狂喜",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O034",
+      "split": "dev",
+      "revision": "V1",
+      "text": "扣子是贝壳的吧，质感好好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O035",
+      "split": "dev",
+      "revision": "V1",
+      "text": "包边处理得很干净",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O036",
+      "split": "dev",
+      "revision": "V1",
+      "text": "刺绣针脚好密，手工感满满",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O037",
+      "split": "dev",
+      "revision": "V1",
+      "text": "边油刷得均匀，皮具做工在线",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O038",
+      "split": "dev",
+      "revision": "V1",
+      "text": "内衬缝得很服帖，看得出用心",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O039",
+      "split": "dev",
+      "revision": "V1",
+      "text": "拉链顺滑，五金也有分量",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O040",
+      "split": "dev",
+      "revision": "V1",
+      "text": "做工没得挑，就是价格劝退",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O041",
+      "split": "dev",
+      "revision": "V1",
+      "text": "缝线结实，背了一周没开线",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O042",
+      "split": "dev",
+      "revision": "V1",
+      "text": "线头好多，剪了半天✂️",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O043",
+      "split": "dev",
+      "revision": "V1",
+      "text": "扣子缝得松松垮垮，第二天就掉了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O044",
+      "split": "dev",
+      "revision": "V1",
+      "text": "走线是歪的，强迫症受不了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O045",
+      "split": "dev",
+      "revision": "V1",
+      "text": "拉链卡卡的，拉一次要命",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O046",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这做工真“精致”，开线三处🙃",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O047",
+      "split": "dev",
+      "revision": "V1",
+      "text": "胶水印都没擦干净",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O048",
+      "split": "dev",
+      "revision": "V1",
+      "text": "边油起泡了，有点粗糙",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O049",
+      "split": "dev",
+      "revision": "V1",
+      "text": "刺绣背面乱糟糟的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O050",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色很美，可惜袖口缝歪了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O051",
+      "split": "dev",
+      "revision": "V1",
+      "text": "口袋缝死了打不开？？",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O052",
+      "split": "dev",
+      "revision": "V1",
+      "text": "尺码很准，平时穿M这个M刚好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O053",
+      "split": "dev",
+      "revision": "V1",
+      "text": "袖长刚刚好，不会盖住手",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O054",
+      "split": "dev",
+      "revision": "V1",
+      "text": "腰围松紧合适，吃饱了也不勒😋",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O055",
+      "split": "dev",
+      "revision": "V1",
+      "text": "肩宽正好，不会显得壮",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O056",
+      "split": "dev",
+      "revision": "V1",
+      "text": "裤长到脚踝，小个子友好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O057",
+      "split": "dev",
+      "revision": "V1",
+      "text": "宽松度刚好，里面能塞毛衣",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O058",
+      "split": "dev",
+      "revision": "V1",
+      "text": "160/50 穿S完美",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O059",
+      "split": "dev",
+      "revision": "V1",
+      "text": "码数标准，按平时买就行",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O060",
+      "split": "dev",
+      "revision": "V1",
+      "text": "大小合适，颜色也显白",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O061",
+      "split": "dev",
+      "revision": "V1",
+      "text": "版型好、尺码也准，冲",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O062",
+      "split": "dev",
+      "revision": "V1",
+      "text": "偏小一码，建议买大一号",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O063",
+      "split": "dev",
+      "revision": "V1",
+      "text": "袖子太长了，跟唱戏似的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O064",
+      "split": "dev",
+      "revision": "V1",
+      "text": "腰围勒得慌，坐下都难受",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O065",
+      "split": "dev",
+      "revision": "V1",
+      "text": "肩线掉到胳膊上了，太大",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O066",
+      "split": "dev",
+      "revision": "V1",
+      "text": "裤长拖地，还得自己去改",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O067",
+      "split": "dev",
+      "revision": "V1",
+      "text": "尺码表跟实物差好多",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O068",
+      "split": "dev",
+      "revision": "V1",
+      "text": "胸围紧，扣子都崩开了😓",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O069",
+      "split": "dev",
+      "revision": "V1",
+      "text": "好看是好看，就是码数偏大，我穿S都晃荡",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O070",
+      "split": "dev",
+      "revision": "V1",
+      "text": "领口太紧套头费劲",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O071",
+      "split": "dev",
+      "revision": "V1",
+      "text": "帽子做小了，戴着压头",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O072",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个绿好温柔，很显白✨",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O073",
+      "split": "dev",
+      "revision": "V1",
+      "text": "配色绝了，撞色不俗气",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O074",
+      "split": "dev",
+      "revision": "V1",
+      "text": "实物比图片还好看，没色差",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O075",
+      "split": "dev",
+      "revision": "V1",
+      "text": "雾霾蓝yyds",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O076",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜涩好正，拍照很出片",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O077",
+      "split": "dev",
+      "revision": "V1",
+      "text": "奶油白很干净，百搭",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O078",
+      "split": "dev",
+      "revision": "V1",
+      "text": "釉色温润，看着就舒服",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O079",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色高级感拉满",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O080",
+      "split": "dev",
+      "revision": "V1",
+      "text": "黑色很正，不发灰",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O081",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色喜欢，价格也ok",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O082",
+      "split": "dev",
+      "revision": "V1",
+      "text": "色差也太大了，图上是粉实物是橘",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O083",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个黄显黑，黄皮慎入",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O084",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色有点土，像我妈年轻时穿的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O085",
+      "split": "dev",
+      "revision": "V1",
+      "text": "洗一次就掉色了，盆都染了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O086",
+      "split": "dev",
+      "revision": "V1",
+      "text": "配色好奇怪，红配绿",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O087",
+      "split": "dev",
+      "revision": "V1",
+      "text": "灰扑扑的没精神",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O088",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不太喜欢这个颜色",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O089",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子很舒服，可惜颜色太闷了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O090",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这紫色真是“高级”，高级到像过期茄子🍆",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O091",
+      "split": "dev",
+      "revision": "V1",
+      "text": "白色有点发黄，不像图里那么白",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O092",
+      "split": "dev",
+      "revision": "V1",
+      "text": "还有别的颜色吗？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O093",
+      "split": "dev",
+      "revision": "V1",
+      "text": "实物颜色跟图片一样吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O094",
+      "split": "dev",
+      "revision": "V1",
+      "text": "黑色和藏青哪个更百搭？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O095",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色一般般",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O096",
+      "split": "dev",
+      "revision": "V1",
+      "text": "会出浅色款吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O097",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个颜色深浅怎么样",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O098",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色还行吧，不惊艳也不难看",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O099",
+      "split": "dev",
+      "revision": "V1",
+      "text": "白色容易显脏吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O100",
+      "split": "dev",
+      "revision": "V1",
+      "text": "能出个莫兰迪色系吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O101",
+      "split": "dev",
+      "revision": "V1",
+      "text": "绿色在室内看起来偏黄吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O102",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个价格很良心了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O103",
+      "split": "dev",
+      "revision": "V1",
+      "text": "性价比超高，闭眼入",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O104",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这价位能买到手工的，值！",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O105",
+      "split": "dev",
+      "revision": "V1",
+      "text": "比商场便宜一半，冲冲冲",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O106",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格可以接受",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O107",
+      "split": "dev",
+      "revision": "V1",
+      "text": "两百出头，学生党也买得起😊",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O108",
+      "split": "dev",
+      "revision": "V1",
+      "text": "贵是贵点但物有所值",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O109",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格美丽",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O110",
+      "split": "dev",
+      "revision": "V1",
+      "text": "定价很合理，做工也配得上",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O111",
+      "split": "dev",
+      "revision": "V1",
+      "text": "太贵了吧，抢钱呢",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O112",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这价格真是“亲民”，一个月工资😅",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O113",
+      "split": "dev",
+      "revision": "V1",
+      "text": "喜欢但是太贵，不买了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O114",
+      "split": "dev",
+      "revision": "V1",
+      "text": "性价比不高，同价位能买更好的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O115",
+      "split": "dev",
+      "revision": "V1",
+      "text": "定价偏高，打个折再考虑",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O116",
+      "split": "dev",
+      "revision": "V1",
+      "text": "对不起，穷😭",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O117",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不值这个价",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O118",
+      "split": "dev",
+      "revision": "V1",
+      "text": "运费比衣服还贵？？",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O119",
+      "split": "dev",
+      "revision": "V1",
+      "text": "多少钱呀？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O120",
+      "split": "dev",
+      "revision": "V1",
+      "text": "什么价位",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O121",
+      "split": "dev",
+      "revision": "V1",
+      "text": "开售有优惠吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O122",
+      "split": "dev",
+      "revision": "V1",
+      "text": "会打折吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O123",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格还没定吗？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O124",
+      "split": "dev",
+      "revision": "V1",
+      "text": "团购能便宜点不",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O125",
+      "split": "dev",
+      "revision": "V1",
+      "text": "预计多少钱一件",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O126",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格看情况吧",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O127",
+      "split": "dev",
+      "revision": "V1",
+      "text": "定价跟上一版一样吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O128",
+      "split": "dev",
+      "revision": "V1",
+      "text": "包邮吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O129",
+      "split": "dev",
+      "revision": "V1",
+      "text": "好好看啊啊啊😍",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O130",
+      "split": "dev",
+      "revision": "V1",
+      "text": "绝绝子，爱了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O131",
+      "split": "dev",
+      "revision": "V1",
+      "text": "版型超显瘦",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O132",
+      "split": "dev",
+      "revision": "V1",
+      "text": "已经截图发给闺蜜了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O133",
+      "split": "dev",
+      "revision": "V1",
+      "text": "什么时候开售！我要两件",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O134",
+      "split": "dev",
+      "revision": "V1",
+      "text": "款式很特别，街上没撞过",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O135",
+      "split": "dev",
+      "revision": "V1",
+      "text": "喜欢但不会买，衣柜满了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O136",
+      "split": "dev",
+      "revision": "V1",
+      "text": "上身效果比想象中好",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O137",
+      "split": "dev",
+      "revision": "V1",
+      "text": "太可爱了吧这个",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O138",
+      "split": "dev",
+      "revision": "V1",
+      "text": "蹲一个上新",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O139",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不喜欢",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O140",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不是很喜欢这个款式",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O141",
+      "split": "dev",
+      "revision": "V1",
+      "text": "款式有点过时了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O142",
+      "split": "dev",
+      "revision": "V1",
+      "text": "上身很显胖，不推荐",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O143",
+      "split": "dev",
+      "revision": "V1",
+      "text": "看着挺廉价的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O144",
+      "split": "dev",
+      "revision": "V1",
+      "text": "和上一版比退步了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O145",
+      "split": "dev",
+      "revision": "V1",
+      "text": "真是“独特”，独特到没人敢穿🤣",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O146",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不买，丑",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O147",
+      "split": "dev",
+      "revision": "V1",
+      "text": "版型奇奇怪怪的",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O148",
+      "split": "dev",
+      "revision": "V1",
+      "text": "拍得好看，实物拉胯",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O149",
+      "split": "dev",
+      "revision": "V1",
+      "text": "再看看吧",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O150",
+      "split": "dev",
+      "revision": "V1",
+      "text": "还行",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O151",
+      "split": "dev",
+      "revision": "V1",
+      "text": "一般般",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O152",
+      "split": "dev",
+      "revision": "V1",
+      "text": "有实拍图吗？",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O153",
+      "split": "dev",
+      "revision": "V1",
+      "text": "有没有人买了说说感受",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O154",
+      "split": "dev",
+      "revision": "V1",
+      "text": "嗯…不好说",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O155",
+      "split": "dev",
+      "revision": "V1",
+      "text": "等上身图",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O156",
+      "split": "dev",
+      "revision": "V1",
+      "text": "男生能穿吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O157",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这款跟上次那款有啥区别",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O158",
+      "split": "dev",
+      "revision": "V1",
+      "text": "先mark一下",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O159",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料软、颜色正、做工细，就是贵了点",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O160",
+      "split": "dev",
+      "revision": "V1",
+      "text": "尺码偏小，颜色倒是很好看",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O161",
+      "split": "dev",
+      "revision": "V1",
+      "text": "线头多，价格还不便宜，失望",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O162",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子舒服，但袖子太长",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O163",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色显白，版型也好，价格合适，三连",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O164",
+      "split": "dev",
+      "revision": "V1",
+      "text": "好看到哭😭但钱包不允许",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O165",
+      "split": "dev",
+      "revision": "V1",
+      "text": "做工好，可尺码表不准",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O166",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不扎不硬，颜色也不错",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O167",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不贵，但也说不上值",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O168",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料一般般，做工倒挺细",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O169",
+      "split": "dev",
+      "revision": "V1",
+      "text": "腰太紧，面料又不透气，退了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O170",
+      "split": "dev",
+      "revision": "V1",
+      "text": "绝了这走线，可惜那颜色我实在接受不了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O171",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格无所谓，主要是好看",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O172",
+      "split": "dev",
+      "revision": "V1",
+      "text": "衣服挺好，就是快递把盒子压扁了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O173",
+      "split": "dev",
+      "revision": "V1",
+      "text": "不难看",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O174",
+      "split": "dev",
+      "revision": "V1",
+      "text": "也没多舒服嘛，吹得太过了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O175",
+      "split": "dev",
+      "revision": "V1",
+      "text": "哈哈哈这个袖子是给长臂猿设计的吧",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O176",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色好看的，就是不知道多少钱",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O177",
+      "split": "dev",
+      "revision": "V1",
+      "text": "质量杠杠的，扣子一个都没松",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O178",
+      "split": "dev",
+      "revision": "V1",
+      "text": "料子有点起毛，但价格便宜也认了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O179",
+      "split": "dev",
+      "revision": "V1",
+      "text": "款式OK，颜色NG",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O180",
+      "split": "dev",
+      "revision": "V1",
+      "text": "刺绣好看，可惜面料起皱",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O181",
+      "split": "dev",
+      "revision": "V1",
+      "text": "码数准，下单！",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O182",
+      "split": "dev",
+      "revision": "V1",
+      "text": "太大太长太贵，三连劝退",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "size"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O183",
+      "split": "dev",
+      "revision": "V1",
+      "text": "便宜是便宜，质量也就那样",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "price"
+        },
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O184",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色是我喜欢的，价格就算了吧🙂",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O185",
+      "split": "dev",
+      "revision": "V1",
+      "text": "有点小贵，不过手感值这个价",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O186",
+      "split": "dev",
+      "revision": "V1",
+      "text": "想问下这个面料会褪色吗",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O187",
+      "split": "dev",
+      "revision": "V1",
+      "text": "看着挺普通的，没啥感觉",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "overall"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O188",
+      "split": "dev",
+      "revision": "V1",
+      "text": "版型绝了，面料也好，就是线头要修修",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "POSITIVE",
+          "attribute": "fabric"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O189",
+      "split": "dev",
+      "revision": "V1",
+      "text": "比上版强多了，就是还是有点贵",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        },
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O190",
+      "split": "dev",
+      "revision": "V1",
+      "text": "颜色有点偏，但能接受",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O191",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这个价钱买个寂寞",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O192",
+      "split": "dev",
+      "revision": "V1",
+      "text": "手工感很强，喜欢这种不完美",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O193",
+      "split": "dev",
+      "revision": "V1",
+      "text": "腰围终于改对了！",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O194",
+      "split": "dev",
+      "revision": "V1",
+      "text": "这次的颜色比上次正",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "color"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O195",
+      "split": "dev",
+      "revision": "V1",
+      "text": "面料还是太闷，夏天穿不了",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "fabric"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O196",
+      "split": "dev",
+      "revision": "V1",
+      "text": "尺码终于不偏小了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "size"
+        }
+      ],
+      "origin": "v2-test"
+    },
+    {
+      "id": "O197",
+      "split": "dev",
+      "revision": "V1",
+      "text": "价格有点高，但是能理解手工成本",
+      "labels": [
+        {
+          "polarity": "NEGATIVE",
+          "attribute": "price"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O198",
+      "split": "dev",
+      "revision": "V1",
+      "text": "扣子换成金属的更好看了",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "workmanship"
+        }
+      ],
+      "origin": "v2-dev"
+    },
+    {
+      "id": "O199",
+      "split": "dev",
+      "revision": "V1",
+      "text": "什么时候补货？上次没抢到",
+      "labels": [
+        {
+          "polarity": "POSITIVE",
+          "attribute": "overall"
+        }
+      ],
+      "purchaseIntent": "HIGH",
+      "origin": "v2-test"
+    },
+    {
+      "id": "O200",
+      "split": "dev",
+      "revision": "V1",
+      "text": "等打折再说",
+      "labels": [
+        {
+          "polarity": "NEUTRAL",
+          "attribute": "price"
+        }
+      ],
+      "purchaseIntent": "LOW",
+      "origin": "v2-dev"
+    }
+  ],
+  "note": "v3 dev = all 200 v2 items (labels as revised on 2026-11-23); the v3 test set is opinions-v3-test.json"
+}

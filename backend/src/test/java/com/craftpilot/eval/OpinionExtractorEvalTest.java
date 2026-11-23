@@ -6,7 +6,6 @@ import com.craftpilot.feedback.ModelOpinionExtractor;
 import com.craftpilot.feedback.OpinionExtractor;
 import com.craftpilot.feedback.OpinionExtractor.ExtractedOpinion;
 import com.craftpilot.runtime.model.ChatPricing;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,7 +20,8 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Component evaluation of opinion extraction against {@code eval/opinions-<eval.dataset>.json} (default v1). Writes
+ * Component evaluation of opinion extraction against {@code eval/opinions-<eval.dataset>.json} (default v1) plus
+ * {@code eval/opinions-<eval.dataset>-test.json} when it exists. Writes
  * one row per message to {@code eval-opinions.csv}; macro-F1 and the confusion matrix are computed by
  * {@code eval_report.py}. No application context is started.
  *
@@ -38,15 +38,10 @@ class OpinionExtractorEvalTest {
 
     @Test
     void extractAnnotatedOpinions() throws Exception {
-        JsonNode dataset;
-        String resource = "eval/opinions-" + EvalOutput.datasetVersion() + ".json";
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
-            assertThat(in).isNotNull();
-            dataset = mapper.readTree(in);
-        }
+        List<JsonNode> items = EvalOutput.datasetItems(mapper, "opinions", "items");
         String version = System.getProperty("eval.opinionExtractor", "v0").trim();
         assertThat(version).as("eval.opinionExtractor").isIn("v0", "v1");
-        String split = System.getProperty("eval.split", "").trim();
+        String split = EvalOutput.split();
 
         Extractor extractor;
         EvalSettings settings = EvalSettings.fromEnvironment();
@@ -64,10 +59,7 @@ class OpinionExtractorEvalTest {
         List<Map<String, Object>> rows = new ArrayList<>();
         BigDecimal spent = BigDecimal.ZERO;
         int planned = 0;
-        for (JsonNode item : dataset.path("items")) {
-            if (!split.isEmpty() && !split.equals(item.path("split").asText())) {
-                continue;
-            }
+        for (JsonNode item : items) {
             planned++;
             if (version.equals("v1") && spent.compareTo(settings.maxCostUsd()) >= 0) {
                 continue;
