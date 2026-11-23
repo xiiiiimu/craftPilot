@@ -9,6 +9,7 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,7 +61,14 @@ import tools.jackson.databind.ObjectMapper;
  * exercise the pipeline but say nothing about model quality. Not part of the default build ({@code @Tag("eval")});
  * run with {@code mvnw test -Peval}. System properties: {@code eval.outDir} (default {@code target/eval/latest}),
  * {@code eval.repeats} (default 1), {@code eval.researchTokenBudget} (default 24000),
- * {@code eval.stubLatencyMs} (default 50).
+ * {@code eval.stubLatencyMs} (default 50), {@code eval.cases} (comma-separated case ids, default all),
+ * {@code eval.mode} ({@code stub} default, or {@code live}), {@code eval.maxCostUsd} (default 0.50) and
+ * {@code eval.dataset} (default {@code v1}; selects {@code eval/*-<version>.json}).
+ *
+ * <p>Live mode calls the real chat and embedding providers configured by {@code CRAFTPILOT_CHAT_*} /
+ * {@code CRAFTPILOT_OPENAI_*} (environment or {@code .env}); MCP stays on the local stub server. It refuses to start
+ * without keys or a positive cap, refuses plans whose worst-case cost exceeds the cap, and stops starting runs once
+ * spent + one more run's ceiling would cross it, marking the rest {@code SKIPPED_BUDGET}.
  */
 @Tag("eval")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,10 +76,15 @@ import tools.jackson.databind.ObjectMapper;
 @ActiveProfiles("dev")
 @Testcontainers
 class EvalRunnerTest {
-    static final int RESEARCH_TOKEN_BUDGET = Integer.getInteger("eval.researchTokenBudget", 24000);
-    static final int REPEATS = Integer.getInteger("eval.repeats", 1);
-    static final long STUB_LATENCY_MS = Long.getLong("eval.stubLatencyMs", 50L);
-    static final String CHAT_MODEL = "gpt-4o-mini";
+    static final EvalSettings SETTINGS = EvalSettings.fromEnvironment();
+    static final int RESEARCH_TOKEN_BUDGET = SETTINGS.researchTokenBudget();
+    static final int REPEATS = SETTINGS.repeats();
+    static final long STUB_LATENCY_MS = SETTINGS.stubLatencyMs();
+    static final String CHAT_MODEL = SETTINGS.chatModel();
+    /** Research runs are capped at agent_spec.max_turns (8) and AgentLoop.MAX_OUTPUT_TOKENS (800) per turn. */
+    static final int RESEARCH_MAX_TURNS = 8;
+    static final int RESEARCH_MAX_OUTPUT_TOKENS = 800;
+    static final String SKIPPED_BUDGET = "SKIPPED_BUDGET";
     private static final Set<String> TERMINAL = Set.of("SUCCEEDED", "FAILED", "CANCELLED");
     private static final String MINIO_USER = "eval-" + UUID.randomUUID();
     private static final String MINIO_PASSWORD = UUID.randomUUID().toString();
@@ -108,10 +121,17 @@ class EvalRunnerTest {
         config.add("CRAFTPILOT_MINIO_SECRET_KEY", () -> MINIO_PASSWORD);
         config.add("CRAFTPILOT_MINIO_BUCKET", () -> BUCKET);
         config.add("craftpilot.auth.dev-enabled", () -> "true");
-        config.add("craftpilot.openai.base-url", STUBS::embeddingsBaseUrl);
-        config.add("craftpilot.openai.api-key", () -> "stub");
-        config.add("craftpilot.chat.base-url", STUBS::chatBaseUrl);
-        config.add("craftpilot.chat.api-key", () -> "stub");
+        if (SETTINGS.live()) {
+            config.add("craftpilot.openai.base-url", SETTINGS::embeddingsBaseUrl);
+            config.add("craftpilot.openai.api-key", SETTINGS::embeddingsKey);
+            config.add("craftpilot.chat.base-url", SETTINGS::chatBaseUrl);
+            config.add("craftpilot.chat.api-key", SETTINGS::chatKey);
+        } else {
+            config.add("craftpilot.openai.base-url", STUBS::embeddingsBaseUrl);
+            config.add("craftpilot.openai.api-key", () -> "stub");
+            config.add("craftpilot.chat.base-url", STUBS::chatBaseUrl);
+            config.add("craftpilot.chat.api-key", () -> "stub");
+        }
         config.add("craftpilot.chat.model", () -> CHAT_MODEL);
         config.add("craftpilot.runtime.research-token-budget", () -> String.valueOf(RESEARCH_TOKEN_BUDGET));
         config.add("craftpilot.outbox.dispatch-enabled", () -> "false");
@@ -137,36 +157,64 @@ class EvalRunnerTest {
         Instant started = Instant.now();
         Path outDir = EvalOutput.outDir();
         minio.makeBucket(MakeBucketArgs.builder().bucket(BUCKET).build());
-        JsonNode research = readDataset("eval/research-cases-v1.json");
-        JsonNode adversarial = readDataset("eval/adversarial-cases-v1.json");
+        String dataset = EvalOutput.datasetVersion();
+        JsonNode research = readDataset("eval/research-cases-" + dataset + ".json");
+        JsonNode adversarial = readDataset("eval/adversarial-cases-" + dataset + ".json");
+
+        List<JsonNode> researchCases = selected(research.path("cases"));
+        List<JsonNode> adversarialCases = selected(adversarial.path("cases"));
+        int plannedRuns = (researchCases.size() + adversarialCases.size()) * REPEATS;
+        assertThat(plannedRuns).as("eval.cases matched no case ids").isPositive();
+        EvalBudget budget = new EvalBudget(SETTINGS.maxCostUsd(), EvalBudget.perRunCeiling(
+                pricing, CHAT_MODEL, RESEARCH_TOKEN_BUDGET, RESEARCH_MAX_TURNS, RESEARCH_MAX_OUTPUT_TOKENS));
+        if (SETTINGS.live()) {
+            budget.preflight(plannedRuns);
+        }
+        System.out.printf("eval: %s, %d runs planned, worst case $%s, cap $%s%n", SETTINGS.describe(), plannedRuns,
+                budget.worstCase(plannedRuns).toPlainString(), budget.cap().toPlainString());
 
         UUID foreignEvidence = createDecoyMerchant();
         List<Map<String, Object>> runRows = new ArrayList<>();
         List<Map<String, Object>> turnRows = new ArrayList<>();
-        for (JsonNode c : research.path("cases")) {
-            runCase(c, "research", foreignEvidence, runRows, turnRows);
+        Spend spend = new Spend(budget);
+        for (JsonNode c : researchCases) {
+            runCase(c, "research", foreignEvidence, runRows, turnRows, spend);
         }
-        for (JsonNode c : adversarial.path("cases")) {
-            runCase(c, "adversarial", foreignEvidence, runRows, turnRows);
+        for (JsonNode c : adversarialCases) {
+            runCase(c, "adversarial", foreignEvidence, runRows, turnRows, spend);
         }
 
         EvalOutput.writeCsv(outDir.resolve("eval-runs.csv"), runRows);
         EvalOutput.writeCsv(outDir.resolve("eval-turns.csv"), turnRows);
         Map<String, Object> meta = new LinkedHashMap<>();
-        meta.put("mode", "offline-stub");
+        meta.put("mode", SETTINGS.live() ? "live" : "offline-stub");
+        meta.put("settings", SETTINGS.describe());
+        Map<String, Object> spendMeta = new LinkedHashMap<>();
+        spendMeta.put("capUsd", budget.cap());
+        spendMeta.put("perRunCeilingUsd", budget.perRunCeiling());
+        spendMeta.put("plannedRuns", plannedRuns);
+        spendMeta.put("worstCaseUsd", budget.worstCase(plannedRuns));
+        spendMeta.put("spentUsd", spend.total);
+        spendMeta.put("enforced", SETTINGS.live());
+        spendMeta.put("skippedRuns", spend.skipped);
+        spendMeta.put("stopReason", spend.skipped > 0 ? "maxCostUsd reached" : "");
+        meta.put("spend", spendMeta);
         meta.put("startedAt", started.toString());
         meta.put("finishedAt", Instant.now().toString());
         meta.put("datasets", Map.of(
                 "research-cases", research.path("version").asText(),
                 "adversarial-cases", adversarial.path("version").asText(),
-                "opinions", "v1"));
+                "opinions", dataset));
         meta.put("prompt", promptVersion());
-        meta.put("model", Map.of(
-                "name", CHAT_MODEL + " (stub)",
-                "temperature", 0.1,
-                "stubLatencyMs", STUB_LATENCY_MS,
-                "inputUsdPerMtok", pricing.priceFor(CHAT_MODEL).inputUsdPerMtok(),
-                "outputUsdPerMtok", pricing.priceFor(CHAT_MODEL).outputUsdPerMtok()));
+        Map<String, Object> model = new LinkedHashMap<>();
+        model.put("name", SETTINGS.live() ? CHAT_MODEL : CHAT_MODEL + " (stub)");
+        model.put("temperature", 0.1);
+        if (!SETTINGS.live()) {
+            model.put("stubLatencyMs", STUB_LATENCY_MS);
+        }
+        model.put("inputUsdPerMtok", pricing.priceFor(CHAT_MODEL).inputUsdPerMtok());
+        model.put("outputUsdPerMtok", pricing.priceFor(CHAT_MODEL).outputUsdPerMtok());
+        meta.put("model", model);
         meta.put("researchTokenBudget", RESEARCH_TOKEN_BUDGET);
         meta.put("repeats", REPEATS);
         meta.put("git", EvalOutput.gitDescribe());
@@ -174,13 +222,44 @@ class EvalRunnerTest {
         Files.writeString(outDir.resolve("eval-meta.json"),
                 mapper.writerWithDefaultPrettyPrinter().writeValueAsString(meta), StandardCharsets.UTF_8);
 
-        int expectedRows = (research.path("cases").size() + adversarial.path("cases").size()) * REPEATS;
-        assertThat(runRows).hasSize(expectedRows);
-        assertThat(runRows).allSatisfy(row -> assertThat(TERMINAL).contains(String.valueOf(row.get("status"))));
+        assertThat(runRows).hasSize(plannedRuns);
+        assertThat(runRows).allSatisfy(row -> assertThat(String.valueOf(row.get("status")))
+                .isIn("SUCCEEDED", "FAILED", "CANCELLED", SKIPPED_BUDGET));
+    }
+
+    /** Running total of model spend; enforced only in live mode (stub "cost" is not real money). */
+    private static final class Spend {
+        final EvalBudget budget;
+        BigDecimal total = BigDecimal.ZERO;
+        int skipped;
+
+        Spend(EvalBudget budget) {
+            this.budget = budget;
+        }
+
+        boolean mustStop() {
+            return SETTINGS.live() && budget.mustStop(total);
+        }
+    }
+
+    private List<JsonNode> selected(JsonNode cases) {
+        List<JsonNode> out = new ArrayList<>();
+        for (JsonNode c : cases) {
+            if (SETTINGS.includes(c.path("id").asText())) {
+                out.add(c);
+            }
+        }
+        return out;
     }
 
     private void runCase(JsonNode c, String kind, UUID foreignEvidence, List<Map<String, Object>> runRows,
-                         List<Map<String, Object>> turnRows) {
+                         List<Map<String, Object>> turnRows, Spend spend) {
+        if (spend.mustStop()) {
+            for (int repeat = 1; repeat <= REPEATS; repeat++) {
+                runRows.add(skippedRow(c, kind, repeat, spend));
+            }
+            return;
+        }
         CaseFixture fx = setUpCase(c, foreignEvidence);
         JsonNode mcpSpec = c.path("mcp");
         STUBS.setCaseMcp(mcpSpec.isMissingNode() ? null : new EvalStubServers.McpSpec(
@@ -188,14 +267,34 @@ class EvalRunnerTest {
                 mcpSpec.path("responseText").asText()));
         try {
             for (int repeat = 1; repeat <= REPEATS; repeat++) {
+                if (spend.mustStop()) {
+                    runRows.add(skippedRow(c, kind, repeat, spend));
+                    continue;
+                }
                 UUID runId = runTicket(fx, c.path("objective").asText());
                 RunMetrics metrics = collect(fx, runId);
+                spend.total = spend.total.add(new BigDecimal(String.valueOf(metrics.ledger().get("cost_usd"))));
                 runRows.add(row(c, kind, repeat, fx, metrics));
                 turnRows.addAll(turns(c, repeat, fx, runId));
             }
         } finally {
             STUBS.setCaseMcp(null);
         }
+    }
+
+    /** Identity and status only; the CSV writer leaves the other columns empty. */
+    private Map<String, Object> skippedRow(JsonNode c, String kind, int repeat, Spend spend) {
+        spend.skipped++;
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("case_id", c.path("id").asText());
+        row.put("kind", kind);
+        row.put("scenario", kind.equals("research") ? c.path("scenario").asText() : c.path("attack").asText());
+        row.put("split", c.path("split").asText());
+        row.put("repeat", repeat);
+        row.put("run_id", "");
+        row.put("status", SKIPPED_BUDGET);
+        row.put("terminal_reason", "maxCostUsd");
+        return row;
     }
 
     // ---------------------------------------------------------------- fixtures

@@ -1,0 +1,2359 @@
+{
+  "dataset": "research-cases",
+  "version": "v2",
+  "simulated": true,
+  "cases": [
+    {
+      "id": "C01",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "手工亚麻衬衫",
+        "category": "top"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LIN-21",
+          "materialName": "亚麻"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手工亚麻衬衫 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "面料好舒服，透气🥰",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "版型很正，显瘦",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "已经跟老公说好了，开售就买",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "颜色比图里还好看"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "做工细，没看到线头"
+        },
+        {
+          "key": "m6",
+          "revision": "V1",
+          "text": "价格能接受"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 11
+            },
+            {
+              "label": "一般",
+              "votes": 1
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 9
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C02",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "刺绣帆布包",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CAN-22",
+          "materialName": "帆布"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断刺绣帆布包 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "刺绣绝了，针脚好密",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "容量大，通勤刚好",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "求开售！蹲",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "带子有点长，不过能调"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "价格美丽"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 10
+            },
+            {
+              "label": "不会买",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C03",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "粗陶马克杯",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CER-23",
+          "materialName": "粗陶"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断粗陶马克杯 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "釉色太温柔了吧✨",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "手感敦实，拿着舒服",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "一套四个我全要",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "杯底有个小气泡，不影响"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "价钱ok"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 9
+            },
+            {
+              "label": "一般",
+              "votes": 2
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 8
+            },
+            {
+              "label": "不会买",
+              "votes": 3
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C04",
+      "scenario": "clear_positive",
+      "split": "test",
+      "style": {
+        "name": "羊毛围巾",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WOL-24",
+          "materialName": "羊毛"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断羊毛围巾 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "不扎！敏感肌也能戴",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色高级，配大衣绝了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "上新叫我，买两条送我妈",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "就是有一丢丢掉毛"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "比商场划算"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 9
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C05",
+      "scenario": "clear_positive",
+      "split": "test",
+      "style": {
+        "name": "真丝发圈",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "SLK-25",
+          "materialName": "真丝"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断真丝发圈 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "真丝滑滑的，不勒头发",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色好多，选择困难😂",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "已经拉了三个姐妹一起团",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "小东西，价格合适"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "包装也好看"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 12
+            },
+            {
+              "label": "不会买",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C06",
+      "scenario": "revise_attribute",
+      "split": "dev",
+      "style": {
+        "name": "针织开衫",
+        "category": "top"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "KNT-31",
+          "materialName": "棉线针织"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断针织开衫 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "款式很好看😍"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色温柔"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "袖子太长了，盖住手",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "袖长真的要改，跟唱戏似的",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "+1 袖子长了一截",
+          "keyEvidence": true
+        },
+        {
+          "key": "m6",
+          "revision": "V1",
+          "text": "袖子改短我就买"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 9
+            },
+            {
+              "label": "一般",
+              "votes": 2
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 5
+            },
+            {
+              "label": "不会买",
+              "votes": 6
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C07",
+      "scenario": "revise_attribute",
+      "split": "dev",
+      "style": {
+        "name": "皮质卡包",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LEA-32",
+          "materialName": "植鞣革"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断皮质卡包 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "皮质手感好"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "边油刷得不均匀，有点毛",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "走线歪了，强迫症难受",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "线头好几个✂️",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "尺寸刚好放卡"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 8
+            },
+            {
+              "label": "一般",
+              "votes": 3
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C08",
+      "scenario": "revise_attribute",
+      "split": "dev",
+      "style": {
+        "name": "棉麻阔腿裤",
+        "category": "bottom"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LIN-33",
+          "materialName": "棉麻"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断棉麻阔腿裤 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "版型显腿长"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色好看"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "面料太容易皱了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "坐一会儿就全是褶子😓",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "皱得跟咸菜似的，熨都熨不平",
+          "keyEvidence": true
+        },
+        {
+          "key": "m6",
+          "revision": "V1",
+          "text": "价格还行"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 9
+            },
+            {
+              "label": "一般",
+              "votes": 3
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 4
+            },
+            {
+              "label": "不会买",
+              "votes": 7
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C09",
+      "scenario": "revise_attribute",
+      "split": "dev",
+      "style": {
+        "name": "手织毛衣",
+        "category": "top"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WOL-34",
+          "materialName": "粗羊毛"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手织毛衣 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "花纹超好看"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "好扎啊，穿一会儿脖子就红了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "扎得我怀疑人生",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "里面得套打底才能穿，太麻烦",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "款式我很爱"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 10
+            },
+            {
+              "label": "一般",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C10",
+      "scenario": "revise_attribute",
+      "split": "test",
+      "style": {
+        "name": "帆布托特包",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CAN-35",
+          "materialName": "厚帆布"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断帆布托特包 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "容量很大"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色好看"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "带子太细，勒肩膀",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "背久了肩膀疼",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "肩带要是宽一点就完美了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m6",
+          "revision": "V1",
+          "text": "价格ok"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 9
+            },
+            {
+              "label": "一般",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C11",
+      "scenario": "trial_low_intent",
+      "split": "dev",
+      "style": {
+        "name": "刺绣手帕",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "COT-41",
+          "materialName": "细棉布"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断刺绣手帕 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "好精致啊"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "绣花太可爱了"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "喜欢，但是用不上",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "现在谁还用手帕呀，买了也是收着",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "送人可能会考虑"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 10
+            },
+            {
+              "label": "一般",
+              "votes": 1
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 2
+            },
+            {
+              "label": "不会买",
+              "votes": 9
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "TRIAL",
+        "acceptable": [
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C12",
+      "scenario": "trial_low_intent",
+      "split": "dev",
+      "style": {
+        "name": "陶瓷香薰座",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CER-42",
+          "materialName": "白瓷"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断陶瓷香薰座 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "造型好看✨"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色很仙"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "好看是好看，家里放不下了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "不会买，不怎么用香薰",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "看看就好"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 9
+            },
+            {
+              "label": "一般",
+              "votes": 2
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 3
+            },
+            {
+              "label": "不会买",
+              "votes": 8
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "TRIAL",
+        "acceptable": [
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C13",
+      "scenario": "trial_low_intent",
+      "split": "dev",
+      "style": {
+        "name": "编织草帽",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "STR-43",
+          "materialName": "拉菲草"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断编织草帽 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "好有度假风"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "拍照肯定出片"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "一年戴不了几次，就不买了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "喜欢但是不实用",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "价格有点高，可能不买",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 2
+            },
+            {
+              "label": "不会买",
+              "votes": 10
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "TRIAL",
+        "acceptable": [
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C14",
+      "scenario": "trial_low_intent",
+      "split": "test",
+      "style": {
+        "name": "手工皂礼盒",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "SOP-44",
+          "materialName": "冷制皂"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手工皂礼盒 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "包装好美"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "香味好闻"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "喜欢，但超市的皂够用了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "当礼物还行，自己不会买",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "价格偏高"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 11
+            },
+            {
+              "label": "一般",
+              "votes": 1
+            }
+          ]
+        },
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 3
+            },
+            {
+              "label": "不会买",
+              "votes": 9
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "TRIAL",
+        "acceptable": [
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C15",
+      "scenario": "trial_low_intent",
+      "split": "test",
+      "style": {
+        "name": "亚麻桌旗",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LIN-45",
+          "materialName": "水洗亚麻"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断亚麻桌旗 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "质感很好"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "颜色高级"
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "家里没有那么大的桌子😂",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "好看但不实用",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "估计不会买",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 2
+            },
+            {
+              "label": "不会买",
+              "votes": 8
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "TRIAL",
+        "acceptable": [
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C16",
+      "scenario": "hold_sparse",
+      "split": "dev",
+      "style": {
+        "name": "皮革笔袋",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LEA-51",
+          "materialName": "牛皮"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断皮革笔袋 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "还行吧",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "有实拍吗？",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD"
+        ],
+        "mustCite": [
+          "m1",
+          "m2"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C17",
+      "scenario": "hold_sparse",
+      "split": "dev",
+      "style": {
+        "name": "棉麻围裙",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "COT-52",
+          "materialName": "棉麻"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断棉麻围裙 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "嗯",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "再看看",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD"
+        ],
+        "mustCite": [
+          "m1",
+          "m2"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C18",
+      "scenario": "hold_sparse",
+      "split": "dev",
+      "style": {
+        "name": "木质发簪",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WOD-53",
+          "materialName": "黑檀木"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断木质发簪 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "一般般吧",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 1
+            },
+            {
+              "label": "不会买",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD"
+        ],
+        "mustCite": [
+          "m1"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C19",
+      "scenario": "hold_sparse",
+      "split": "dev",
+      "style": {
+        "name": "羊毛袜",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WOL-54",
+          "materialName": "美利奴羊毛"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断羊毛袜 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "多少钱",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "有别的颜色吗",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD"
+        ],
+        "mustCite": [
+          "m1",
+          "m2"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C20",
+      "scenario": "hold_sparse",
+      "split": "test",
+      "style": {
+        "name": "竹编收纳篮",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "BAM-55",
+          "materialName": "竹篾"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断竹编收纳篮 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "看着还行😐",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "不好说",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD"
+        ],
+        "mustCite": [
+          "m1",
+          "m2"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C21",
+      "scenario": "hold_polarized",
+      "split": "dev",
+      "style": {
+        "name": "不对称半裙",
+        "category": "bottom"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "POL-61",
+          "materialName": "醋酸"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断不对称半裙 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "好特别，我爱了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "太怪了，穿不出去",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "好看到想立刻下单",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "像没做完的样子🙃",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "很有设计感"
+        },
+        {
+          "key": "m6",
+          "revision": "V1",
+          "text": "丑哭"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 5
+            },
+            {
+              "label": "不会买",
+              "votes": 5
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C22",
+      "scenario": "hold_polarized",
+      "split": "dev",
+      "style": {
+        "name": "撞色毛线帽",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WOL-62",
+          "materialName": "腈纶混纺"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断撞色毛线帽 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "配色好可爱"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "配色太扎眼了，像交通灯",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "我觉得很有活力",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "显脸大",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "送小朋友不错"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 4
+            },
+            {
+              "label": "不会买",
+              "votes": 5
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C23",
+      "scenario": "hold_polarized",
+      "split": "dev",
+      "style": {
+        "name": "粗犷陶碗",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CER-63",
+          "materialName": "粗陶"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断粗犷陶碗 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "质朴感爱了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "看着像次品😅",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "这种手作感正是我要的",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "表面坑坑洼洼的，不好洗",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 5
+            },
+            {
+              "label": "不会买",
+              "votes": 4
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C24",
+      "scenario": "hold_polarized",
+      "split": "test",
+      "style": {
+        "name": "流苏耳环",
+        "category": "jewelry"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "JEW-64",
+          "materialName": "925银"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断流苏耳环 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "好仙",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "太夸张了，戴不出去",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "显脸小",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "勾头发，勾得疼",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 5
+            },
+            {
+              "label": "不会买",
+              "votes": 6
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C25",
+      "scenario": "hold_polarized",
+      "split": "test",
+      "style": {
+        "name": "拼布外套",
+        "category": "outerwear"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "PAT-65",
+          "materialName": "拼布棉"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断拼布外套 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "拼布好有味道",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "像百家衣，老气",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "很有艺术感",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "不知道怎么搭，穿着怪",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 6
+            },
+            {
+              "label": "不会买",
+              "votes": 6
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "HOLD",
+        "acceptable": [
+          "HOLD",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": []
+      }
+    },
+    {
+      "id": "C26",
+      "scenario": "version_mix",
+      "split": "dev",
+      "style": {
+        "name": "牛仔外套",
+        "category": "outerwear"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "DEN-71",
+          "materialName": "牛仔布"
+        },
+        {
+          "key": "V2",
+          "notes": "换软面料、加长袖子",
+          "materialCode": "DEN-71S",
+          "materialName": "水洗牛仔布"
+        }
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断牛仔外套 V2 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "V1 面料太硬了"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "V1 袖子短"
+        },
+        {
+          "key": "m3",
+          "revision": "V2",
+          "text": "V2 软多了，好穿",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V2",
+          "text": "V2 袖长刚好",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V2",
+          "text": "V2 颜色也更好看",
+          "keyEvidence": true
+        },
+        {
+          "key": "m6",
+          "revision": "V2",
+          "text": "V2 啥时候开卖"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V2",
+          "kind": "PURCHASE_INTENT",
+          "question": "V2 开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 8
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": [
+          "m1",
+          "m2"
+        ]
+      }
+    },
+    {
+      "id": "C27",
+      "scenario": "version_mix",
+      "split": "dev",
+      "style": {
+        "name": "亚麻连衣裙",
+        "category": "dress"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LIN-72",
+          "materialName": "亚麻"
+        },
+        {
+          "key": "V2",
+          "notes": "换防皱面料、改腰线",
+          "materialCode": "LIN-72C",
+          "materialName": "亚麻混棉"
+        }
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断亚麻连衣裙 V2 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "V1 皱得厉害"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "V1 颜色好看"
+        },
+        {
+          "key": "m3",
+          "revision": "V2",
+          "text": "V2 还是有点皱",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V2",
+          "text": "V2 皱是好一点，但还是不够",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V2",
+          "text": "V2 腰线改得好看了"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V2",
+          "kind": "PURCHASE_INTENT",
+          "question": "V2 开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 5
+            },
+            {
+              "label": "不会买",
+              "votes": 5
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m3",
+          "m4"
+        ],
+        "mustNotCite": [
+          "m1",
+          "m2"
+        ]
+      }
+    },
+    {
+      "id": "C28",
+      "scenario": "version_mix",
+      "split": "dev",
+      "style": {
+        "name": "皮革钱包",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LEA-73",
+          "materialName": "牛皮"
+        },
+        {
+          "key": "V2",
+          "notes": "重刷边油、修线头",
+          "materialCode": "LEA-73B",
+          "materialName": "牛皮"
+        }
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断皮革钱包 V2 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "V1 边油起泡"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "V1 线头多"
+        },
+        {
+          "key": "m3",
+          "revision": "V2",
+          "text": "V2 边油平整多了👍",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V2",
+          "text": "V2 做工没话说",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V2",
+          "text": "V2 想买",
+          "keyEvidence": true
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V2",
+          "kind": "PURCHASE_INTENT",
+          "question": "V2 开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 9
+            },
+            {
+              "label": "不会买",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m3",
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": [
+          "m1",
+          "m2"
+        ]
+      }
+    },
+    {
+      "id": "C29",
+      "scenario": "version_mix",
+      "split": "dev",
+      "style": {
+        "name": "针织背心",
+        "category": "top"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "KNT-74",
+          "materialName": "棉针织"
+        },
+        {
+          "key": "V2",
+          "notes": "放大尺码、加宽领口",
+          "materialCode": "KNT-74L",
+          "materialName": "棉针织"
+        }
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断针织背心 V2 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "V1 偏小"
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "V1 领口紧"
+        },
+        {
+          "key": "m3",
+          "revision": "V2",
+          "text": "V2 尺码正常了"
+        },
+        {
+          "key": "m4",
+          "revision": "V2",
+          "text": "V2 但是面料起球好快😭",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V2",
+          "text": "V2 起球太严重了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m6",
+          "revision": "V2",
+          "text": "V2 颜色好看"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V2",
+          "kind": "PREFERENCE",
+          "question": "V2 喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 7
+            },
+            {
+              "label": "一般",
+              "votes": 4
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "REVISE",
+        "acceptable": [
+          "REVISE"
+        ],
+        "mustCite": [
+          "m4",
+          "m5"
+        ],
+        "mustNotCite": [
+          "m1",
+          "m2"
+        ]
+      }
+    },
+    {
+      "id": "C30",
+      "scenario": "version_mix",
+      "split": "test",
+      "style": {
+        "name": "陶瓷花瓶",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CER-75",
+          "materialName": "白瓷"
+        },
+        {
+          "key": "V2",
+          "notes": "改釉色",
+          "materialCode": "CER-75G",
+          "materialName": "青釉瓷"
+        }
+      ],
+      "targetRevision": "V2",
+      "objective": "根据群聊反馈和投票，判断陶瓷花瓶 V2 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "V1 颜色土"
+        },
+        {
+          "key": "m2",
+          "revision": "V2",
+          "text": "V2 釉色好高级",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V2",
+          "text": "V2 想买一对",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V2",
+          "text": "V2 底部有点不平，会晃"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V2",
+          "kind": "PURCHASE_INTENT",
+          "question": "V2 开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 8
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE",
+          "TRIAL"
+        ],
+        "mustCite": [
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": [
+          "m1"
+        ]
+      }
+    }
+  ]
+}

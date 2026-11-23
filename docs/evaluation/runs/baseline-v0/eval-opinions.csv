@@ -1,0 +1,51 @@
+id,split,text,gold,predicted
+O01,dev,面料摸起来很软，很舒服,POSITIVE:fabric,NEUTRAL:fabric
+O02,dev,这个面料有点硬，穿着扎,NEGATIVE:fabric,NEGATIVE:fabric
+O03,test,不喜欢这个颜色，太暗了,NEGATIVE:color,POSITIVE:overall;NEGATIVE:overall
+O04,dev,整体很好看，想买,POSITIVE:overall,POSITIVE:overall
+O05,dev,线头好多，做工一般,NEGATIVE:workmanship,NEUTRAL:overall
+O06,test,价格有点贵，150 以内会考虑,NEGATIVE:price,NEUTRAL:overall
+O07,dev,尺码偏小，平时穿 M 这件得穿 L,NEGATIVE:size,NEUTRAL:overall
+O08,dev,配色很高级，喜欢,POSITIVE:color,POSITIVE:overall
+O09,dev,走线很整齐，做工扎实,POSITIVE:workmanship,NEUTRAL:overall
+O10,test,版型好看但是面料起球,POSITIVE:overall;NEGATIVE:fabric,POSITIVE:overall;NEUTRAL:fabric
+O11,dev,V2 的面料比 V1 软多了,POSITIVE:fabric,NEUTRAL:fabric
+O12,dev,V2 袖长刚好，尺码合适,POSITIVE:size,NEUTRAL:overall
+O13,test,这件什么时候能发货？,NEUTRAL:overall,NEUTRAL:overall
+O14,dev,说不上来，再看看,NEUTRAL:overall,NEUTRAL:overall
+O15,dev,不是很喜欢，感觉一般,NEGATIVE:overall,POSITIVE:overall
+O16,dev,颜色比图片浅一点，不过还行,NEUTRAL:color,NEUTRAL:overall
+O17,test,面料不硬，挺好的,POSITIVE:fabric,NEGATIVE:fabric
+O18,dev,扣子缝得不牢，掉了一颗,NEGATIVE:workmanship,NEUTRAL:overall
+O19,dev,这个价位很值,POSITIVE:price,NEUTRAL:overall
+O20,dev,太大了，肩膀撑不起来,NEGATIVE:size,NEUTRAL:overall
+O21,test,好看是好看，就是不会买，太贵,POSITIVE:overall;NEGATIVE:price,POSITIVE:overall
+O22,dev,材质是什么？纯棉吗,NEUTRAL:fabric,NEUTRAL:fabric
+O23,dev,颜色有点土,NEGATIVE:color,NEUTRAL:overall
+O24,test,手感很好，滑滑的,POSITIVE:fabric,NEUTRAL:overall
+O25,dev,做工比上一版精细,POSITIVE:workmanship,NEUTRAL:overall
+O26,dev,喜欢！已经想下单了,POSITIVE:overall,POSITIVE:overall
+O27,dev,腰围太紧了,NEGATIVE:size,NEUTRAL:overall
+O28,test,价格可以接受,POSITIVE:price,NEUTRAL:overall
+O29,dev,这个颜色不显白,NEGATIVE:color,NEUTRAL:overall
+O30,dev,面料透气，夏天穿正好,POSITIVE:fabric,NEUTRAL:fabric
+O31,test,没什么感觉，和别家差不多,NEUTRAL:overall,NEGATIVE:overall
+O32,dev,领口的走线歪了,NEGATIVE:workmanship,NEUTRAL:overall
+O33,dev,尺码标准，按平时买就行,POSITIVE:size,NEUTRAL:overall
+O34,dev,太贵了，不值这个价,NEGATIVE:price,NEUTRAL:overall
+O35,test,面料太薄，有点透,NEGATIVE:fabric,NEUTRAL:fabric
+O36,dev,颜色正，和图片一样,POSITIVE:color,NEUTRAL:overall
+O37,dev,不喜欢这个领子的设计,NEGATIVE:overall,POSITIVE:overall;NEGATIVE:overall
+O38,test,整体不错，就是线头要处理一下,POSITIVE:overall;NEGATIVE:workmanship,POSITIVE:overall
+O39,dev,多少钱？,NEUTRAL:price,NEUTRAL:overall
+O40,dev,这版比上一版好看太多,POSITIVE:overall,POSITIVE:overall
+O41,test,面料洗了一次就缩水,NEGATIVE:fabric,NEUTRAL:fabric
+O42,dev,有没有别的颜色可选,NEUTRAL:color,NEUTRAL:overall
+O43,dev,裤长刚好到脚踝，很合适,POSITIVE:size,NEUTRAL:overall
+O44,test,做工粗糙，不建议量产,NEGATIVE:workmanship,NEUTRAL:overall
+O45,dev,喜欢但是不会买，衣柜里有类似的,POSITIVE:overall,POSITIVE:overall
+O46,dev,价格很香，比同类便宜,POSITIVE:price,NEUTRAL:overall
+O47,test,面料一般般吧,NEUTRAL:fabric,NEUTRAL:fabric
+O48,dev,颜色好看，面料也舒服,POSITIVE:color;POSITIVE:fabric,POSITIVE:overall;NEUTRAL:fabric
+O49,dev,偏大一码，建议改小,NEGATIVE:size,NEUTRAL:overall
+O50,test,有点难看,NEGATIVE:overall,NEGATIVE:overall

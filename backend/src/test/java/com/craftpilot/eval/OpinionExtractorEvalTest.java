@@ -18,7 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Component evaluation of the opinion extractor against {@code eval/opinions-v1.json}. Writes one row per message
+ * Component evaluation of the opinion extractor against {@code eval/opinions-<eval.dataset>.json} (default v1). Writes one row per message
  * to {@code eval-opinions.csv}; macro-F1 and the confusion matrix are computed by {@code eval_report.py}. The
  * extractor is the rule-based v0 (P1-1 baseline); it has no Spring dependencies, so no application context is
  * started.
@@ -30,7 +30,8 @@ class OpinionExtractorEvalTest {
     @Test
     void extractAnnotatedOpinions() throws Exception {
         JsonNode dataset;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("eval/opinions-v1.json")) {
+        String resource = "eval/opinions-" + EvalOutput.datasetVersion() + ".json";
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
             assertThat(in).isNotNull();
             dataset = mapper.readTree(in);
         }
