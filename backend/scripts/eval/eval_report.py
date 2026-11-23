@@ -321,6 +321,13 @@ def header(meta, runs, skipped=()):
         f"- 时间：{meta.get('startedAt', '?')} → {meta.get('finishedAt', '?')}",
         f"- 本次总花费：{fmt(sum(num(r['cost_usd']) for r in runs), money=True)}",
     ]
+    tools = meta.get("tools")
+    if tools:
+        pins = meta.get("toolPins") or {}
+        listed = "，".join(f"{name} v{ver}" + ("（固定）" if name in pins else "") for name, ver in sorted(tools.items()))
+        lines.append(f"- 工具版本：{listed}")
+    if meta.get("prompt", {}).get("pinned"):
+        lines.append("- 提示词版本是用 -Deval.promptVersion 固定的，不是最新版")
     if spend:
         enforced = "生效" if spend.get("enforced") else "仅记录，桩模型不花钱"
         lines.append(f"- 花费上限：${spend.get('capUsd', '?')}（{enforced}）；单个 Run 最坏 ${spend.get('perRunCeilingUsd', '?')}，"
@@ -382,7 +389,19 @@ def opinion_section(rows):
     if not rows:
         return "没有 eval-opinions.csv，跳过。"
     parts = []
-    for title, subset in (("全部", rows), ("测试集（split=test）", [r for r in rows if r["split"] == "test"])):
+    extractors = sorted({r.get("extractor") or "r2-rule-1" for r in rows})
+    line = f"提取器：{'、'.join(extractors)}"
+    if any(r.get("tokens_in") not in (None, "", "0") for r in rows):
+        line += (f"；输入 {int(sum(num(r.get('tokens_in')) for r in rows))} / 输出 "
+                 f"{int(sum(num(r.get('tokens_out')) for r in rows))} token，花费 "
+                 f"{fmt(sum(num(r.get('cost_usd')) for r in rows), money=True)}；"
+                 f"回退到规则版 {int(sum(num(r.get('fallback')) for r in rows))} 条")
+    parts.append(line)
+    parts.append("")
+    for title, subset in (("全部", rows), ("开发集（split=dev）", [r for r in rows if r["split"] == "dev"]),
+                          ("测试集（split=test）", [r for r in rows if r["split"] == "test"])):
+        if not subset or (title == "全部" and len({r["split"] for r in rows}) == 1):
+            continue
         metrics = opinion_metrics(subset)
         parts.append(f"**{title}**：{metrics['n']} 条，macro-F1 = {fmt(metrics['macro_f1'], digits=3)}")
     metrics = opinion_metrics(rows)

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.craftpilot.runtime.mcp.McpClient;
 import com.craftpilot.runtime.model.ChatPricing;
+import com.craftpilot.runtime.release.AgentSpecResolver;
+import com.craftpilot.runtime.release.RuntimeVersions;
 import com.craftpilot.runtime.worker.RunWorker;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -134,6 +136,10 @@ class EvalRunnerTest {
         }
         config.add("craftpilot.chat.model", () -> CHAT_MODEL);
         config.add("craftpilot.runtime.research-token-budget", () -> String.valueOf(RESEARCH_TOKEN_BUDGET));
+        // Version pins for controlled experiments; empty = latest prompt / released tool output.
+        config.add("craftpilot.runtime.research-prompt-version", () -> System.getProperty("eval.promptVersion", ""));
+        config.add("craftpilot.runtime.tool-versions.survey-get-stats",
+                () -> System.getProperty("eval.surveyStatsVersion", ""));
         config.add("craftpilot.outbox.dispatch-enabled", () -> "false");
         config.add("craftpilot.runtime.worker-enabled", () -> "false");
     }
@@ -151,6 +157,8 @@ class EvalRunnerTest {
     @Autowired MinioClient minio;
     @Autowired ObjectMapper mapper;
     @Autowired ChatPricing pricing;
+    @Autowired AgentSpecResolver specs;
+    @Autowired RuntimeVersions versions;
 
     @Test
     void runEvaluation() throws Exception {
@@ -206,6 +214,8 @@ class EvalRunnerTest {
                 "adversarial-cases", adversarial.path("version").asText(),
                 "opinions", dataset));
         meta.put("prompt", promptVersion());
+        meta.put("tools", toolVersions());
+        meta.put("toolPins", versions.toolPins());
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("name", SETTINGS.live() ? CHAT_MODEL : CHAT_MODEL + " (stub)");
         model.put("temperature", 0.1);
@@ -487,7 +497,8 @@ class EvalRunnerTest {
         Map<String, Object> tools = jdbc.sql("""
                 SELECT COUNT(*) AS tool_calls, COALESCE(SUM(latency_ms), 0) AS tool_ms,
                        COUNT(*) FILTER (WHERE status IN ('FAILED_FINAL', 'DENIED')) AS failed_tool_calls,
-                       COUNT(*) - COUNT(DISTINCT (tool_name, arguments_hash)) AS duplicate_tool_calls
+                       COUNT(*) - COUNT(DISTINCT (tool_name, arguments_hash)) AS duplicate_tool_calls,
+                       COALESCE(string_agg(DISTINCT tool_name || ':' || tool_version, ';'), '') AS tool_versions
                 FROM tool_invocation WHERE merchant_id = :m AND run_id = :run
                 """).param("m", fx.merchant()).param("run", runId).query().singleRow();
         Map<String, Object> ledger = jdbc.sql("""
@@ -615,6 +626,7 @@ class EvalRunnerTest {
         // reliability
         row.put("lease_epoch", num(m.run().get("lease_epoch")));
         row.put("token_budget", num(m.run().get("token_budget")));
+        row.put("tool_versions", m.tools().get("tool_versions"));
         return row;
     }
 
@@ -671,9 +683,24 @@ class EvalRunnerTest {
         return rows;
     }
 
+    /** The prompt version the runs actually used (latest unless pinned with -Deval.promptVersion). */
     private Map<String, Object> promptVersion() {
-        return jdbc.sql("SELECT id, version, content_hash FROM agent_spec WHERE id = 'research-agent-r3'")
-                .query().singleRow();
+        AgentSpecResolver.ResolvedSpec spec = specs.research();
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("id", spec.id());
+        out.put("version", spec.version());
+        out.put("content_hash", spec.contentHash());
+        out.put("pinned", versions.researchPromptVersion().isPresent());
+        return out;
+    }
+
+    /** Tool output versions the runs used: released version unless pinned (-Deval.surveyStatsVersion). */
+    private Map<String, Object> toolVersions() {
+        Map<String, Object> out = new LinkedHashMap<>();
+        jdbc.sql("SELECT tool_name, version FROM tool_release WHERE enabled ORDER BY tool_name")
+                .query((rs, i) -> Map.entry(rs.getString("tool_name"), rs.getString("version"))).list()
+                .forEach(e -> out.put(e.getKey(), versions.toolVersion(e.getKey(), e.getValue())));
+        return out;
     }
 
     // ---------------------------------------------------------------- helpers

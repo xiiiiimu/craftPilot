@@ -106,7 +106,7 @@ O104,dev,这价位能买到手工的，值！,POSITIVE:price,NEUTRAL:overall
 O105,dev,比商场便宜一半，冲冲冲,POSITIVE:price,NEUTRAL:overall
 O106,test,价格可以接受,POSITIVE:price,NEUTRAL:overall
 O107,dev,两百出头，学生党也买得起😊,POSITIVE:price,NEUTRAL:overall
-O108,dev,贵是贵点但物有所值,POSITIVE:price,NEUTRAL:overall
+O108,dev,贵是贵点但物有所值,NEGATIVE:price;POSITIVE:overall,NEUTRAL:overall
 O109,test,价格美丽,POSITIVE:price,NEUTRAL:overall
 O110,dev,定价很合理，做工也配得上,POSITIVE:price;POSITIVE:workmanship,NEUTRAL:overall
 O111,dev,太贵了吧，抢钱呢,NEGATIVE:price,NEUTRAL:overall
@@ -183,7 +183,7 @@ O181,dev,码数准，下单！,POSITIVE:size;POSITIVE:overall,NEUTRAL:overall
 O182,dev,太大太长太贵，三连劝退,NEGATIVE:size;NEGATIVE:price,NEUTRAL:overall
 O183,test,便宜是便宜，质量也就那样,POSITIVE:price;NEUTRAL:overall,NEUTRAL:overall
 O184,dev,颜色是我喜欢的，价格就算了吧🙂,POSITIVE:color;NEGATIVE:price,POSITIVE:overall
-O185,dev,有点小贵，不过手感值这个价,POSITIVE:fabric;POSITIVE:price,NEUTRAL:overall
+O185,dev,有点小贵，不过手感值这个价,NEGATIVE:price;POSITIVE:fabric,NEUTRAL:overall
 O186,test,想问下这个面料会褪色吗,NEUTRAL:color,NEUTRAL:fabric
 O187,dev,看着挺普通的，没啥感觉,NEUTRAL:overall,NEUTRAL:overall
 O188,dev,版型绝了，面料也好，就是线头要修修,POSITIVE:overall;POSITIVE:fabric;NEGATIVE:workmanship,NEUTRAL:fabric
@@ -195,7 +195,7 @@ O193,test,腰围终于改对了！,POSITIVE:size,NEUTRAL:overall
 O194,dev,这次的颜色比上次正,POSITIVE:color,NEUTRAL:overall
 O195,dev,面料还是太闷，夏天穿不了,NEGATIVE:fabric,NEUTRAL:fabric
 O196,test,尺码终于不偏小了,POSITIVE:size,NEUTRAL:overall
-O197,dev,价格有点高，但是能理解手工成本,NEUTRAL:price,NEUTRAL:overall
+O197,dev,价格有点高，但是能理解手工成本,NEGATIVE:price,NEUTRAL:overall
 O198,dev,扣子换成金属的更好看了,POSITIVE:workmanship,POSITIVE:overall
 O199,test,什么时候补货？上次没抢到,POSITIVE:overall,NEUTRAL:overall
 O200,dev,等打折再说,NEUTRAL:price,NEUTRAL:overall

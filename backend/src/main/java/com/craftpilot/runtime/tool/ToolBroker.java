@@ -7,8 +7,10 @@ import com.craftpilot.retrieval.RetrievalService;
 import com.craftpilot.runtime.ledger.BudgetService;
 import com.craftpilot.runtime.mcp.McpClient;
 import com.craftpilot.runtime.metrics.RuntimeMetrics;
+import com.craftpilot.runtime.release.RuntimeVersions;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,9 +36,10 @@ public class ToolBroker {
     private final RetrievalService retrieval;
     private final McpClient mcp;
     private final RuntimeMetrics metrics;
+    private final RuntimeVersions versions;
 
     public ToolBroker(JdbcClient jdbc, ObjectMapper mapper, BudgetService budget, EvidenceService evidence,
-                      RetrievalService retrieval, McpClient mcp, RuntimeMetrics metrics) {
+                      RetrievalService retrieval, McpClient mcp, RuntimeMetrics metrics, RuntimeVersions versions) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.budget = budget;
@@ -44,6 +47,7 @@ public class ToolBroker {
         this.retrieval = retrieval;
         this.mcp = mcp;
         this.metrics = metrics;
+        this.versions = versions;
     }
 
     public List<Map<String, Object>> toolSchemas() {
@@ -119,6 +123,7 @@ public class ToolBroker {
                         "effect", rs.getString("effect_class"),
                         "schema", rs.getString("schema")))
                 .optional().orElseThrow(ApiFailure::notFound);
+        String toolVersion = versions.toolVersion(toolName, String.valueOf(tool.get("version")));
         JsonNode args = parseArgs(argumentsJson);
         validateSchema(String.valueOf(tool.get("schema")), args);
 
@@ -151,7 +156,7 @@ public class ToolBroker {
                             CAST(:args AS jsonb), :hash, :op, :effect, 'DISPATCHING', :epoch)
                     """).param("m", merchant).param("id", invocationId).param("survey", surveyId)
                     .param("run", runId).param("task", taskId).param("turn", turnId).param("ord", ordinal)
-                    .param("name", toolName).param("ver", tool.get("version")).param("args", argumentsJson)
+                    .param("name", toolName).param("ver", toolVersion).param("args", argumentsJson)
                     .param("hash", sha(argumentsJson)).param("op", opKey).param("effect", tool.get("effect"))
                     .param("epoch", leaseEpoch).update();
         } else {
@@ -171,7 +176,8 @@ public class ToolBroker {
         Map<String, Object> result;
         long toolStart = System.nanoTime();
         try {
-            result = execute(actor, merchant, surveyId, runId, taskId, (UUID) run.get("ticketId"), toolName, args);
+            result = execute(actor, merchant, surveyId, runId, taskId, (UUID) run.get("ticketId"), toolName, toolVersion,
+                    args);
         } catch (RuntimeException ex) {
             long failedNanos = System.nanoTime() - toolStart;
             metrics.toolCall(toolName, false, failedNanos);
@@ -246,10 +252,10 @@ public class ToolBroker {
     }
 
     private Map<String, Object> execute(UUID actor, UUID merchant, UUID surveyId, UUID runId, UUID taskId,
-                                     UUID ticketId, String toolName, JsonNode args) {
+                                     UUID ticketId, String toolName, String toolVersion, JsonNode args) {
         return switch (toolName) {
             case "sample_get_snapshot" -> sampleSnapshot(merchant, surveyId, ticketId, uuid(args, "revisionId"));
-            case "survey_get_stats" -> surveyStats(merchant, surveyId, ticketId, uuid(args, "revisionId"));
+            case "survey_get_stats" -> surveyStats(merchant, surveyId, ticketId, uuid(args, "revisionId"), toolVersion);
             case "evidence_search" -> evidenceSearch(actor, merchant, surveyId, ticketId,
                     uuid(args, "revisionId"), text(args, "query"), args.path("topK").asInt(5));
             case "evidence_verify" -> evidenceVerify(actor, merchant, surveyId, uuid(args, "evidenceId"));
@@ -319,7 +325,8 @@ public class ToolBroker {
         return out;
     }
 
-    private Map<String, Object> surveyStats(UUID merchant, UUID surveyId, UUID ticketId, UUID revisionId) {
+    private Map<String, Object> surveyStats(UUID merchant, UUID surveyId, UUID ticketId, UUID revisionId,
+                                            String toolVersion) {
         requireTicketRevision(merchant, ticketId, revisionId);
         long issues = jdbc.sql("""
                 SELECT COUNT(*) FROM feedback_issue
@@ -331,7 +338,49 @@ public class ToolBroker {
                 WHERE merchant_id = :m AND survey_id = :survey AND revision_id = :r AND visibility = 'ACTIVE'
                 """).param("m", merchant).param("survey", surveyId).param("r", revisionId)
                 .query(Long.class).single();
-        return Map.of("revisionId", revisionId, "openIssues", issues, "activeEvidence", evidence);
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("revisionId", revisionId);
+        out.put("openIssues", issues);
+        out.put("activeEvidence", evidence);
+        if (!"1".equals(toolVersion)) {
+            out.put("polls", pollResults(merchant, surveyId, revisionId));
+        }
+        return out;
+    }
+
+    /** v2: vote counts per option for every poll on this revision (aggregates, not citable evidence). */
+    private List<Map<String, Object>> pollResults(UUID merchant, UUID surveyId, UUID revisionId) {
+        record Row(UUID pollId, String kind, String question, String label, long votes) {}
+        List<Row> rows = jdbc.sql("""
+                SELECT p.id AS poll_id, p.kind, p.question, o.label, COUNT(v.member_id) AS votes
+                FROM survey_poll p
+                JOIN survey_poll_option o ON o.merchant_id = p.merchant_id AND o.poll_id = p.id
+                LEFT JOIN survey_vote v ON v.merchant_id = o.merchant_id AND v.survey_id = p.survey_id
+                                       AND v.poll_id = o.poll_id AND v.option_id = o.id
+                WHERE p.merchant_id = :m AND p.survey_id = :survey AND p.revision_id = :r
+                GROUP BY p.id, p.kind, p.question, p.created_at, o.id, o.label, o.position
+                ORDER BY p.created_at, p.id, o.position
+                """).param("m", merchant).param("survey", surveyId).param("r", revisionId)
+                .query((rs, i) -> new Row(rs.getObject("poll_id", UUID.class), rs.getString("kind"),
+                        rs.getString("question"), rs.getString("label"), rs.getLong("votes")))
+                .list();
+        Map<UUID, Map<String, Object>> polls = new LinkedHashMap<>();
+        for (Row row : rows) {
+            Map<String, Object> poll = polls.computeIfAbsent(row.pollId(), id -> {
+                Map<String, Object> p = new LinkedHashMap<>();
+                p.put("pollId", id);
+                p.put("kind", row.kind());
+                p.put("question", row.question());
+                p.put("totalVotes", 0L);
+                p.put("options", new ArrayList<Map<String, Object>>());
+                return p;
+            });
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> options = (List<Map<String, Object>>) poll.get("options");
+            options.add(Map.of("label", row.label(), "votes", row.votes()));
+            poll.put("totalVotes", (Long) poll.get("totalVotes") + row.votes());
+        }
+        return new ArrayList<>(polls.values());
     }
 
     private Map<String, Object> evidenceSearch(UUID actor, UUID merchant, UUID surveyId, UUID ticketId,

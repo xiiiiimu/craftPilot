@@ -63,6 +63,15 @@ public class ChatModelGateway {
 
     public InferResult infer(UUID merchant, List<Map<String, Object>> messages, List<Map<String, Object>> tools,
                              int maxTokens) {
+        return infer(merchant, messages, tools, maxTokens, null);
+    }
+
+    /**
+     * @param responseFormat optional OpenAI {@code response_format} (e.g. a strict JSON Schema) for the final text
+     *                       answer; tool calls are unaffected. {@code null} sends none.
+     */
+    public InferResult infer(UUID merchant, List<Map<String, Object>> messages, List<Map<String, Object>> tools,
+                             int maxTokens, Map<String, Object> responseFormat) {
         String requestHash = sha(model + "|" + safeJson(messages) + "|" + safeJson(tools));
         UUID callId = UUID.randomUUID();
         jdbc.sql("""
@@ -79,6 +88,9 @@ public class ChatModelGateway {
         body.put("tool_choice", "auto");
         body.put("temperature", 0.1);
         body.put("max_tokens", maxTokens);
+        if (responseFormat != null) {
+            body.put("response_format", responseFormat);
+        }
 
         RuntimeException last = null;
         for (int attempt = 0; attempt <= maxRetries; attempt++) {
