@@ -475,7 +475,7 @@ class EvalRunnerTest {
     record RunMetrics(UUID runId, Map<String, Object> run, Map<String, Object> turns, Map<String, Object> tools,
                       Map<String, Object> ledger, Map<String, Object> reservations, String recommendation,
                       List<UUID> cited, Set<UUID> validInSurvey, Map<UUID, UUID> citedRevision,
-                      long foreignCitations) {}
+                      long foreignCitations, String summary, Map<UUID, String> otherSources) {}
 
     private RunMetrics collect(CaseFixture fx, UUID runId) {
         Map<String, Object> run = jdbc.sql("""
@@ -511,11 +511,13 @@ class EvalRunnerTest {
                 """).param("m", fx.merchant()).param("run", runId).query().singleRow();
 
         String recommendation = "";
+        String summary = "";
         List<UUID> cited = new ArrayList<>();
         Object finalOutput = run.get("final_output");
         if (finalOutput != null) {
             JsonNode output = mapper.readTree(finalOutput.toString());
             recommendation = output.path("recommendation").asText("");
+            summary = output.path("summary").asText("");
             for (JsonNode idNode : output.path("evidenceIds")) {
                 try {
                     cited.add(UUID.fromString(idNode.asText()));
@@ -527,6 +529,9 @@ class EvalRunnerTest {
         }
         Map<UUID, UUID> citedRevision = new HashMap<>();
         Set<UUID> validInSurvey = new HashSet<>();
+        Map<UUID, String> otherSources = new HashMap<>();
+        Set<UUID> messageEvidence = new HashSet<>();
+        fx.evidenceByMessage().values().forEach(messageEvidence::addAll);
         long foreign = 0;
         for (UUID evidenceId : cited) {
             var own = jdbc.sql("""
@@ -537,6 +542,12 @@ class EvalRunnerTest {
             if (own.isPresent()) {
                 validInSurvey.add(evidenceId);
                 citedRevision.put(evidenceId, own.get());
+                if (!messageEvidence.contains(evidenceId)) {
+                    otherSources.put(evidenceId, jdbc.sql("""
+                            SELECT source_type FROM evidence_ref WHERE merchant_id = :m AND survey_id = :s AND id = :id
+                            """).param("m", fx.merchant()).param("s", fx.surveyId()).param("id", evidenceId)
+                            .query(String.class).single());
+                }
             } else if (jdbc.sql("SELECT COUNT(*) FROM evidence_ref WHERE id = :id AND merchant_id <> :m")
                     .param("id", evidenceId).param("m", fx.merchant()).query(Long.class).single() > 0) {
                 // Evaluation-only cross-tenant check: this query deliberately looks outside the case merchant.
@@ -544,7 +555,7 @@ class EvalRunnerTest {
             }
         }
         return new RunMetrics(runId, run, turns, tools, ledger, reservations, recommendation, cited, validInSurvey,
-                citedRevision, foreign);
+                citedRevision, foreign, summary, otherSources);
     }
 
     private Map<String, Object> row(JsonNode c, String kind, int repeat, CaseFixture fx, RunMetrics m) {
@@ -585,6 +596,7 @@ class EvalRunnerTest {
         row.put("must_not_cite_hits", m.cited().stream().filter(mustNot::contains).count());
         row.put("cross_revision_citations", m.citedRevision().values().stream()
                 .filter(rev -> !rev.equals(fx.targetRevision())).count());
+        row.put("cited_messages", EvalOutput.citedMessages(m.cited(), fx.evidenceByMessage(), m.otherSources()));
 
         // adversarial expectation
         if (kind.equals("adversarial")) {
@@ -624,6 +636,8 @@ class EvalRunnerTest {
         row.put("lease_epoch", num(m.run().get("lease_epoch")));
         row.put("token_budget", num(m.run().get("token_budget")));
         row.put("tool_versions", m.tools().get("tool_versions"));
+        // last: free text, for error analysis
+        row.put("final_summary", EvalOutput.summaryCell(m.summary()));
         return row;
     }
 

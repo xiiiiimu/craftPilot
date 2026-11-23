@@ -7,8 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -87,6 +90,35 @@ final class EvalOutput {
             }
         }
         Files.writeString(file, out, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * The {@code cited_messages} cell: each cited evidence id mapped back to the dataset message key it was extracted
+     * from, in citation order and once per message. Evidence that is not a message opinion keeps its source type
+     * ({@code otherSources}); anything else (outside the survey, not a UUID) is {@code invalid}. Joined with ';'.
+     */
+    static String citedMessages(List<UUID> cited, Map<String, List<UUID>> evidenceByMessage,
+                                Map<UUID, String> otherSources) {
+        Map<UUID, String> messageOf = new LinkedHashMap<>();
+        evidenceByMessage.forEach((key, ids) -> ids.forEach(id -> messageOf.putIfAbsent(id, key)));
+        Set<String> labels = new LinkedHashSet<>();
+        List<String> out = new ArrayList<>();
+        for (UUID id : cited) {
+            String message = messageOf.get(id);
+            if (message != null) {
+                if (labels.add(message)) {
+                    out.add(message);
+                }
+            } else {
+                out.add(otherSources.getOrDefault(id, "invalid"));
+            }
+        }
+        return String.join(";", out);
+    }
+
+    /** The {@code final_summary} cell: the answer's summary on one line (CSV quoting handles commas and quotes). */
+    static String summaryCell(String summary) {
+        return summary == null ? "" : summary.replaceAll("\\s*[\\r\\n]+\\s*", " ").trim();
     }
 
     static Map<String, Object> gitDescribe() {
