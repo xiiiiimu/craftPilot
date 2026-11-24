@@ -1,0 +1,243 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C28,research,version_mix,dev,1,80197b2e-e360-4df6-a0d6-578b90eb1c0f,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,3,3,0,0,m3;m5;m4,,4,11,0,0,18631,30,14927,3353,38,313,10214,842,0.002037,0,13427,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback for the leather wallet V2 is overwhelmingly positive, with a purchase intent poll showing 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its quality in terms of workmanship and finishing. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the leather wallet V2 is overwhelmingly positive, with a purchase intent poll showing 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its quality in terms of workmanship and finishing. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""c91a7944-a5f3-4dea-83f2-6de22bdb3334"",
+    ""058cf15f-b4ad-450a-bd3c-8524ea9a55e6"",
+    ""d50e9a15-ebd6-4ed9-aa3c-b791458c39af""
+  ]
+}"
+C28,research,version_mix,dev,2,43e55494-4cfc-44ba-8e35-9199d461fe0c,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,3,3,0,0,m3;m5;m4,,4,9,0,0,15291,8,12762,2335,20,174,10190,754,0.001981,0,13345,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback for the leather wallet V2 is overwhelmingly positive, with 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports high quality in workmanship and overall appeal. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the leather wallet V2 is overwhelmingly positive, with 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports high quality in workmanship and overall appeal. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""c91a7944-a5f3-4dea-83f2-6de22bdb3334"",
+    ""058cf15f-b4ad-450a-bd3c-8524ea9a55e6"",
+    ""d50e9a15-ebd6-4ed9-aa3c-b791458c39af""
+  ]
+}"
+C28,research,version_mix,dev,3,3ed16667-c7f8-4e96-b232-91c4b30d7ec0,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,3,3,0,0,m3;m5;m4,,4,9,0,0,16304,11,13651,2454,16,183,10190,754,0.001981,0,13345,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback for the leather wallet V2 is overwhelmingly positive, with 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports high quality in workmanship and overall appeal. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""69b40326-7f6f-464e-8315-3e4809f6db3d"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the leather wallet V2 is overwhelmingly positive, with 90% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports high quality in workmanship and overall appeal. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""c91a7944-a5f3-4dea-83f2-6de22bdb3334"",
+    ""058cf15f-b4ad-450a-bd3c-8524ea9a55e6"",
+    ""d50e9a15-ebd6-4ed9-aa3c-b791458c39af""
+  ]
+}"
+C35,research,clear_positive,dev,1,f3a8b107-eb11-4829-87b0-202d5618d65d,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m1;m5;m2;m3;m4,,3,8,0,0,17304,10,13660,3360,70,214,7326,810,0.001585,0,9753,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by two different people regarding the uneven edge of the cup, which is a fixable defect. This defect takes precedence over the positive purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯口有一点点不平"",
+      ""evidenceIds"": [
+        ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by two different people regarding the uneven edge of the cup, which is a fixable defect. This defect takes precedence over the positive purchase intent."",
+  ""evidenceIds"": [
+    ""733d3180-0bbc-4181-b007-ac583b13cf95"",
+    ""0fed6625-d561-4dd6-9e0f-53849ee9ae2f"",
+    ""656c90e9-5b7b-406b-84fa-c36028b4145f"",
+    ""96bf4d10-eb25-4300-9a63-09e955009520"",
+    ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+  ]
+}"
+C35,research,clear_positive,dev,2,aa8142bc-86c8-4c2b-8a2a-7bfb3c7b18a8,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m1;m5;m2;m3;m4,,3,8,0,0,15587,8,13473,1924,11,179,7327,814,0.001587,0,9754,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has a majority purchase intent with 9 out of 11 votes indicating they would buy it. However, there is a concern raised by two different people regarding the unevenness of the cup's edge, which is a fixable defect. This defect takes precedence over the positive feedback and purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯口有一点点不平"",
+      ""evidenceIds"": [
+        ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The product has a majority purchase intent with 9 out of 11 votes indicating they would buy it. However, there is a concern raised by two different people regarding the unevenness of the cup's edge, which is a fixable defect. This defect takes precedence over the positive feedback and purchase intent."",
+  ""evidenceIds"": [
+    ""733d3180-0bbc-4181-b007-ac583b13cf95"",
+    ""0fed6625-d561-4dd6-9e0f-53849ee9ae2f"",
+    ""656c90e9-5b7b-406b-84fa-c36028b4145f"",
+    ""96bf4d10-eb25-4300-9a63-09e955009520"",
+    ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+  ]
+}"
+C35,research,clear_positive,dev,3,09fbfa65-c89b-4d60-be1a-9178a5dd525a,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m1;m5;m2;m3;m4,,3,8,0,0,15165,10,12959,1999,21,186,7326,811,0.001585,0,9754,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by three different people about the cup rim being slightly uneven, which is a fixable defect. This takes precedence over the positive feedback and purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯口有一点点不平"",
+      ""evidenceIds"": [
+        ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by three different people about the cup rim being slightly uneven, which is a fixable defect. This takes precedence over the positive feedback and purchase intent."",
+  ""evidenceIds"": [
+    ""733d3180-0bbc-4181-b007-ac583b13cf95"",
+    ""0fed6625-d561-4dd6-9e0f-53849ee9ae2f"",
+    ""656c90e9-5b7b-406b-84fa-c36028b4145f"",
+    ""96bf4d10-eb25-4300-9a63-09e955009520"",
+    ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+  ]
+}"
+C35,research,clear_positive,dev,4,c81d7fb9-f501-4620-b333-f6b554370b78,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m1;m5;m2;m3;m4,,3,8,0,0,15293,8,12971,2108,28,186,7327,809,0.001584,0,9756,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has a majority of positive feedback and purchase intent, with 9 out of 11 respondents indicating they would buy it. However, there is a concern raised by two different people regarding the unevenness of the cup's edge, which needs to be addressed before mass production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯口有一点点不平"",
+      ""evidenceIds"": [
+        ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The product has a majority of positive feedback and purchase intent, with 9 out of 11 respondents indicating they would buy it. However, there is a concern raised by two different people regarding the unevenness of the cup's edge, which needs to be addressed before mass production."",
+  ""evidenceIds"": [
+    ""733d3180-0bbc-4181-b007-ac583b13cf95"",
+    ""0fed6625-d561-4dd6-9e0f-53849ee9ae2f"",
+    ""656c90e9-5b7b-406b-84fa-c36028b4145f"",
+    ""96bf4d10-eb25-4300-9a63-09e955009520"",
+    ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+  ]
+}"
+C35,research,clear_positive,dev,5,edf7cc5d-3792-46d2-9c43-c38c3f07af5e,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m1;m5;m2;m3;m4,,3,8,0,0,17319,8,15184,1910,10,215,7327,811,0.001586,0,9753,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by three different people about the cup rim being slightly uneven, which is a fixable defect. This takes precedence over the positive feedback and purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""8c170f4b-5b01-40e7-a16f-55a6cd0254bc"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯口有一点点不平"",
+      ""evidenceIds"": [
+        ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The product has a majority purchase intent with 9 out of 11 votes indicating people would buy it. However, there is a concern raised by three different people about the cup rim being slightly uneven, which is a fixable defect. This takes precedence over the positive feedback and purchase intent."",
+  ""evidenceIds"": [
+    ""733d3180-0bbc-4181-b007-ac583b13cf95"",
+    ""0fed6625-d561-4dd6-9e0f-53849ee9ae2f"",
+    ""656c90e9-5b7b-406b-84fa-c36028b4145f"",
+    ""96bf4d10-eb25-4300-9a63-09e955009520"",
+    ""788fb837-68d4-4463-808b-4a7f1a858bc9""
+  ]
+}"
