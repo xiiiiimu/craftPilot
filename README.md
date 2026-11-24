@@ -13,7 +13,7 @@ CraftPilot 面向原创手作商家。计划用站内群聊组织限时调研，
 | 设计已完成 | 商品企划、样品版本、BOM、群聊、48 小时调查、反馈聚合和证据化人工决策。自研 Runtime 规划覆盖 Workflow、Multi-Agent、Skills、MCP、RAG、Memory、Checkpoint、HITL 和评测。 |
 | 待真实验证 | 推理模型和 Qwen-VL、Embedding、MCP 互操作与端到端研究质量。 |
 
-PostgreSQL 16 + pgvector 保存业务数据，Redis 提供短期状态，MinIO 存储私有对象。自研 Runtime 尚在设计阶段。DeerFlow 与 DeepSeek SuperAgent 仅作远程源码参考。
+PostgreSQL 16 + pgvector 保存业务数据，Redis 提供短期状态，MinIO 存储私有对象。自研 Agent Runtime 已实现（`backend/src/main/java/com/craftpilot/runtime/`）：Workflow 与 Supervisor 多 Agent、工具代理与 MCP、Checkpoint 与租约、预算账本、HITL 决策，由 R3/R4/R5 测试覆盖；调研建议的质量在模拟数据集上评测（见 [第 2 轮](docs/evaluation/round2.md)、[第 3 轮](docs/evaluation/round3.md)），默认提示词为 v2。DeerFlow 与 DeepSeek SuperAgent 仅作远程源码参考。
 
 ## 本地开发
 
