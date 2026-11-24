@@ -1,0 +1,339 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C20,research,hold_sparse,dev,1,3c0aae95-06d4-4c74-8ddb-d82227ffb372,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,5,10,0,0,15422,15,12370,2675,51,326,11676,587,0.002103,0,16862,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"Feedback is mostly neutral with comments like '看着还行' (looks okay) and '不好说' (hard to say), indicating uncertainty about the product. There are no strong opinions or clear majority support for production.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""Feedback is mostly neutral with comments like '看着还行' (looks okay) and '不好说' (hard to say), indicating uncertainty about the product. There are no strong opinions or clear majority support for production."",
+  ""evidenceIds"": [
+    ""4dbaa8de-3978-4ffa-9922-ad450ec2bacd"",
+    ""8f7777e8-e862-4bcc-beec-c3cbcfd87111""
+  ]
+}"
+C20,research,hold_sparse,dev,2,e7b98b86-ab57-4125-b402-d7dee7c2679e,FAILED,MAX_TURNS_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,2,0,0,0,,,8,14,0,0,18227,9,14530,3321,46,330,22212,647,0.003720,0,30061,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C20,research,hold_sparse,dev,3,c269243e-ccf5-48e0-b314-8120b9f3b4fa,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,6,11,0,0,16505,7,13633,2604,31,237,15001,648,0.002639,0,21114,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the bamboo storage basket V1 is mixed, with comments like '不好说' (hard to say) and '看着还行' (looks okay). There are no clear majority opinions or strong purchase intent, leading to a HOLD recommendation due to insufficient evidence for production.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback on the bamboo storage basket V1 is mixed, with comments like '不好说' (hard to say) and '看着还行' (looks okay). There are no clear majority opinions or strong purchase intent, leading to a HOLD recommendation due to insufficient evidence for production."",
+  ""evidenceIds"": [
+    ""4dbaa8de-3978-4ffa-9922-ad450ec2bacd"",
+    ""8f7777e8-e862-4bcc-beec-c3cbcfd87111""
+  ]
+}"
+C21,research,hold_polarized,dev,1,36873990-a353-4aff-ad52-3d08bd11b7dd,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m5;m3;m1;m4;m6;m2,,4,14,0,0,25594,7,21651,3676,57,210,14126,1197,0.002837,0,16255,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mixed, with equal purchase intent (5 will buy, 5 will not buy). Concerns were raised about the design being unfinished, unattractive, and impractical for wearing, but these issues were mentioned by only one person each. Therefore, the evidence is thin and does not support a clear decision for production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像没做完的样子🙃"",
+      ""evidenceIds"": [
+        ""61680312-ad3c-47ac-9ee9-bcc738ca7b54""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""丑哭"",
+      ""evidenceIds"": [
+        ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太怪了，穿不出去"",
+      ""evidenceIds"": [
+        ""ea160483-58f7-42db-b4dd-851a3d99c87a""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed, with equal purchase intent (5 will buy, 5 will not buy). Concerns were raised about the design being unfinished, unattractive, and impractical for wearing, but these issues were mentioned by only one person each. Therefore, the evidence is thin and does not support a clear decision for production."",
+  ""evidenceIds"": [
+    ""ddfcc76f-280e-4376-b359-0dfc842b81d5"",
+    ""887c92d1-2613-4558-9249-f490f7e1b8e2"",
+    ""d621df23-d9bf-4cd1-9e6f-9919be1cd2d5"",
+    ""61680312-ad3c-47ac-9ee9-bcc738ca7b54"",
+    ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb"",
+    ""ea160483-58f7-42db-b4dd-851a3d99c87a""
+  ]
+}"
+C21,research,hold_polarized,dev,2,f50cade7-d914-4e1e-bc8a-21e3fbca0113,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m2;m4;m6;m5;m3;m1,,3,8,0,0,17187,11,14796,2168,14,209,8114,898,0.001756,0,10369,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,反馈显示对不对称半裙 V1 的设计感和穿着适合性存在明显的担忧，尤其是有三位不同的人提到设计感不足和穿着不合适的问题。尽管购买意向投票是平分的，但由于存在明显的设计缺陷，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""设计感不足，穿着不合适"",
+      ""evidenceIds"": [
+        ""ea160483-58f7-42db-b4dd-851a3d99c87a"",
+        ""61680312-ad3c-47ac-9ee9-bcc738ca7b54"",
+        ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""反馈显示对不对称半裙 V1 的设计感和穿着适合性存在明显的担忧，尤其是有三位不同的人提到设计感不足和穿着不合适的问题。尽管购买意向投票是平分的，但由于存在明显的设计缺陷，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""ea160483-58f7-42db-b4dd-851a3d99c87a"",
+    ""61680312-ad3c-47ac-9ee9-bcc738ca7b54"",
+    ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb"",
+    ""ddfcc76f-280e-4376-b359-0dfc842b81d5"",
+    ""887c92d1-2613-4558-9249-f490f7e1b8e2"",
+    ""d621df23-d9bf-4cd1-9e6f-9919be1cd2d5""
+  ]
+}"
+C21,research,hold_polarized,dev,3,3fa23d7b-213f-4501-8317-595f96c40e9c,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m2;m4;m6;m5;m3;m1,,4,9,0,0,16471,9,15545,691,18,217,8660,880,0.001827,0,12543,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,反馈中存在对不对称半裙 V1 的设计感和穿着适合性的负面评论，尽管购买意向投票持平，但缺乏明确的支持意见，建议暂缓量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""7119f921-75a3-4e96-9424-5aedf117979b"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""设计感不足，穿着不合适"",
+      ""evidenceIds"": [
+        ""ea160483-58f7-42db-b4dd-851a3d99c87a"",
+        ""61680312-ad3c-47ac-9ee9-bcc738ca7b54"",
+        ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""反馈中存在对不对称半裙 V1 的设计感和穿着适合性的负面评论，尽管购买意向投票持平，但缺乏明确的支持意见，建议暂缓量产。"",
+  ""evidenceIds"": [
+    ""ea160483-58f7-42db-b4dd-851a3d99c87a"",
+    ""61680312-ad3c-47ac-9ee9-bcc738ca7b54"",
+    ""7e16d1b8-e2c5-46a5-b95c-70b57d9907fb"",
+    ""ddfcc76f-280e-4376-b359-0dfc842b81d5"",
+    ""887c92d1-2613-4558-9249-f490f7e1b8e2"",
+    ""d621df23-d9bf-4cd1-9e6f-9919be1cd2d5""
+  ]
+}"
+C24,research,hold_polarized,dev,1,456d7185-c9eb-48d4-8342-442e9050afe0,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,2,2,0,4,2,0,0,m4;m2,,3,7,0,0,15049,8,11961,2901,12,175,6555,706,0.001407,0,9374,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates mixed opinions about the product. There are concerns about it being uncomfortable (grabbing hair) and too extravagant for everyday wear, but these issues were raised by only one person each. The purchase intent poll shows a split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [
+        ""94bb1b3c-af34-4e01-989f-0746e08c0eaf""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [
+        ""35197124-a42b-403d-a72f-7518a1813f75""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates mixed opinions about the product. There are concerns about it being uncomfortable (grabbing hair) and too extravagant for everyday wear, but these issues were raised by only one person each. The purchase intent poll shows a split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production."",
+  ""evidenceIds"": [
+    ""94bb1b3c-af34-4e01-989f-0746e08c0eaf"",
+    ""35197124-a42b-403d-a72f-7518a1813f75""
+  ]
+}"
+C24,research,hold_polarized,dev,2,5f8a8c5b-196e-4fb9-b86b-043999709859,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m4;m3;m2;m1,,4,12,0,0,18090,8,15799,2049,17,225,11625,991,0.002338,0,14650,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback shows mixed opinions about the product. There are concerns about the earrings being uncomfortable (catching hair) and too extravagant for everyday wear, with each issue raised by one person. The purchase intent poll is split, with 5 saying they would buy and 6 saying they would not, indicating uncertainty in market demand.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [""94bb1b3c-af34-4e01-989f-0746e08c0eaf""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [""35197124-a42b-403d-a72f-7518a1813f75""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback shows mixed opinions about the product. There are concerns about the earrings being uncomfortable (catching hair) and too extravagant for everyday wear, with each issue raised by one person. The purchase intent poll is split, with 5 saying they would buy and 6 saying they would not, indicating uncertainty in market demand."",
+  ""evidenceIds"": [
+    ""94bb1b3c-af34-4e01-989f-0746e08c0eaf"",
+    ""5fd76966-0163-48e9-abf5-47b7d1450f0b"",
+    ""35197124-a42b-403d-a72f-7518a1813f75"",
+    ""90fafb83-0cf2-4c54-8ffa-5b795265ef07""
+  ]
+}"
+C24,research,hold_polarized,dev,3,be6c2f63-8eac-47c5-9e60-346749e92cfa,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m4;m3;m2;m1,,3,8,0,0,15889,7,13057,2640,17,175,6969,819,0.001537,0,9667,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback shows mixed opinions about the product. There are concerns regarding the design being too exaggerated and causing discomfort by snagging hair. The purchase intent poll is split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""3508c1fe-6fb9-4c3b-b4c8-5fbfe6b5a524"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [
+        ""94bb1b3c-af34-4e01-989f-0746e08c0eaf""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [
+        ""35197124-a42b-403d-a72f-7518a1813f75""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback shows mixed opinions about the product. There are concerns regarding the design being too exaggerated and causing discomfort by snagging hair. The purchase intent poll is split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production."",
+  ""evidenceIds"": [
+    ""94bb1b3c-af34-4e01-989f-0746e08c0eaf"",
+    ""5fd76966-0163-48e9-abf5-47b7d1450f0b"",
+    ""35197124-a42b-403d-a72f-7518a1813f75"",
+    ""90fafb83-0cf2-4c54-8ffa-5b795265ef07""
+  ]
+}"
+C32,research,clear_positive,dev,1,675a3f18-6840-492a-8107-608adaadb6d1,FAILED,MAX_TOOL_CALLS_EXCEEDED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,5,16,0,2,21971,12,17331,4415,17,208,19029,891,0.003389,0,21447,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C32,research,clear_positive,dev,2,d4f538d9-fdb6-4926-97b0-f57144364445,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,4,13,0,0,20285,5,18175,1909,33,168,13097,958,0.002539,0,15595,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 9 out of 11 respondents indicating they would buy the product. There are no significant concerns raised about the attributes of the product, and the evidence supports a favorable overall opinion and purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 9 out of 11 respondents indicating they would buy the product. There are no significant concerns raised about the attributes of the product, and the evidence supports a favorable overall opinion and purchase intent."",
+  ""evidenceIds"": [
+    ""28af5617-0b81-4a9f-be20-577689583905"",
+    ""f7024aeb-2d50-4e05-a865-27ae6c2a2af0"",
+    ""589a23a2-0e2b-4f58-8e3e-5244cd294953"",
+    ""ec8fced3-7011-458a-827f-864c515bbab5"",
+    ""a1fc1db5-f198-4da2-9381-0dba8da44846""
+  ]
+}"
+C32,research,clear_positive,dev,3,74967557-abd3-4ca3-aa6f-518ac0593894,FAILED,MAX_TOOL_CALLS_EXCEEDED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,5,16,0,2,24972,9,22309,2345,72,246,19032,891,0.003389,0,21449,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C32,research,clear_positive,dev,4,609b2e5e-552d-498a-ab6a-0a35053c8225,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,4,13,0,0,20944,8,18797,1946,14,187,13101,962,0.002541,0,15597,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the handmade ceramic cup is overwhelmingly positive, with a purchase intent poll showing that 9 out of 11 respondents indicated they would buy it. There are no significant concerns raised about the product's attributes, indicating it is suitable for production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade ceramic cup is overwhelmingly positive, with a purchase intent poll showing that 9 out of 11 respondents indicated they would buy it. There are no significant concerns raised about the product's attributes, indicating it is suitable for production."",
+  ""evidenceIds"": [
+    ""28af5617-0b81-4a9f-be20-577689583905"",
+    ""f7024aeb-2d50-4e05-a865-27ae6c2a2af0"",
+    ""589a23a2-0e2b-4f58-8e3e-5244cd294953"",
+    ""ec8fced3-7011-458a-827f-864c515bbab5"",
+    ""a1fc1db5-f198-4da2-9381-0dba8da44846""
+  ]
+}"
+C32,research,clear_positive,dev,5,983ce299-6a2f-4856-8107-1755e3937d9c,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,4,13,0,0,20775,7,18445,2096,57,177,13099,970,0.002546,0,15595,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the handmade ceramic cup is largely positive, with a majority indicating they would purchase it (9 out of 11 votes). There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c486baaa-0a51-4e42-a79d-df0061be27a2"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade ceramic cup is largely positive, with a majority indicating they would purchase it (9 out of 11 votes). There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""28af5617-0b81-4a9f-be20-577689583905"",
+    ""f7024aeb-2d50-4e05-a865-27ae6c2a2af0"",
+    ""589a23a2-0e2b-4f58-8e3e-5244cd294953"",
+    ""ec8fced3-7011-458a-827f-864c515bbab5"",
+    ""a1fc1db5-f198-4da2-9381-0dba8da44846""
+  ]
+}"

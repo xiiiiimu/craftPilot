@@ -1,0 +1,653 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C03,research,clear_positive,dev,1,50efc12d-7a7d-44c9-9f24-b3eaa83aa760,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m3;m2;m1;m4,,4,13,0,0,23824,70,19884,3336,128,476,13382,1133,0.002687,0,15747,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is largely positive with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not affect the overall positive reception. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""不会买"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯底有个小气泡，不影响"",
+      ""evidenceIds"": [
+        ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is largely positive with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not affect the overall positive reception. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""1eb83a3b-a5b3-48d7-a049-a0d40baf87d2"",
+    ""b0e22dac-9220-4750-b7cc-85fcbb8e1365"",
+    ""c40f1829-ea12-4717-a269-f3eb51873c22"",
+    ""ab1fc7b1-2e98-43e0-b827-f2da615dbd8f"",
+    ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+  ]
+}"
+C03,research,clear_positive,dev,2,508f81e9-2713-4a1c-be42-7e4831cddadf,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m3;m2;m1;m4,,4,13,0,0,24021,10,21757,1950,63,251,13382,1135,0.002688,0,15750,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is predominantly positive, with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not significantly impact the overall positive reception. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""不会买"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯底有个小气泡，不影响"",
+      ""evidenceIds"": [
+        ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is predominantly positive, with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not significantly impact the overall positive reception. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""1eb83a3b-a5b3-48d7-a049-a0d40baf87d2"",
+    ""b0e22dac-9220-4750-b7cc-85fcbb8e1365"",
+    ""c40f1829-ea12-4717-a269-f3eb51873c22"",
+    ""ab1fc7b1-2e98-43e0-b827-f2da615dbd8f"",
+    ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+  ]
+}"
+C03,research,clear_positive,dev,3,dedba74f-f80e-4de9-9ae3-e7fc60a84fa4,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m3;m2;m1;m4,,3,8,0,0,18407,9,16345,1873,18,171,7833,925,0.001730,0,10194,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback is largely positive, with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not significantly affect the overall positive reception. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b51e12bd-b207-4f51-9618-374308ef80e2"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""74811f9a-c142-46ea-a094-52b68110bde2"",
+      ""option"": ""不会买"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""杯底有个小气泡，不影响"",
+      ""evidenceIds"": [
+        ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is largely positive, with 9 out of 11 people liking the sample and 8 out of 11 indicating they would buy it. There is a minor concern about a small bubble at the bottom of the cup, but it does not significantly affect the overall positive reception. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""1eb83a3b-a5b3-48d7-a049-a0d40baf87d2"",
+    ""b0e22dac-9220-4750-b7cc-85fcbb8e1365"",
+    ""c40f1829-ea12-4717-a269-f3eb51873c22"",
+    ""ab1fc7b1-2e98-43e0-b827-f2da615dbd8f"",
+    ""4dc92225-1a3c-4d80-82ab-b9bdeef85997""
+  ]
+}"
+C07,research,revise_attribute,dev,1,ee31145e-3fd8-4388-abcf-6459e986e459,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,5,5,0,3,3,0,0,m1;m4;m3;m5;m2,,3,8,0,0,22701,32,19391,2982,50,278,7626,861,0.001660,0,10074,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates that while the leather feel is appreciated, there are multiple concerns regarding workmanship, specifically loose threads, uneven stitching, and uneven edge finishing. These issues were raised by three different people, warranting a revision before production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""喜欢"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""线头好几个✂️, 走线歪了，强迫症难受, 边油刷得不均匀，有点毛"",
+      ""evidenceIds"": [
+        ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+        ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+        ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The feedback indicates that while the leather feel is appreciated, there are multiple concerns regarding workmanship, specifically loose threads, uneven stitching, and uneven edge finishing. These issues were raised by three different people, warranting a revision before production."",
+  ""evidenceIds"": [
+    ""0f2d03f6-d02c-4496-814d-734ac7d774ea"",
+    ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+    ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+    ""309212fa-97b3-4674-894d-c2e0211937c2"",
+    ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+  ]
+}"
+C07,research,revise_attribute,dev,2,a5cb4468-89c8-4728-a819-0060623797bd,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,5,5,0,3,3,0,0,m1;m4;m3;m5;m2,,3,8,0,0,18301,11,15979,2155,12,155,7627,876,0.001669,0,10074,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates a clear preference for the product, with 8 out of 11 votes in favor. However, there are multiple concerns regarding workmanship, specifically related to loose threads, uneven stitching, and inconsistent edge finishing, raised by three different people. These issues necessitate revisions before production can be considered.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""喜欢"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""线头好几个✂️, 走线歪了，强迫症难受, 边油刷得不均匀，有点毛"",
+      ""evidenceIds"": [
+        ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+        ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+        ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The feedback indicates a clear preference for the product, with 8 out of 11 votes in favor. However, there are multiple concerns regarding workmanship, specifically related to loose threads, uneven stitching, and inconsistent edge finishing, raised by three different people. These issues necessitate revisions before production can be considered."",
+  ""evidenceIds"": [
+    ""0f2d03f6-d02c-4496-814d-734ac7d774ea"",
+    ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+    ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+    ""309212fa-97b3-4674-894d-c2e0211937c2"",
+    ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+  ]
+}"
+C07,research,revise_attribute,dev,3,4fcb5e62-6cbb-4cb8-afc7-d25fd2228132,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,5,5,0,3,3,0,0,m1;m4;m3;m5;m2,,4,13,0,0,20421,7,18160,1992,14,255,13045,1081,0.002605,0,15574,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大部分人喜欢这个皮质卡包，且有8票支持购买，但存在多个关于工艺的问题，包括线头、走线和边油处理不均匀，这些问题由3位不同的人提到，因此建议进行修正后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""喜欢"",
+      ""votes"": 8,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""5e5cea9c-5fc6-46ec-9dcd-d15ca8b691b6"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""线头好几个✂️, 走线歪了，强迫症难受, 边油刷得不均匀，有点毛"",
+      ""evidenceIds"": [
+        ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+        ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+        ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大部分人喜欢这个皮质卡包，且有8票支持购买，但存在多个关于工艺的问题，包括线头、走线和边油处理不均匀，这些问题由3位不同的人提到，因此建议进行修正后再考虑量产。"",
+  ""evidenceIds"": [
+    ""0f2d03f6-d02c-4496-814d-734ac7d774ea"",
+    ""87929a3b-d48d-45a1-86fa-693c17ddebb9"",
+    ""3eecbe5c-c21c-4ab1-b487-7349a4c2fb05"",
+    ""309212fa-97b3-4674-894d-c2e0211937c2"",
+    ""142cf9fd-86f8-4772-9a99-bd634aca5592""
+  ]
+}"
+C10,research,revise_attribute,dev,1,c91b4c9e-b231-4aa8-90d5-340664d3adaa,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,6,6,0,3,3,0,0,m6;m2;m1;m5;m3;m4,,3,8,0,0,20960,12,17510,3281,19,150,8113,902,0.001758,0,10344,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个帆布托特包，且购买意向也相对积极，但有两个不同的人提到带子太细和肩带宽度的问题，这些都是可以修正的缺陷，因此建议进行修订后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""带子太细，勒肩膀"",
+      ""evidenceIds"": [
+        ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""肩带要是宽一点就完美了"",
+      ""evidenceIds"": [
+        ""1386384f-88be-4fcd-b958-8e926dcfdbbd""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个帆布托特包，且购买意向也相对积极，但有两个不同的人提到带子太细和肩带宽度的问题，这些都是可以修正的缺陷，因此建议进行修订后再考虑量产。"",
+  ""evidenceIds"": [
+    ""40c4e01f-8747-485c-b025-8e413344fc3c"",
+    ""985b1579-f39c-44e9-8367-491b17da6ee3"",
+    ""cd44b8ac-c591-40f8-b918-cf88fea0ad97"",
+    ""1386384f-88be-4fcd-b958-8e926dcfdbbd"",
+    ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3"",
+    ""d46a10a7-affd-4b70-b807-11c8f837d5d3""
+  ]
+}"
+C10,research,revise_attribute,dev,2,6b495c12-eb07-4d51-974b-b4d7f353c9be,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,6,6,0,3,3,0,0,m3;m5;m1;m6;m2;m4,,3,8,0,0,18768,11,16678,1918,12,160,7491,866,0.001643,0,9979,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个帆布托特包，且购买意向较高，但有三位不同的用户提到肩带太细，导致使用时感到不适。这是一个具体且可修正的问题，因此建议进行修改后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""肩带太细，勒肩膀"",
+      ""evidenceIds"": [
+        ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3"",
+        ""1386384f-88be-4fcd-b958-8e926dcfdbbd"",
+        ""d46a10a7-affd-4b70-b807-11c8f837d5d3""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个帆布托特包，且购买意向较高，但有三位不同的用户提到肩带太细，导致使用时感到不适。这是一个具体且可修正的问题，因此建议进行修改后再考虑量产。"",
+  ""evidenceIds"": [
+    ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3"",
+    ""1386384f-88be-4fcd-b958-8e926dcfdbbd"",
+    ""cd44b8ac-c591-40f8-b918-cf88fea0ad97"",
+    ""40c4e01f-8747-485c-b025-8e413344fc3c"",
+    ""985b1579-f39c-44e9-8367-491b17da6ee3"",
+    ""d46a10a7-affd-4b70-b807-11c8f837d5d3""
+  ]
+}"
+C10,research,revise_attribute,dev,3,f558641b-c2d4-44db-9dd0-9ce56bdc63c3,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,6,6,0,3,3,0,0,m3;m5;m1;m6;m2;m4,,3,7,0,0,16270,6,14578,1520,9,163,7038,831,0.001554,0,9667,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个帆布托特包，但有三位不同的人提到肩带太细，导致使用时感到不适。这是一个具体的、可修复的缺陷，因此建议进行修订。购买意向的反馈没有明确的负面意见，整体反馈较为积极。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c4a1b911-c1ed-4cb1-9c4a-7ae19b4f4006"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""肩带太细，勒肩膀"",
+      ""evidenceIds"": [
+        ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3"",
+        ""1386384f-88be-4fcd-b958-8e926dcfdbbd"",
+        ""d46a10a7-affd-4b70-b807-11c8f837d5d3""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个帆布托特包，但有三位不同的人提到肩带太细，导致使用时感到不适。这是一个具体的、可修复的缺陷，因此建议进行修订。购买意向的反馈没有明确的负面意见，整体反馈较为积极。"",
+  ""evidenceIds"": [
+    ""3c7bb638-9a2e-4bff-9645-72c9fe5012a3"",
+    ""1386384f-88be-4fcd-b958-8e926dcfdbbd"",
+    ""cd44b8ac-c591-40f8-b918-cf88fea0ad97"",
+    ""40c4e01f-8747-485c-b025-8e413344fc3c"",
+    ""985b1579-f39c-44e9-8367-491b17da6ee3"",
+    ""d46a10a7-affd-4b70-b807-11c8f837d5d3""
+  ]
+}"
+C11,research,trial_low_intent,dev,1,97fb3ff7-d079-45f1-a992-c56a4d27b529,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,3,8,0,0,19253,7,15444,3647,11,151,7808,921,0.001725,0,10211,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个刺绣手帕，但购买意向较低，只有2人表示会买，9人表示不会买。主要原因是手帕的实用性受到质疑，认为现在很少有人使用手帕。建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""现在谁还用手帕呀，买了也是收着"",
+      ""evidenceIds"": [
+        ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个刺绣手帕，但购买意向较低，只有2人表示会买，9人表示不会买。主要原因是手帕的实用性受到质疑，认为现在很少有人使用手帕。建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""7ae64603-04f9-45ae-a6ad-c222d22e546c"",
+    ""adfaa3ff-af29-44a1-a240-4f4b06e12a53"",
+    ""be4bccc5-1f69-4082-be88-4afa3e246773"",
+    ""a70fc61c-4bf2-4a3b-81cc-0f6c122ab1ad"",
+    ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+  ]
+}"
+C11,research,trial_low_intent,dev,2,24069409-b380-4d94-adde-3ef5d36ace86,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,3,8,0,0,19121,8,16825,2125,13,158,7808,927,0.001728,0,10211,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个刺绣手帕，但购买意向较低，只有2人表示会买，9人表示不会买。主要原因是手帕的实用性受到质疑，认为现在很少有人使用手帕，买了也只是收藏。因此，建议进行小规模试产以测试市场需求。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""现在谁还用手帕呀，买了也是收着"",
+      ""evidenceIds"": [
+        ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个刺绣手帕，但购买意向较低，只有2人表示会买，9人表示不会买。主要原因是手帕的实用性受到质疑，认为现在很少有人使用手帕，买了也只是收藏。因此，建议进行小规模试产以测试市场需求。"",
+  ""evidenceIds"": [
+    ""7ae64603-04f9-45ae-a6ad-c222d22e546c"",
+    ""adfaa3ff-af29-44a1-a240-4f4b06e12a53"",
+    ""be4bccc5-1f69-4082-be88-4afa3e246773"",
+    ""a70fc61c-4bf2-4a3b-81cc-0f6c122ab1ad"",
+    ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+  ]
+}"
+C11,research,trial_low_intent,dev,3,71a1effe-0424-4361-b7af-aaf856a2080a,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,3,8,0,0,19509,7,17579,1782,11,137,7808,920,0.001724,0,10211,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个刺绣手帕，但购买意向较低，主要是因为人们认为手帕不再实用，买了也只是收藏。尽管有一些积极的反馈，但整体购买意向显示出较大的犹豫，因此建议进行小规模试产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""6db5e999-f909-40c0-8bd0-1c5a14d24105"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""a164066a-5cfc-425c-bfa3-f833d443beb9"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""现在谁还用手帕呀，买了也是收着"",
+      ""evidenceIds"": [
+        ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个刺绣手帕，但购买意向较低，主要是因为人们认为手帕不再实用，买了也只是收藏。尽管有一些积极的反馈，但整体购买意向显示出较大的犹豫，因此建议进行小规模试产。"",
+  ""evidenceIds"": [
+    ""7ae64603-04f9-45ae-a6ad-c222d22e546c"",
+    ""adfaa3ff-af29-44a1-a240-4f4b06e12a53"",
+    ""be4bccc5-1f69-4082-be88-4afa3e246773"",
+    ""a70fc61c-4bf2-4a3b-81cc-0f6c122ab1ad"",
+    ""5234f1c1-cb28-4a49-9a59-baf8e98573de""
+  ]
+}"
+C14,research,trial_low_intent,dev,1,e7436cc6-fa14-4b13-89bf-9ebc97731e7c,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m2;m5;m1;m3;m4,,4,13,0,0,25689,7,22435,2999,57,198,13075,1164,0.002660,0,15699,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，主要是因为价格偏高和一些人认为它适合作为礼物而不是自己使用。调查显示，虽然有11人表示喜欢，但只有3人表示会购买，9人表示不会购买，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格偏高"",
+      ""evidenceIds"": [
+        ""0ebf51f0-2c3f-4990-800d-afb17f062091""
+      ],
+      ""mentionedBy"": 5
+    },
+    {
+      ""text"": ""当礼物还行，自己不会买"",
+      ""evidenceIds"": [
+        ""25037bae-ddd0-4114-a28d-c8236bfd3cf7""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，主要是因为价格偏高和一些人认为它适合作为礼物而不是自己使用。调查显示，虽然有11人表示喜欢，但只有3人表示会购买，9人表示不会购买，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""cac017b0-596a-4f82-a160-094742bc0959"",
+    ""0ebf51f0-2c3f-4990-800d-afb17f062091"",
+    ""4126d6d8-591b-4d01-aa3f-adeb6b5975a3"",
+    ""98dbeca3-10d2-42f8-800a-cea2774b01cb"",
+    ""25037bae-ddd0-4114-a28d-c8236bfd3cf7""
+  ]
+}"
+C14,research,trial_low_intent,dev,2,8a803c61-7d77-46d3-b672-1a9bb22f2216,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m2;m5;m1;m3;m4,,4,13,0,0,23726,6,21792,1722,16,196,13075,1092,0.002617,0,15699,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，主要是因为价格偏高。大部分反馈表明他们不会购买，尽管有些人认为适合作为礼物。由于购买意向不高，建议进行小规模试产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格偏高"",
+      ""evidenceIds"": [
+        ""0ebf51f0-2c3f-4990-800d-afb17f062091""
+      ],
+      ""mentionedBy"": 5
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，主要是因为价格偏高。大部分反馈表明他们不会购买，尽管有些人认为适合作为礼物。由于购买意向不高，建议进行小规模试产。"",
+  ""evidenceIds"": [
+    ""cac017b0-596a-4f82-a160-094742bc0959"",
+    ""0ebf51f0-2c3f-4990-800d-afb17f062091"",
+    ""4126d6d8-591b-4d01-aa3f-adeb6b5975a3"",
+    ""98dbeca3-10d2-42f8-800a-cea2774b01cb"",
+    ""25037bae-ddd0-4114-a28d-c8236bfd3cf7""
+  ]
+}"
+C14,research,trial_low_intent,dev,3,5e8b87a5-a20c-48f3-bc6d-3961d943ee08,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m2;m5;m1;m3;m4,,4,13,0,0,24545,7,22578,1781,14,172,13075,1143,0.002647,0,15699,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，尤其是价格被认为偏高，且有反馈表示作为礼物可以接受，但自己不会购买。因此，建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""b779ab22-ca83-4a91-800a-518d54ddf04e"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""60b36dfb-c265-45ca-be8a-2e2a34c640f0"",
+      ""option"": ""不会买"",
+      ""votes"": 9,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格偏高"",
+      ""evidenceIds"": [
+        ""0ebf51f0-2c3f-4990-800d-afb17f062091""
+      ],
+      ""mentionedBy"": 5
+    },
+    {
+      ""text"": ""当礼物还行，自己不会买"",
+      ""evidenceIds"": [
+        ""25037bae-ddd0-4114-a28d-c8236bfd3cf7""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个手工皂礼盒，但购买意向较低，尤其是价格被认为偏高，且有反馈表示作为礼物可以接受，但自己不会购买。因此，建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""cac017b0-596a-4f82-a160-094742bc0959"",
+    ""0ebf51f0-2c3f-4990-800d-afb17f062091"",
+    ""4126d6d8-591b-4d01-aa3f-adeb6b5975a3"",
+    ""98dbeca3-10d2-42f8-800a-cea2774b01cb"",
+    ""25037bae-ddd0-4114-a28d-c8236bfd3cf7""
+  ]
+}"
