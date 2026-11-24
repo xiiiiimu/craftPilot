@@ -1,0 +1,193 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C09,research,revise_attribute,dev,1,62d3c4e0-6e07-4893-bc43-535266499979,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,5,5,0,3,3,0,0,m3;m1;m5;m4;m2,,3,8,0,0,20542,21,15352,4792,66,332,7400,934,0.001670,0,9752,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个版本的手织毛衣，但存在一些问题，包括扎得不舒服和需要搭配打底衣物，这些问题由不同的人提到。由于反馈中没有足够的明确意见支持量产，因此建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""186be5c2-7ea9-471d-8e38-c6acb5bb7b13"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""186be5c2-7ea9-471d-8e38-c6acb5bb7b13"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""扎得我怀疑人生"",
+      ""evidenceIds"": [
+        ""8f74ba44-e0cb-4ee8-b078-344febca0ff3""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""里面得套打底才能穿，太麻烦"",
+      ""evidenceIds"": [
+        ""e7f449c1-973a-4a63-97e4-549b1a2a05a4""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""好扎啊，穿一会儿脖子就红了"",
+      ""evidenceIds"": [
+        ""cb57fe00-d5ee-4656-8e42-610cd49c4655""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然大多数人喜欢这个版本的手织毛衣，但存在一些问题，包括扎得不舒服和需要搭配打底衣物，这些问题由不同的人提到。由于反馈中没有足够的明确意见支持量产，因此建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""8f74ba44-e0cb-4ee8-b078-344febca0ff3"",
+    ""28b9fae2-7cd5-4824-8d3b-d0c4b9dbf033"",
+    ""53c2a430-84c0-4515-84ba-bb2f17424714"",
+    ""e7f449c1-973a-4a63-97e4-549b1a2a05a4"",
+    ""cb57fe00-d5ee-4656-8e42-610cd49c4655""
+  ]
+}"
+C12,research,trial_low_intent,dev,1,f60745f7-041d-4302-94e4-8f4950772a2c,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,4,13,0,0,20669,10,17020,3410,23,216,12896,1192,0.002649,0,15246,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个陶瓷香薰座，但购买意向较低，8人表示不会购买，主要原因是使用香薰的需求不高或空间不足。建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""23fa9379-353f-47cc-bbe9-3cf0927be8e6"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""23fa9379-353f-47cc-bbe9-3cf0927be8e6"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""f79e1633-c2d5-4cb6-8bf0-0f53e7b4df4f"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""f79e1633-c2d5-4cb6-8bf0-0f53e7b4df4f"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""不会买，不怎么用香薰"",
+      ""evidenceIds"": [
+        ""793e9031-7f29-4f80-8272-8417d2906f43""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""好看是好看，家里放不下了"",
+      ""evidenceIds"": [
+        ""335e407c-84ce-4a00-ac53-4288507493bf""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个陶瓷香薰座，但购买意向较低，8人表示不会购买，主要原因是使用香薰的需求不高或空间不足。建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""bf9671af-8cad-4f59-abb1-097361c4ec2d"",
+    ""335e407c-84ce-4a00-ac53-4288507493bf"",
+    ""d22e34c7-c7af-48e8-810d-ca3234924a2f"",
+    ""1978d665-d1fc-4c88-a5b9-667d6b18b5ed"",
+    ""793e9031-7f29-4f80-8272-8417d2906f43""
+  ]
+}"
+C23,research,hold_polarized,dev,1,5cbb5378-3b45-4e89-b5fa-b429d10171b5,SUCCEEDED,,HOLD,HOLD|TRIAL,REVISE,0,0,4,4,0,4,4,0,0,m2;m1;m4;m3,,3,8,0,0,15859,7,12379,3278,15,187,6806,853,0.001533,0,9387,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates concerns about the product's surface being uneven and difficult to clean, which were raised by multiple people. Additionally, some users feel it looks like a defective item. Despite a majority indicating they would buy it, the presence of these defects takes precedence, leading to a recommendation to revise the product before mass production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""f8270930-dccd-4bee-8881-fa75b3964ed6"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""f8270930-dccd-4bee-8881-fa75b3964ed6"",
+      ""option"": ""不会买"",
+      ""votes"": 4,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""表面坑坑洼洼的，不好洗"",
+      ""evidenceIds"": [
+        ""d4eef925-5ec2-4096-bb9c-e57e30a285cb""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""看着像次品😅"",
+      ""evidenceIds"": [
+        ""f8050ebf-2cf2-4586-a9d5-ca196beeba9d""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The feedback indicates concerns about the product's surface being uneven and difficult to clean, which were raised by multiple people. Additionally, some users feel it looks like a defective item. Despite a majority indicating they would buy it, the presence of these defects takes precedence, leading to a recommendation to revise the product before mass production."",
+  ""evidenceIds"": [
+    ""f8050ebf-2cf2-4586-a9d5-ca196beeba9d"",
+    ""d1fb2f9a-3345-4d38-80ae-7a38d8ebce43"",
+    ""d4eef925-5ec2-4096-bb9c-e57e30a285cb"",
+    ""0e710dea-0d46-4e52-8c22-61a3bdb8e254""
+  ]
+}"
+C26,research,version_mix,dev,1,51f35c4e-8047-445a-8cfc-ad3ce6bb4675,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,4,4,0,3,3,0,0,m4;m3;m5;m6,,4,12,0,0,15994,7,12451,3255,31,257,11354,872,0.002226,0,14225,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback for the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its favorable attributes such as fit, comfort, and color. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""dbd1e119-d566-4dec-9c86-cd3487c9f6e9"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""dbd1e119-d566-4dec-9c86-cd3487c9f6e9"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its favorable attributes such as fit, comfort, and color. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""72116df7-b981-41f2-a4ee-cbc80799a47b"",
+    ""be1645ab-c54f-4833-8abd-d4e79401ff7b"",
+    ""53c5f76f-2100-4715-8329-8de91b13b4b6"",
+    ""479b5741-a285-4eb1-b7d1-17658c272c3b""
+  ]
+}"
+C32,research,clear_positive,dev,1,145a4f8e-968e-4030-909a-c9569e376440,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,4,13,0,0,16419,24,12660,3376,30,353,12611,920,0.002444,0,15126,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the handmade ceramic cup is largely positive, with 9 out of 11 respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its appeal, particularly regarding its price and aesthetic qualities. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c7c1cfc1-fdec-420c-a247-3c15fb3a5def"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c7c1cfc1-fdec-420c-a247-3c15fb3a5def"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade ceramic cup is largely positive, with 9 out of 11 respondents indicating they would buy it. There are no significant concerns raised about the product, and the evidence supports its appeal, particularly regarding its price and aesthetic qualities. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""3a9f8607-3448-4696-8585-7379f59f0712"",
+    ""a437a2b8-8472-4d43-b2bf-c2cc926ab793"",
+    ""24313874-ff41-46db-bca6-6bd8b755175f"",
+    ""e8f24dfe-671d-45de-9e1b-b290ec5073e1"",
+    ""921027c4-1d69-4274-ba7a-9fd2d1052bba""
+  ]
+}"

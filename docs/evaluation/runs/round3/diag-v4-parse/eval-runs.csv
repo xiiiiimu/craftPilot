@@ -1,0 +1,113 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C09,research,revise_attribute,dev,1,44d0d216-4120-42ad-bbbc-c52dbe519d06,FAILED,MAX_TURNS_EXCEEDED,REVISE,REVISE,,0,0,0,0,0,3,0,0,0,,,8,8,8,0,12977,20,12388,0,143,446,11191,343,0.001885,0,21266,0,1,24000,evidence_search:1;sample_get_snapshot:1;survey_get_stats:2,0,,,,
+C12,research,trial_low_intent,dev,1,2b150b17-b6c4-4317-8bd6-659bc18e5ded,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,3,8,0,0,20576,8,15630,4753,11,182,7393,930,0.001667,0,9712,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人认为产品好看，但购买意向较低，主要是因为一些人表示不会购买，且有反馈提到家里没有空间放置。建议进行小规模试产以测试市场需求。,"```json
+{
+  ""pollReadings"": [
+    {""pollId"": ""a3596b7e-34f9-490e-ab6c-2010267185cc"", ""option"": ""喜欢"", ""votes"": 9, ""total"": 11},
+    {""pollId"": ""a3596b7e-34f9-490e-ab6c-2010267185cc"", ""option"": ""一般"", ""votes"": 2, ""total"": 11},
+    {""pollId"": ""df2c5fa1-ac43-4352-afee-b8b772fbda2a"", ""option"": ""会买"", ""votes"": 3, ""total"": 11},
+    {""pollId"": ""df2c5fa1-ac43-4352-afee-b8b772fbda2a"", ""option"": ""不会买"", ""votes"": 8, ""total"": 11}
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""不会买，不怎么用香薰"",
+      ""evidenceIds"": [""ed7e6ff8-4720-484b-8783-f6cf7ae49af5""],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""好看是好看，家里放不下了"",
+      ""evidenceIds"": [""0b067180-2353-4918-979e-95346d8b15f5""],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人认为产品好看，但购买意向较低，主要是因为一些人表示不会购买，且有反馈提到家里没有空间放置。建议进行小规模试产以测试市场需求。"",
+  ""evidenceIds"": [
+    ""a9fd14f1-45b4-4efe-95c3-15e4ef4283fd"",
+    ""0b067180-2353-4918-979e-95346d8b15f5"",
+    ""8eda009c-fc52-418a-b927-5eae5547e50b"",
+    ""c048a97f-bff9-4fa7-b39f-cd8049701cd2"",
+    ""ed7e6ff8-4720-484b-8783-f6cf7ae49af5""
+  ]
+}
+```"
+C23,research,hold_polarized,dev,1,6a12de51-0d8c-4c89-80cf-b9674ee19381,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m2;m1;m4;m3,,4,12,0,0,19057,11,15177,3585,26,269,11320,955,0.002271,0,14182,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然有5人表示会购买，但也有4人表示不会购买，且存在对产品外观和清洁难度的担忧。由于反馈意见分歧，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""da85a93c-f110-45a7-9a02-fec910bddbf1"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""da85a93c-f110-45a7-9a02-fec910bddbf1"",
+      ""option"": ""不会买"",
+      ""votes"": 4,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""看着像次品😅"",
+      ""evidenceIds"": [""c6d8f9db-02cd-4458-ae20-87358e48d81c""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""表面坑坑洼洼的，不好洗"",
+      ""evidenceIds"": [""16e71310-af3e-4334-9e4b-065af9b21999""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然有5人表示会购买，但也有4人表示不会购买，且存在对产品外观和清洁难度的担忧。由于反馈意见分歧，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""c6d8f9db-02cd-4458-ae20-87358e48d81c"",
+    ""40e5982a-b62f-4b06-bcf1-21a3305ab2e3"",
+    ""16e71310-af3e-4334-9e4b-065af9b21999"",
+    ""dbe06f18-71df-4759-91f5-da8ae1e74a76""
+  ]
+}"
+C26,research,version_mix,dev,1,4ef10ceb-e6d2-498e-83fc-0228a8a07635,FAILED,FINAL_PARSE_FAILED,PRODUCE,PRODUCE|TRIAL,,0,0,0,0,0,3,0,0,0,,,3,8,0,0,15543,9,12150,3197,16,180,6689,763,0.001461,0,9223,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,,"Here are the findings based on the survey and evidence for the 牛仔外套 V2:
+
+### Poll Readings
+- **PURCHASE_INTENT**
+  - {""pollId"": ""8e9f95f7-99de-4d6d-8bb8-03159b2ae639"", ""option"": ""会买"", ""votes"": 8, ""total"": 10}
+  - {""pollId"": ""8e9f95f7-99de-4d6d-8bb8-03159b2ae639"", ""option"": ""不会买"", ""votes"": 2, ""total"": 10}
+
+### Concerns
+- No specific concerns were raised by multiple people regarding fabric, workmanship, size, color, or price. The feedback was generally positive.
+
+### Recommendation
+- **PRODUCE**
+
+### Summary
+The feedback for 牛仔外套 V2 is predominantly positive, with 80% of respondents indicating they would purchase it. There were no significant concerns raised about the product's attributes, and the comments highlight favorable aspects such as the fit of the sleeves, comfort, and color appeal. Given the strong purchase intent and lack of critical issues, it is recommended to proceed with production.
+
+### Evidence IDs
+- 048eeafc-9f1e-423d-b5c1-b74888405786
+- a2f1b9fa-5d0b-4091-9cce-9ed125957981
+- 175721b3-b3e7-41e2-9f1b-61f1e4519aa1
+- 827147e3-ab1c-498a-b10d-038aed706f81"
+C32,research,clear_positive,dev,1,183c86eb-7b7f-4725-98d2-c7ee926116db,FAILED,FINAL_PARSE_FAILED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,3,8,0,0,19629,9,16173,3243,20,193,7202,1090,0.001734,0,9625,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,,"Here are the findings based on the survey feedback and evidence for the hand-crafted ceramic cup V1:
+
+### Poll Readings
+- **PURCHASE_INTENT**
+  - {""pollId"": ""93ab00d7-47c4-4444-85a4-43931bb2feff"", ""option"": ""会买"", ""votes"": 9, ""total"": 11}
+  - {""pollId"": ""93ab00d7-47c4-4444-85a4-43931bb2feff"", ""option"": ""不会买"", ""votes"": 2, ""total"": 11}
+
+### Concerns
+- No specific concerns were raised by multiple people regarding fabric, workmanship, size, color, or price. However, the following feedback was noted:
+  - ""价格还行"" (Price is okay) - **evidenceId**: ""b957e74e-0374-4704-9b16-df6d0cf8af49"" (mentioned by multiple people)
+  - ""釉色太好看了"" (The glaze color is beautiful) - **evidenceId**: ""3ffa9a95-ccc7-43e6-88aa-ce70b839b405"" (mentioned by multiple people)
+  - ""拿着手感很好，不烫手"" (Feels good to hold, not hot) - **evidenceId**: ""08baff7c-22fe-4e5b-8393-86b40ff56db1"" (mentioned by multiple people)
+  - ""我自己用不上，但送人很合适"" (I can't use it myself, but it's suitable as a gift) - **evidenceId**: ""b3a22e33-d590-4e88-ba94-b9857fc0930d"" (mentioned by multiple people)
+  - ""上了我先买两个"" (I will buy two as soon as it's available) - **evidenceId**: ""95b29695-6dab-466e-910a-d9b9fa1cff28"" (mentioned by multiple people)
+
+### Recommendation
+- **PRODUCE**
+
+### Summary
+The feedback indicates a strong positive reception for the hand-crafted ceramic cup V1, with a clear majority (9 out of 11) indicating they would purchase it. There are no significant concerns raised by multiple individuals regarding defects in fabric, workmanship, size, or color. The comments reflect satisfaction with the price and the aesthetic appeal of the product, as well as its practicality as a gift. Therefore, it is recommended to proceed with production.
+
+### Evidence IDs
+- [""b957e74e-0374-4704-9b16-df6d0cf8af49"", ""3ffa9a95-ccc7-43e6-88aa-ce70b839b405"", ""08baff7c-22fe-4e5b-8393-86b40ff56db1"", ""b3a22e33-d590-4e88-ba94-b9857fc0930d"", ""95b29695-6dab-466e-910a-d9b9fa1cff28""]"

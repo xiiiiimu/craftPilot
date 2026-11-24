@@ -96,6 +96,26 @@ class EvalGuardsTest {
         java.nio.file.Files.delete(file);
     }
 
+    @Test
+    void repeatsForOverridesTheRepeatCountOfSelectedCases() {
+        EvalSettings settings = EvalSettings.resolve(
+                props(Map.of("eval.repeats", "3", "eval.repeatsFor", "C04:5, C32:5 ,C35:5")), env(Map.of()));
+
+        assertThat(settings.repeatsFor("C04")).isEqualTo(5);
+        assertThat(settings.repeatsFor("C35")).isEqualTo(5);
+        assertThat(settings.repeatsFor("C01")).isEqualTo(3);
+        assertThat(settings.describe()).containsEntry("repeatsFor", "C04:5,C32:5,C35:5");
+        assertThat(EvalSettings.resolve(props(Map.of()), env(Map.of())).repeatsFor("C04")).isEqualTo(1);
+    }
+
+    @Test
+    void repeatsForRejectsMalformedEntries() {
+        for (String bad : new String[] {"C04", "C04:x", "C04:0", ":5"}) {
+            assertThatThrownBy(() -> EvalSettings.resolve(props(Map.of("eval.repeatsFor", bad)), env(Map.of())))
+                    .as(bad).isInstanceOf(IllegalStateException.class).hasMessageContaining("eval.repeatsFor");
+        }
+    }
+
     private static Function<String, String> props(Map<String, String> values) {
         return values::get;
     }

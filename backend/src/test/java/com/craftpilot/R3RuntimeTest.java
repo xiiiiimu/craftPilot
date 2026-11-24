@@ -66,7 +66,8 @@ class R3RuntimeTest {
             new java.util.concurrent.atomic.AtomicReference<>();
     // 0: tool then final; 1: rate limit then ok; 2: bad json final; 3: fabricated evidence;
     // 4: final with a recommendation outside PRODUCE/REVISE/TRIAL/HOLD;
-    // 5: final JSON without a recommendation; 6: final with null content
+    // 5: final JSON without a recommendation; 6: final with null content;
+    // 7: final with pollReadings / concerns that match nothing (consistency check is off by default)
 
     @Container
     static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
@@ -121,6 +122,13 @@ class R3RuntimeTest {
                         + activeEvidence.get() + "\\\"]}\"");
             } else if (mode == 6) {
                 body = rawFinalBody("null");
+            } else if (mode == 7) {
+                body = rawFinalBody("\"{\\\"pollReadings\\\":[{\\\"pollId\\\":\\\"" + UUID.randomUUID()
+                        + "\\\",\\\"option\\\":\\\"x\\\",\\\"votes\\\":7,\\\"total\\\":1}],"
+                        + "\\\"concerns\\\":[{\\\"text\\\":\\\"c\\\",\\\"evidenceIds\\\":[],"
+                        + "\\\"mentionedBy\\\":5}],\\\"recommendation\\\":\\\"REVISE\\\","
+                        + "\\\"summary\\\":\\\"s\\\",\\\"evidenceIds\\\":[\\\""
+                        + activeEvidence.get() + "\\\"]}\"");
             } else {
                 body = finalBody(activeEvidence.get());
             }
@@ -392,6 +400,25 @@ class R3RuntimeTest {
                     .param("m", merchant).param("id", run).query(String.class).single())
                     .as("mode %d", mode).isEqualTo("FINAL_PARSE_FAILED");
         }
+        chatMode.set(0);
+    }
+
+    @Test
+    @Order(9)
+    void consistencyCheckIsOffByDefaultAndStructuredFieldsPassThrough() {
+        chatMode.set(7);
+        chatCalls.set(0);
+        var created = postTicket(UUID.randomUUID(), "Unchecked structured fields");
+        UUID run = UUID.fromString(created.getBody().path("runId").asText());
+        worker.claimAndRun(1);
+        var view = get("/merchants/" + merchant + "/runtime/runs/" + run).getBody();
+        assertThat(view.path("status").asText()).isEqualTo("SUCCEEDED");
+        assertThat(view.path("finalOutput").path("pollReadings").get(0).path("votes").asInt()).isEqualTo(7);
+        assertThat(view.path("finalOutput").path("concerns").get(0).path("mentionedBy").asInt()).isEqualTo(5);
+        assertThat(jdbc.sql("""
+                SELECT COUNT(*) FROM runtime_event WHERE merchant_id = :m AND run_id = :r
+                  AND event_type IN ('FINAL_CONSISTENCY', 'FINAL_CONSISTENCY_RETRY')
+                """).param("m", merchant).param("r", run).query(Long.class).single()).isZero();
         chatMode.set(0);
     }
 

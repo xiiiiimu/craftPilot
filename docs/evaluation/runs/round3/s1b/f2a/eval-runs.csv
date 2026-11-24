@@ -1,0 +1,577 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C02,research,clear_positive,dev,1,ff232ae6-21d7-4c08-8651-87fd019e9d13,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m3;m1;m4,,4,13,0,0,19562,31,15277,3827,61,397,12598,901,0.002431,0,15076,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would purchase the product. Key positive comments highlight the attractive price, spacious capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would purchase the product. Key positive comments highlight the attractive price, spacious capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals."",
+  ""evidenceIds"": [
+    ""c673c410-e61e-4fe9-81f3-c7333e235ad1"",
+    ""f6cc5c9d-3d06-4ed6-ae73-0e36a7c55303"",
+    ""6b185184-e299-4e73-a611-322d3fdd6431"",
+    ""b93bada2-497f-4959-a757-6017097b86a1"",
+    ""d976fe3c-9b69-4fe2-9b9a-49d732a820df""
+  ]
+}"
+C02,research,clear_positive,dev,2,929f1f60-2002-43e7-90ac-caa92e0a31ae,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m3;m1;m4,,4,13,0,0,16787,12,14451,2047,24,265,12598,901,0.002431,0,15075,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would purchase the product. Key positive comments highlight the attractive price, large capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would purchase the product. Key positive comments highlight the attractive price, large capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals."",
+  ""evidenceIds"": [
+    ""c673c410-e61e-4fe9-81f3-c7333e235ad1"",
+    ""f6cc5c9d-3d06-4ed6-ae73-0e36a7c55303"",
+    ""6b185184-e299-4e73-a611-322d3fdd6431"",
+    ""b93bada2-497f-4959-a757-6017097b86a1"",
+    ""d976fe3c-9b69-4fe2-9b9a-49d732a820df""
+  ]
+}"
+C02,research,clear_positive,dev,3,3b39c15d-de7e-4152-94c9-11f966481dfd,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m3;m1;m4,,4,13,0,0,16180,8,13647,2220,40,273,12594,901,0.002430,0,15069,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would buy the product. Key positive comments highlight the attractive price, large capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""515c9cb6-f63d-40ce-8443-16fcc51d30be"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 10 out of 11 respondents indicating they would buy the product. Key positive comments highlight the attractive price, large capacity, and excellent embroidery quality. There are no significant concerns raised by multiple individuals."",
+  ""evidenceIds"": [
+    ""c673c410-e61e-4fe9-81f3-c7333e235ad1"",
+    ""f6cc5c9d-3d06-4ed6-ae73-0e36a7c55303"",
+    ""6b185184-e299-4e73-a611-322d3fdd6431"",
+    ""b93bada2-497f-4959-a757-6017097b86a1"",
+    ""d976fe3c-9b69-4fe2-9b9a-49d732a820df""
+  ]
+}"
+C05,research,clear_positive,dev,1,6c91dc65-9786-4662-a35c-4200aec79057,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m4;m2;m1;m3,,3,8,0,0,14508,52,10711,3486,41,270,7284,742,0.001538,0,9763,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the silk hair ties is overwhelmingly positive, with 12 out of 13 respondents indicating they would purchase the product. There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""会买"",
+      ""votes"": 12,
+      ""total"": 13
+    },
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 13
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the silk hair ties is overwhelmingly positive, with 12 out of 13 respondents indicating they would purchase the product. There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""cfc18687-efa6-4413-8ae1-f4ff9247c550"",
+    ""a92d6b91-521e-45cb-a369-41c0bfebc6a9"",
+    ""ae999241-e957-42af-b159-24a6f10324eb"",
+    ""a74b6a66-ad6b-402b-8eea-c7c2a793de2e"",
+    ""85e8f45a-5b7c-439d-86ab-45e02acdd1fc""
+  ]
+}"
+C05,research,clear_positive,dev,2,084e149d-4e13-42b0-aeca-28a46bdee6b7,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m4;m2;m1;m3,,3,8,0,0,13133,9,10737,2171,11,214,7282,725,0.001527,0,9762,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 12 out of 13 respondents indicating they would purchase the product. There are no significant concerns raised about the product's attributes, and the overall sentiment is favorable.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""会买"",
+      ""votes"": 12,
+      ""total"": 13
+    },
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 13
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 12 out of 13 respondents indicating they would purchase the product. There are no significant concerns raised about the product's attributes, and the overall sentiment is favorable."",
+  ""evidenceIds"": [
+    ""cfc18687-efa6-4413-8ae1-f4ff9247c550"",
+    ""a92d6b91-521e-45cb-a369-41c0bfebc6a9"",
+    ""ae999241-e957-42af-b159-24a6f10324eb"",
+    ""a74b6a66-ad6b-402b-8eea-c7c2a793de2e"",
+    ""85e8f45a-5b7c-439d-86ab-45e02acdd1fc""
+  ]
+}"
+C05,research,clear_positive,dev,3,c81c361b-0042-4bb0-b755-9e285e641b71,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m4;m2;m1;m3,,4,13,0,0,17386,10,15128,1969,20,269,12558,946,0.002452,0,15185,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 12 out of 13 respondents indicating they would buy the product. There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""会买"",
+      ""votes"": 12,
+      ""total"": 13
+    },
+    {
+      ""pollId"": ""5b39a710-dc92-4cc0-b935-a2f5bc9d1727"",
+      ""option"": ""不会买"",
+      ""votes"": 1,
+      ""total"": 13
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 12 out of 13 respondents indicating they would buy the product. There are no significant concerns raised about the product's attributes, and the evidence supports a favorable overall opinion. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""cfc18687-efa6-4413-8ae1-f4ff9247c550"",
+    ""a92d6b91-521e-45cb-a369-41c0bfebc6a9"",
+    ""ae999241-e957-42af-b159-24a6f10324eb"",
+    ""a74b6a66-ad6b-402b-8eea-c7c2a793de2e"",
+    ""85e8f45a-5b7c-439d-86ab-45e02acdd1fc""
+  ]
+}"
+C06,research,revise_attribute,dev,1,6f0f9841-12fa-44c3-888f-0d7a200dbad8,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,6,6,0,3,3,0,0,m1;m5;m2;m4;m6;m3,,3,8,0,0,22415,10,18623,3586,15,191,8130,1053,0.001851,0,10183,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个款式，但购买意向接近持平，且有多个用户提到袖子过长的问题，影响了他们的购买决策。由于存在明显的设计缺陷，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""袖子太长了，盖住手"",
+      ""evidenceIds"": [
+        ""4396ef12-5f06-4024-adb6-fc7e66f742d9"",
+        ""c28f1d42-1208-47b4-814b-d68fec11fef5"",
+        ""e95a933c-69d3-4077-ab43-1603d6d2623b""
+      ],
+      ""mentionedBy"": 4
+    },
+    {
+      ""text"": ""袖长真的要改，跟唱戏似的"",
+      ""evidenceIds"": [
+        ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+        ""c28f1d42-1208-47b4-814b-d68fec11fef5""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然大多数人喜欢这个款式，但购买意向接近持平，且有多个用户提到袖子过长的问题，影响了他们的购买决策。由于存在明显的设计缺陷，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""93e7d5c7-7e5d-4a2b-b72a-e772ed3e8da1"",
+    ""c28f1d42-1208-47b4-814b-d68fec11fef5"",
+    ""e9feb346-f4d1-44bb-a4e8-b7767ca0239a"",
+    ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+    ""3879eb85-dfea-45ae-a64c-1ced36e310ed"",
+    ""4396ef12-5f06-4024-adb6-fc7e66f742d9""
+  ]
+}"
+C06,research,revise_attribute,dev,2,9bf39867-b167-4015-8518-15bcf868f7be,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,6,6,0,3,3,0,0,m1;m5;m2;m4;m6;m3,,3,8,0,0,17675,10,15221,2197,11,246,8130,989,0.001813,0,10183,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个开衫的款式，但购买意向接近持平，且有多个用户提到袖子太长的问题，这影响了他们的购买决策。由于存在明显的设计缺陷，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""袖子太长了，盖住手"",
+      ""evidenceIds"": [
+        ""4396ef12-5f06-4024-adb6-fc7e66f742d9"",
+        ""3879eb85-dfea-45ae-a64c-1ced36e310ed"",
+        ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+        ""c28f1d42-1208-47b4-814b-d68fec11fef5""
+      ],
+      ""mentionedBy"": 4
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然大多数人喜欢这个开衫的款式，但购买意向接近持平，且有多个用户提到袖子太长的问题，这影响了他们的购买决策。由于存在明显的设计缺陷，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""93e7d5c7-7e5d-4a2b-b72a-e772ed3e8da1"",
+    ""c28f1d42-1208-47b4-814b-d68fec11fef5"",
+    ""e9feb346-f4d1-44bb-a4e8-b7767ca0239a"",
+    ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+    ""3879eb85-dfea-45ae-a64c-1ced36e310ed"",
+    ""4396ef12-5f06-4024-adb6-fc7e66f742d9""
+  ]
+}"
+C06,research,revise_attribute,dev,3,a8d5d770-5c5b-4fee-9841-88632f930bfe,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,6,6,0,3,3,0,0,m1;m5;m2;m4;m6;m3,,3,8,0,0,16924,6,14777,1927,13,207,8130,1026,0.001835,0,10182,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个开衫的款式，但购买意向接近持平，且有多个反馈提到袖子过长的问题，影响了购买意向。由于存在明显的设计缺陷（袖子过长），建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""81a60e06-4058-457a-a164-fee79a266bd6"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""bb2f7096-773e-492d-b459-b50957da0ecb"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""袖子太长了，盖住手"",
+      ""evidenceIds"": [
+        ""4396ef12-5f06-4024-adb6-fc7e66f742d9"",
+        ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+        ""c28f1d42-1208-47b4-814b-d68fec11fef5""
+      ],
+      ""mentionedBy"": 4
+    },
+    {
+      ""text"": ""袖子改短我就买"",
+      ""evidenceIds"": [
+        ""3879eb85-dfea-45ae-a64c-1ced36e310ed""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然大多数人喜欢这个开衫的款式，但购买意向接近持平，且有多个反馈提到袖子过长的问题，影响了购买意向。由于存在明显的设计缺陷（袖子过长），建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""93e7d5c7-7e5d-4a2b-b72a-e772ed3e8da1"",
+    ""c28f1d42-1208-47b4-814b-d68fec11fef5"",
+    ""e9feb346-f4d1-44bb-a4e8-b7767ca0239a"",
+    ""e95a933c-69d3-4077-ab43-1603d6d2623b"",
+    ""3879eb85-dfea-45ae-a64c-1ced36e310ed"",
+    ""4396ef12-5f06-4024-adb6-fc7e66f742d9""
+  ]
+}"
+C09,research,revise_attribute,dev,1,d7616f7d-0934-406e-b1db-81fb7d002faa,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,5,5,0,3,3,0,0,m3;m1;m5;m4;m2,,3,8,0,0,16426,7,12821,3381,15,209,7389,881,0.001637,0,9750,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个手织毛衣的款式和花纹，但有两个主要问题被多位用户提到：一是毛衣扎人，导致穿着不适；二是需要内搭打底，使用上不够方便。这些问题需要解决后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""扎得我怀疑人生"",
+      ""evidenceIds"": [""84dcda98-1f38-40a4-8f25-c7a1f595d9af""],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""里面得套打底才能穿，太麻烦"",
+      ""evidenceIds"": [""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9""],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个手织毛衣的款式和花纹，但有两个主要问题被多位用户提到：一是毛衣扎人，导致穿着不适；二是需要内搭打底，使用上不够方便。这些问题需要解决后再考虑量产。"",
+  ""evidenceIds"": [
+    ""84dcda98-1f38-40a4-8f25-c7a1f595d9af"",
+    ""e5fc4bb8-d567-4644-a215-cef7d0b0e1fa"",
+    ""514834bf-3b9d-498b-82bf-e7d94fcd8cc8"",
+    ""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9"",
+    ""77c64ac7-bc75-4dba-a867-c41a98d09d3a""
+  ]
+}"
+C09,research,revise_attribute,dev,2,314545cb-fbf4-4714-9bca-d2c69fb9adc2,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,5,5,0,3,3,0,0,m3;m1;m5;m4;m2,,4,13,0,0,19015,8,16863,1897,20,235,12800,1147,0.002607,0,15161,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个版本的手织毛衣，但存在一些明显的反馈问题，包括扎得不舒服和穿着需要额外的打底，这些问题由不同的人提出。由于这些问题的存在，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""扎得我怀疑人生"",
+      ""evidenceIds"": [""84dcda98-1f38-40a4-8f25-c7a1f595d9af""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""里面得套打底才能穿，太麻烦"",
+      ""evidenceIds"": [""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""好扎啊，穿一会儿脖子就红了"",
+      ""evidenceIds"": [""77c64ac7-bc75-4dba-a867-c41a98d09d3a""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然大多数人喜欢这个版本的手织毛衣，但存在一些明显的反馈问题，包括扎得不舒服和穿着需要额外的打底，这些问题由不同的人提出。由于这些问题的存在，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""84dcda98-1f38-40a4-8f25-c7a1f595d9af"",
+    ""e5fc4bb8-d567-4644-a215-cef7d0b0e1fa"",
+    ""514834bf-3b9d-498b-82bf-e7d94fcd8cc8"",
+    ""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9"",
+    ""77c64ac7-bc75-4dba-a867-c41a98d09d3a""
+  ]
+}"
+C09,research,revise_attribute,dev,3,ab6249ca-e0d1-4a2e-9d4e-f0c7bc42a37a,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,5,5,0,3,3,0,0,m3;m1;m5;m4;m2,,3,8,0,0,15422,7,13235,2046,11,130,7391,884,0.001639,0,9750,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个手织毛衣的款式和花纹，但有两个主要问题被多位用户提到：一是毛衣扎人，导致穿着不适；二是需要搭配打底衣物，使用上较为麻烦。这些问题需要解决后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""cac2b9af-6724-44cc-914b-ff0e666f9a62"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""扎得我怀疑人生"",
+      ""evidenceIds"": [""84dcda98-1f38-40a4-8f25-c7a1f595d9af""],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""里面得套打底才能穿，太麻烦"",
+      ""evidenceIds"": [""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9""],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个手织毛衣的款式和花纹，但有两个主要问题被多位用户提到：一是毛衣扎人，导致穿着不适；二是需要搭配打底衣物，使用上较为麻烦。这些问题需要解决后再考虑量产。"",
+  ""evidenceIds"": [
+    ""84dcda98-1f38-40a4-8f25-c7a1f595d9af"",
+    ""e5fc4bb8-d567-4644-a215-cef7d0b0e1fa"",
+    ""514834bf-3b9d-498b-82bf-e7d94fcd8cc8"",
+    ""ee55de81-a04f-4fe6-999a-e1ee7aa6d5f9"",
+    ""77c64ac7-bc75-4dba-a867-c41a98d09d3a""
+  ]
+}"
+C13,research,trial_low_intent,dev,1,3f7cabc4-c8c1-4126-b80f-17ac98ef71cc,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m4;m1;m2;m5;m3,,3,8,0,0,16602,15,12907,3493,19,183,7278,901,0.001632,0,9736,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然有一些人喜欢这个草帽，但大多数人表示不会购买，主要原因是价格较高和实用性不足。购买意向调查显示，只有少数人表示会买，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""不会买"",
+      ""votes"": 10,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格有点高，可能不买"",
+      ""evidenceIds"": [
+        ""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""喜欢但是不实用"",
+      ""evidenceIds"": [
+        ""bd31240b-139b-4260-ae3b-dbbc77900c05""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""一年戴不了几次，就不买了"",
+      ""evidenceIds"": [
+        ""35b0fbba-5b69-4a76-8287-a19dca9cf241""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然有一些人喜欢这个草帽，但大多数人表示不会购买，主要原因是价格较高和实用性不足。购买意向调查显示，只有少数人表示会买，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""bd31240b-139b-4260-ae3b-dbbc77900c05"",
+    ""2a02d6ce-1c72-4177-89d9-6a8a06f55c74"",
+    ""45d70af4-8e51-4723-9c43-ce5e2b9f9188"",
+    ""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0"",
+    ""35b0fbba-5b69-4a76-8287-a19dca9cf241""
+  ]
+}"
+C13,research,trial_low_intent,dev,2,2d225548-178f-40eb-b278-0d246c3374f1,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m4;m1;m2;m5;m3,,3,8,0,0,14405,9,12368,1873,9,155,7276,888,0.001624,0,9736,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然有一些正面反馈，如适合拍照和度假风，但整体购买意向较低，10人表示不会购买，主要原因是价格较高和实用性不足。建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""不会买"",
+      ""votes"": 10,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格有点高，可能不买"",
+      ""evidenceIds"": [""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""一年戴不了几次，就不买了"",
+      ""evidenceIds"": [""35b0fbba-5b69-4a76-8287-a19dca9cf241""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""喜欢但是不实用"",
+      ""evidenceIds"": [""bd31240b-139b-4260-ae3b-dbbc77900c05""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然有一些正面反馈，如适合拍照和度假风，但整体购买意向较低，10人表示不会购买，主要原因是价格较高和实用性不足。建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""bd31240b-139b-4260-ae3b-dbbc77900c05"",
+    ""2a02d6ce-1c72-4177-89d9-6a8a06f55c74"",
+    ""45d70af4-8e51-4723-9c43-ce5e2b9f9188"",
+    ""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0"",
+    ""35b0fbba-5b69-4a76-8287-a19dca9cf241""
+  ]
+}"
+C13,research,trial_low_intent,dev,3,327f7bf1-fdbb-4f12-8450-b4ee165814f6,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m4;m1;m2;m5;m3,,3,8,0,0,14816,15,12448,2178,10,180,7277,896,0.001629,0,9735,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates that while some people appreciate the style of the hat, there are significant concerns regarding its practicality and price. The majority of the purchase intent poll shows that most people would not buy it, suggesting a trial approach to gauge real demand.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c0d56a59-0cc1-4434-ae0b-9d64295b8205"",
+      ""option"": ""不会买"",
+      ""votes"": 10,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""价格有点高，可能不买"",
+      ""evidenceIds"": [
+        ""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""一年戴不了几次，就不买了"",
+      ""evidenceIds"": [
+        ""35b0fbba-5b69-4a76-8287-a19dca9cf241""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""喜欢但是不实用"",
+      ""evidenceIds"": [
+        ""bd31240b-139b-4260-ae3b-dbbc77900c05""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""The feedback indicates that while some people appreciate the style of the hat, there are significant concerns regarding its practicality and price. The majority of the purchase intent poll shows that most people would not buy it, suggesting a trial approach to gauge real demand."",
+  ""evidenceIds"": [
+    ""bd31240b-139b-4260-ae3b-dbbc77900c05"",
+    ""2a02d6ce-1c72-4177-89d9-6a8a06f55c74"",
+    ""45d70af4-8e51-4723-9c43-ce5e2b9f9188"",
+    ""3d15aa17-2bc6-42e0-a2ae-8c52ac2e17c0"",
+    ""35b0fbba-5b69-4a76-8287-a19dca9cf241""
+  ]
+}"
+C17,research,hold_sparse,dev,1,a92e4bed-bd8e-44dc-bcc6-66f9a2c78dac,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,4,10,0,0,13255,15,10246,2724,25,260,8444,644,0.001654,0,12381,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the cotton-linen apron V1 is mostly neutral or non-committal, with comments like '再看看' (let's see) and '嗯' (uh-huh), indicating uncertainty rather than strong opinions. There are no clear positive or negative sentiments, and no purchase intent polls were available to gauge interest. Therefore, it is recommended to hold off on production until more definitive feedback is obtained.","{""pollReadings"":[],""concerns"":[],""recommendation"":""HOLD"",""summary"":""The feedback on the cotton-linen apron V1 is mostly neutral or non-committal, with comments like '再看看' (let's see) and '嗯' (uh-huh), indicating uncertainty rather than strong opinions. There are no clear positive or negative sentiments, and no purchase intent polls were available to gauge interest. Therefore, it is recommended to hold off on production until more definitive feedback is obtained."",""evidenceIds"":[""9386a530-32ad-4d07-b40c-112ea05d1e58"",""c98a9d4a-0d0d-4fc3-ad4b-9a8d36328030""]}"
+C17,research,hold_sparse,dev,2,e5ffd98d-ed9f-45b2-8765-625bb77a186c,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,4,10,0,0,13210,13,10805,2188,15,202,8442,634,0.001647,0,12380,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the cotton-linen apron V1 is mostly neutral, with comments like '再看看' (let's wait and see) and '嗯' (uh-huh), indicating indecision rather than strong opinions for or against the product. There are no clear majority preferences in purchase intent or overall opinion, leading to a HOLD recommendation due to insufficient evidence for production.","{""pollReadings"":[],""concerns"":[],""recommendation"":""HOLD"",""summary"":""The feedback on the cotton-linen apron V1 is mostly neutral, with comments like '再看看' (let's wait and see) and '嗯' (uh-huh), indicating indecision rather than strong opinions for or against the product. There are no clear majority preferences in purchase intent or overall opinion, leading to a HOLD recommendation due to insufficient evidence for production."",""evidenceIds"":[""9386a530-32ad-4d07-b40c-112ea05d1e58"",""c98a9d4a-0d0d-4fc3-ad4b-9a8d36328030""]}"
+C17,research,hold_sparse,dev,3,fc42f4f6-32cc-45e5-a37f-3003820e303b,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,4,10,0,0,12192,7,9927,2088,13,164,8444,644,0.001654,0,12384,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the cotton-linen apron V1 is mostly neutral or non-committal, with comments like '再看看' (let's see) and '嗯' (uh-huh), indicating uncertainty rather than strong opinions. There are no clear positive or negative sentiments, and no purchase intent polls were available to gauge interest. Therefore, it is recommended to hold off on production until more definitive feedback is gathered.","{""pollReadings"":[],""concerns"":[],""recommendation"":""HOLD"",""summary"":""The feedback on the cotton-linen apron V1 is mostly neutral or non-committal, with comments like '再看看' (let's see) and '嗯' (uh-huh), indicating uncertainty rather than strong opinions. There are no clear positive or negative sentiments, and no purchase intent polls were available to gauge interest. Therefore, it is recommended to hold off on production until more definitive feedback is gathered."",""evidenceIds"":[""9386a530-32ad-4d07-b40c-112ea05d1e58"",""c98a9d4a-0d0d-4fc3-ad4b-9a8d36328030""]}"

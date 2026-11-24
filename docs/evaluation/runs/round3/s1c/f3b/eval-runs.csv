@@ -1,0 +1,481 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C18,research,hold_sparse,dev,1,9a602b47-6fec-4198-a3a9-0e6bbeee6855,FAILED,MAX_TURNS_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,1,0,0,0,,,8,8,0,1,14374,15,12287,1626,102,359,14481,377,0.002399,0,23690,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C18,research,hold_sparse,dev,2,6e303fc5-7ec4-4a30-bcb7-87823c496609,FAILED,MAX_TURNS_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,1,0,0,0,,,8,8,0,0,13310,9,11498,1473,47,292,14482,394,0.002410,0,23688,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C18,research,hold_sparse,dev,3,65f08da9-9578-4544-99f9-00855327779a,FAILED,MAX_TURNS_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,1,0,0,0,,,8,8,0,0,13405,8,11570,1529,63,243,14491,396,0.002412,0,23695,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C22,research,hold_polarized,dev,1,ebca8397-edde-4775-a5cb-e6e2046d3b83,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,5,5,0,3,3,0,0,m3;m4;m5;m1;m2,,4,13,0,0,24189,9,20650,3275,20,244,12856,1071,0.002571,0,15491,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback indicates mixed opinions about the product. While there are some positive comments about the color being cute, there are also concerns about the color being too bright and making the face look larger. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, leading to a recommendation to hold off on production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""显脸大"",
+      ""evidenceIds"": [
+        ""6dc46f7e-6c43-4085-ae40-6a87d5652675""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""配色太扎眼了，像交通灯"",
+      ""evidenceIds"": [
+        ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates mixed opinions about the product. While there are some positive comments about the color being cute, there are also concerns about the color being too bright and making the face look larger. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, leading to a recommendation to hold off on production."",
+  ""evidenceIds"": [
+    ""20660709-fc3b-406d-afb5-0d1807cac5e0"",
+    ""6dc46f7e-6c43-4085-ae40-6a87d5652675"",
+    ""695bf5ee-335c-4b77-9bfe-6210f3a7b494"",
+    ""de30c1e4-6179-4640-afdb-15d84529c3fc"",
+    ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+  ]
+}"
+C22,research,hold_polarized,dev,2,3d516a78-bdfb-49ef-b9eb-8cd112f74df3,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,5,5,0,3,3,0,0,m3;m4;m5;m1;m2,,3,8,0,0,18049,9,15899,1855,19,276,7521,856,0.001642,0,10032,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates mixed opinions about the product. There are two main concerns raised by multiple people: the hat makes the face look larger and the color scheme is too bright, resembling a traffic light. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, which further supports the HOLD recommendation.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""显脸大"",
+      ""evidenceIds"": [
+        ""6dc46f7e-6c43-4085-ae40-6a87d5652675""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""配色太扎眼了，像交通灯"",
+      ""evidenceIds"": [
+        ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates mixed opinions about the product. There are two main concerns raised by multiple people: the hat makes the face look larger and the color scheme is too bright, resembling a traffic light. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, which further supports the HOLD recommendation."",
+  ""evidenceIds"": [
+    ""20660709-fc3b-406d-afb5-0d1807cac5e0"",
+    ""6dc46f7e-6c43-4085-ae40-6a87d5652675"",
+    ""695bf5ee-335c-4b77-9bfe-6210f3a7b494"",
+    ""de30c1e4-6179-4640-afdb-15d84529c3fc"",
+    ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+  ]
+}"
+C22,research,hold_polarized,dev,3,0f6175c3-a359-45b5-b048-21cbc6124aff,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,5,5,0,3,3,0,0,m3;m4;m5;m1;m2,,3,8,0,0,15891,9,13876,1837,14,164,7520,859,0.001643,0,10032,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback shows mixed opinions about the product. While there are some positive comments about the color being cute, there are also concerns raised by different individuals regarding the color being too bright and the hat making faces appear larger. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, indicating uncertainty about market demand.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""b565c0b5-dc98-4b7f-ab0d-192851dfd931"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""显脸大"",
+      ""evidenceIds"": [
+        ""6dc46f7e-6c43-4085-ae40-6a87d5652675""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""配色太扎眼了，像交通灯"",
+      ""evidenceIds"": [
+        ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback shows mixed opinions about the product. While there are some positive comments about the color being cute, there are also concerns raised by different individuals regarding the color being too bright and the hat making faces appear larger. The purchase intent poll is split, with 4 saying they would buy and 5 saying they would not, indicating uncertainty about market demand."",
+  ""evidenceIds"": [
+    ""20660709-fc3b-406d-afb5-0d1807cac5e0"",
+    ""6dc46f7e-6c43-4085-ae40-6a87d5652675"",
+    ""695bf5ee-335c-4b77-9bfe-6210f3a7b494"",
+    ""de30c1e4-6179-4640-afdb-15d84529c3fc"",
+    ""e7c0ab43-36c3-48e5-8fb0-30639e10645a""
+  ]
+}"
+C25,research,hold_polarized,dev,1,ac26f0c8-381d-4ba8-83a3-3cdc11376a67,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m3;m1;m2;m4,,4,12,0,0,19982,8,16515,3226,15,226,11684,933,0.002313,0,14746,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mixed, with equal votes in the purchase intent poll (6 will buy, 6 will not buy). There is a concern raised by one person about the design being reminiscent of old-fashioned clothing, which contributes to the uncertainty regarding production. Therefore, the recommendation is to hold off on production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""会买"",
+      ""votes"": 6,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像百家衣，老气"",
+      ""evidenceIds"": [
+        ""85bddfb1-b2cf-40af-ad8e-effad2d51260""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed, with equal votes in the purchase intent poll (6 will buy, 6 will not buy). There is a concern raised by one person about the design being reminiscent of old-fashioned clothing, which contributes to the uncertainty regarding production. Therefore, the recommendation is to hold off on production."",
+  ""evidenceIds"": [
+    ""743ceec1-9487-4ac0-9c29-b7f1e90c9120"",
+    ""97d050ef-7bcd-443b-a9e4-8f9666dd2e4a"",
+    ""85bddfb1-b2cf-40af-ad8e-effad2d51260"",
+    ""63673c71-a4d4-4d9c-acac-ca415b26af6b""
+  ]
+}"
+C25,research,hold_polarized,dev,2,dcb2df97-7427-4dba-b3c0-9be6d4b81b95,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m3;m1;m2;m4,,4,12,0,0,19246,7,17270,1739,14,223,11686,933,0.002313,0,14746,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mixed, with an equal split in purchase intent (6 will buy, 6 will not buy). There is a concern raised by one person regarding the design being reminiscent of '百家衣', which could be seen as outdated. This indicates a lack of consensus on the product's appeal.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""会买"",
+      ""votes"": 6,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像百家衣，老气"",
+      ""evidenceIds"": [
+        ""85bddfb1-b2cf-40af-ad8e-effad2d51260""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed, with an equal split in purchase intent (6 will buy, 6 will not buy). There is a concern raised by one person regarding the design being reminiscent of '百家衣', which could be seen as outdated. This indicates a lack of consensus on the product's appeal."",
+  ""evidenceIds"": [
+    ""743ceec1-9487-4ac0-9c29-b7f1e90c9120"",
+    ""97d050ef-7bcd-443b-a9e4-8f9666dd2e4a"",
+    ""85bddfb1-b2cf-40af-ad8e-effad2d51260"",
+    ""63673c71-a4d4-4d9c-acac-ca415b26af6b""
+  ]
+}"
+C25,research,hold_polarized,dev,3,f2386fc5-b382-4b10-8335-ded4f63e05b4,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m3;m1;m2;m4,,4,12,0,0,18625,7,16651,1738,15,221,11684,928,0.002310,0,14746,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mixed with equal purchase intent (6 will buy, 6 will not buy). There is a concern about the design being perceived as outdated, but it was raised by only one person. Therefore, the recommendation is to hold off on production until further feedback is gathered.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""会买"",
+      ""votes"": 6,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""7a52441b-890f-48f4-9d59-dae94d0224d0"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像百家衣，老气"",
+      ""evidenceIds"": [
+        ""85bddfb1-b2cf-40af-ad8e-effad2d51260""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed with equal purchase intent (6 will buy, 6 will not buy). There is a concern about the design being perceived as outdated, but it was raised by only one person. Therefore, the recommendation is to hold off on production until further feedback is gathered."",
+  ""evidenceIds"": [
+    ""743ceec1-9487-4ac0-9c29-b7f1e90c9120"",
+    ""97d050ef-7bcd-443b-a9e4-8f9666dd2e4a"",
+    ""85bddfb1-b2cf-40af-ad8e-effad2d51260"",
+    ""63673c71-a4d4-4d9c-acac-ca415b26af6b""
+  ]
+}"
+C26,research,version_mix,dev,1,df7f9dae-768b-4ecb-bc2f-d87b7ec227cb,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,4,4,0,3,3,0,0,m4;m3;m5;m6,,4,11,0,0,17543,7,14877,2505,12,149,10882,788,0.002105,0,14101,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the V2 denim jacket is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color, and the evidence supports the positive reception of the product.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the V2 denim jacket is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color, and the evidence supports the positive reception of the product."",
+  ""evidenceIds"": [
+    ""e37f5234-451f-47e0-ab6a-25c8d403c193"",
+    ""148dce1b-7b3e-4155-8886-68b7755ed990"",
+    ""52a31734-4370-4b03-ad5b-e55f2787dea3"",
+    ""adc5aa0a-c59d-4b0b-9bb1-b80fd33e7bc5""
+  ]
+}"
+C26,research,version_mix,dev,2,3903a151-9d41-477d-a789-a76071b47e0f,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,4,4,0,3,3,0,0,m4;m3;m5;m6,,4,11,0,0,16359,10,14747,1437,13,162,10942,819,0.002132,0,14143,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color. The evidence supports a recommendation to produce the item.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color. The evidence supports a recommendation to produce the item."",
+  ""evidenceIds"": [
+    ""e37f5234-451f-47e0-ab6a-25c8d403c193"",
+    ""148dce1b-7b3e-4155-8886-68b7755ed990"",
+    ""52a31734-4370-4b03-ad5b-e55f2787dea3"",
+    ""adc5aa0a-c59d-4b0b-9bb1-b80fd33e7bc5""
+  ]
+}"
+C26,research,version_mix,dev,3,0181d641-d7c1-4dc9-b6b4-2e30a5773432,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,4,4,0,3,3,0,0,m4;m3;m5;m6,,4,11,0,0,16335,9,14575,1593,15,152,10942,824,0.002136,0,14141,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback for the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color. Positive comments highlight the fit, comfort, and appearance of the jacket.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""eed20788-598c-4436-90b6-a12c75bb7c0c"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the 牛仔外套 V2 is overwhelmingly positive, with 80% of respondents indicating they would buy it. There are no significant concerns raised about fabric, workmanship, size, or color. Positive comments highlight the fit, comfort, and appearance of the jacket."",
+  ""evidenceIds"": [
+    ""e37f5234-451f-47e0-ab6a-25c8d403c193"",
+    ""148dce1b-7b3e-4155-8886-68b7755ed990"",
+    ""52a31734-4370-4b03-ad5b-e55f2787dea3"",
+    ""adc5aa0a-c59d-4b0b-9bb1-b80fd33e7bc5""
+  ]
+}"
+C29,research,version_mix,dev,1,11a29cf9-d41f-4e53-9c2d-bf32f0a49f5f,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,4,4,0,2,2,0,0,m6;m4;m5;m3,,4,12,0,0,19906,11,16912,2793,18,183,11726,936,0.002321,0,14727,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有两位不同的人提到面料起球严重的问题，这构成了一个需要修正的缺陷。由于这个问题的存在，建议进行修订。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""喜欢"",
+      ""votes"": 7,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""一般"",
+      ""votes"": 4,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料起球严重"",
+      ""evidenceIds"": [
+        ""d029138f-37ee-4170-905c-58e04af994d6"",
+        ""83844848-b15b-483a-bed6-8b6f9b65ea64""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有两位不同的人提到面料起球严重的问题，这构成了一个需要修正的缺陷。由于这个问题的存在，建议进行修订。"",
+  ""evidenceIds"": [
+    ""2308c59c-8b26-4572-aefc-8c176d0e815c"",
+    ""d029138f-37ee-4170-905c-58e04af994d6"",
+    ""83844848-b15b-483a-bed6-8b6f9b65ea64"",
+    ""5cc64ef0-c57b-40b4-854d-1e0c1ca0bc68""
+  ]
+}"
+C29,research,version_mix,dev,2,2d77029a-8b4f-4f7d-b335-677d356f2894,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,4,4,0,2,2,0,0,m6;m4;m5;m3,,4,12,0,0,28250,10,25340,2716,18,176,11726,940,0.002323,0,14723,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有3位不同的人提到面料起球的问题，这构成了一个需要修正的缺陷。由于这个问题的严重性，建议在量产前进行修正。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""喜欢"",
+      ""votes"": 7,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""一般"",
+      ""votes"": 4,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料起球严重"",
+      ""evidenceIds"": [
+        ""d029138f-37ee-4170-905c-58e04af994d6"",
+        ""83844848-b15b-483a-bed6-8b6f9b65ea64""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有3位不同的人提到面料起球的问题，这构成了一个需要修正的缺陷。由于这个问题的严重性，建议在量产前进行修正。"",
+  ""evidenceIds"": [
+    ""2308c59c-8b26-4572-aefc-8c176d0e815c"",
+    ""d029138f-37ee-4170-905c-58e04af994d6"",
+    ""83844848-b15b-483a-bed6-8b6f9b65ea64"",
+    ""5cc64ef0-c57b-40b4-854d-1e0c1ca0bc68""
+  ]
+}"
+C29,research,version_mix,dev,3,3325b2d7-a7a1-4503-8694-e2f41f56752b,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,4,4,0,2,2,0,0,m6;m4;m5;m3,,4,12,0,0,17855,7,15965,1691,16,183,11726,930,0.002317,0,14727,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有3位不同的人提到面料起球严重的问题，这构成了一个需要修正的缺陷，因此建议进行修订。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""喜欢"",
+      ""votes"": 7,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c594b0d8-cb30-43c7-80a5-1654f8eb08fa"",
+      ""option"": ""一般"",
+      ""votes"": 4,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料起球严重"",
+      ""evidenceIds"": [
+        ""d029138f-37ee-4170-905c-58e04af994d6"",
+        ""83844848-b15b-483a-bed6-8b6f9b65ea64""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大多数人喜欢这个版本（7票喜欢，4票一般），但有3位不同的人提到面料起球严重的问题，这构成了一个需要修正的缺陷，因此建议进行修订。"",
+  ""evidenceIds"": [
+    ""2308c59c-8b26-4572-aefc-8c176d0e815c"",
+    ""d029138f-37ee-4170-905c-58e04af994d6"",
+    ""83844848-b15b-483a-bed6-8b6f9b65ea64"",
+    ""5cc64ef0-c57b-40b4-854d-1e0c1ca0bc68""
+  ]
+}"
+C33,research,clear_positive,dev,1,e7a352e3-1039-4462-8284-b5ff24101988,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m2;m5;m3;m1;m4,,5,10,0,0,24892,5,17352,7321,27,192,18871,844,0.003337,0,21205,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade leather wallet V1 is overwhelmingly positive, with a purchase intent poll showing that 10 out of 12 respondents would buy it. There are no significant concerns raised about defects in fabric, workmanship, size, or color. Positive comments highlight the quality of workmanship and the wallet's usability, indicating strong demand for production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade leather wallet V1 is overwhelmingly positive, with a purchase intent poll showing that 10 out of 12 respondents would buy it. There are no significant concerns raised about defects in fabric, workmanship, size, or color. Positive comments highlight the quality of workmanship and the wallet's usability, indicating strong demand for production."",
+  ""evidenceIds"": [
+    ""78d9c539-b23f-4740-aa58-d5819ed54f25"",
+    ""53af4681-2c5a-4bcb-b8e9-624a39093795"",
+    ""14fd25fa-230b-4cbf-adb7-d82707f0d567"",
+    ""5cfe7007-5228-4fb7-bc5f-d9bf295f7919"",
+    ""b9fa4337-88f7-4584-a77f-fec20c94db5b""
+  ]
+}"
+C33,research,clear_positive,dev,2,ee764142-7c39-40a3-a841-e6ce29d33484,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m2;m5;m3;m1;m4,,5,10,0,0,17903,7,15499,2176,25,203,18877,846,0.003340,0,21207,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade leather wallet V1 is overwhelmingly positive, with a strong purchase intent reflected in the poll results (10 out of 12 respondents indicated they would buy it). There are no significant concerns raised about the product's attributes, and the evidence supports the quality of workmanship and materials used. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade leather wallet V1 is overwhelmingly positive, with a strong purchase intent reflected in the poll results (10 out of 12 respondents indicated they would buy it). There are no significant concerns raised about the product's attributes, and the evidence supports the quality of workmanship and materials used. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""78d9c539-b23f-4740-aa58-d5819ed54f25"",
+    ""53af4681-2c5a-4bcb-b8e9-624a39093795"",
+    ""14fd25fa-230b-4cbf-adb7-d82707f0d567"",
+    ""5cfe7007-5228-4fb7-bc5f-d9bf295f7919"",
+    ""b9fa4337-88f7-4584-a77f-fec20c94db5b""
+  ]
+}"
+C33,research,clear_positive,dev,3,ffb2f2d4-7466-448f-8339-525e74be3e1e,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m4;m3;m5;m1;m2,,5,10,0,0,17085,6,14772,2115,18,180,18874,840,0.003335,0,21208,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade leather wallet is overwhelmingly positive, with a clear majority indicating they would purchase it (10 out of 12 votes). There are no significant concerns raised about the product's attributes, and the workmanship is praised as excellent. Minor comments about the price being slightly high do not outweigh the strong purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""会买"",
+      ""votes"": 10,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""dbc2595b-eb7d-4024-9580-9bf92813913b"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade leather wallet is overwhelmingly positive, with a clear majority indicating they would purchase it (10 out of 12 votes). There are no significant concerns raised about the product's attributes, and the workmanship is praised as excellent. Minor comments about the price being slightly high do not outweigh the strong purchase intent."",
+  ""evidenceIds"": [
+    ""b9fa4337-88f7-4584-a77f-fec20c94db5b"",
+    ""14fd25fa-230b-4cbf-adb7-d82707f0d567"",
+    ""53af4681-2c5a-4bcb-b8e9-624a39093795"",
+    ""5cfe7007-5228-4fb7-bc5f-d9bf295f7919"",
+    ""78d9c539-b23f-4740-aa58-d5819ed54f25""
+  ]
+}"

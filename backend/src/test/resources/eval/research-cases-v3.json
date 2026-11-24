@@ -2414,7 +2414,412 @@
       },
       "fold": 1,
       "origin": "v2-test"
+    },
+    {
+      "id": "C31",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "竹编收纳篮",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "BAM-03",
+          "materialName": "竹篾"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断竹编收纳篮 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "编得好密实，一点不扎手",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "放客厅很有感觉",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "开卖了喊我，我要两个",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "大小刚好放杂物"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "颜色很自然"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 10
+            },
+            {
+              "label": "一般",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      },
+      "fold": 1,
+      "origin": "r3-probe",
+      "hypothesis": "只有 PREFERENCE 投票、没有 PURCHASE_INTENT 投票，购买意向只在消息里明确说出：验证缺少购买意向投票时是否误判 TRIAL"
+    },
+    {
+      "id": "C32",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "手工陶瓷杯",
+        "category": "kitchen"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CER-12",
+          "materialName": "陶土"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手工陶瓷杯 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "釉色太好看了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "拿着手感很好，不烫手",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "我自己用不上，但送人很合适"
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "上了我先买两个",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "价格还行"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 9
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m4"
+        ],
+        "mustNotCite": []
+      },
+      "fold": 2,
+      "origin": "r3-probe",
+      "hypothesis": "强多数购买意向（9 会买 vs 2 不会）+ 一条含 TRIAL 触发词“用不上”、但意思是买来送人的正面消息：只验证触发词会不会误伤，投票比例和 C01/C04 相同"
+    },
+    {
+      "id": "C33",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "手工皮革钱包",
+        "category": "accessory"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "LEA-07",
+          "materialName": "植鞣牛皮"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手工皮革钱包 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "皮子摸着很软，味道也不大",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "走线很齐，做工没得说",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "稍微有点贵，但做工值这个价"
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "开售我就下单",
+          "keyEvidence": true
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "卡位够用"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 10
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m4"
+        ],
+        "mustNotCite": []
+      },
+      "fold": 3,
+      "origin": "r3-probe",
+      "hypothesis": "正面反馈 + 一条价格评价“稍微有点贵，但做工值这个价”+ 明确的购买意向：验证价格评价是否被当成 TRIAL 信号"
+    },
+    {
+      "id": "C34",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "手绘帆布包",
+        "category": "bag"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "CAN-05",
+          "materialName": "帆布"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手绘帆布包 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "图案好可爱，手绘的质感出来了",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "帆布挺厚实，能装电脑",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "什么时候上？给我留一个",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "同求链接"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "背出去肯定有人问"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PREFERENCE",
+          "question": "喜欢这一版吗？",
+          "options": [
+            {
+              "label": "喜欢",
+              "votes": 11
+            },
+            {
+              "label": "一般",
+              "votes": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      },
+      "fold": 1,
+      "origin": "r3-probe",
+      "hypothesis": "正面反馈，购买意向只用隐含说法表达（“什么时候上？给我留一个”“同求链接”），没有“会买”，也没有 PURCHASE_INTENT 投票：验证隐含的购买意向能否被识别"
+    },
+    {
+      "id": "C35",
+      "scenario": "clear_positive",
+      "split": "dev",
+      "style": {
+        "name": "手工香薰蜡烛",
+        "category": "home"
+      },
+      "revisions": [
+        {
+          "key": "V1",
+          "notes": "首版样品",
+          "materialCode": "WAX-02",
+          "materialName": "大豆蜡"
+        }
+      ],
+      "targetRevision": "V1",
+      "objective": "根据群聊反馈和投票，判断手工香薰蜡烛 V1 是否适合量产",
+      "messages": [
+        {
+          "key": "m1",
+          "revision": "V1",
+          "text": "味道很高级，不刺鼻",
+          "keyEvidence": true
+        },
+        {
+          "key": "m2",
+          "revision": "V1",
+          "text": "烧得很均匀，没有黑烟",
+          "keyEvidence": true
+        },
+        {
+          "key": "m3",
+          "revision": "V1",
+          "text": "开售买三个送朋友",
+          "keyEvidence": true
+        },
+        {
+          "key": "m4",
+          "revision": "V1",
+          "text": "就是杯口有一点点不平"
+        },
+        {
+          "key": "m5",
+          "revision": "V1",
+          "text": "包装很精致"
+        }
+      ],
+      "polls": [
+        {
+          "revision": "V1",
+          "kind": "PURCHASE_INTENT",
+          "question": "开售后会买吗？",
+          "options": [
+            {
+              "label": "会买",
+              "votes": 9
+            },
+            {
+              "label": "不会买",
+              "votes": 2
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "recommendation": "PRODUCE",
+        "acceptable": [
+          "PRODUCE"
+        ],
+        "mustCite": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "mustNotCite": []
+      },
+      "fold": 2,
+      "origin": "r3-probe",
+      "hypothesis": "和 C04 同结构：正面反馈 + 一条轻微的外观小瑕疵（杯口有一点点不平）+ 明确购买意向（9 会买 vs 2 不会）：验证 C04 的“小瑕疵就退回 HOLD/TRIAL”是否系统性出现"
     }
   ],
-  "note": "v3 dev = all 30 v2 cases; fold (1-3) is for cross-validation while tuning; the v3 test set is research-cases-v3-test.json"
+  "note": "v3 dev = all 30 v2 cases plus clear_positive probes C31-C35 (origin r3-probe, each with a hypothesis field); fold (1-3) is for cross-validation while tuning; the v3 test set is research-cases-v3-test.json"
 }

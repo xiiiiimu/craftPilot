@@ -1,0 +1,763 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C01,research,clear_positive,dev,1,64f1a8b8-8022-4ddd-af58-4b66c65ebd8d,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,6,6,0,3,3,0,0,m6;m4;m1;m2;m5;m3,,3,8,0,0,18331,14,14422,3591,29,289,8040,874,0.001730,0,10234,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback for the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would purchase it. There are no significant concerns raised about the product, and the positive sentiments about its fabric, workmanship, size, color, and price support the decision to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback for the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would purchase it. There are no significant concerns raised about the product, and the positive sentiments about its fabric, workmanship, size, color, and price support the decision to proceed with production."",
+  ""evidenceIds"": [
+    ""802a6820-3e61-4df2-971f-1fd1e386f167"",
+    ""e7873c1d-a380-400a-bb3b-df49866bd585"",
+    ""f0565c2d-e300-43b4-b742-6448210aa3c5"",
+    ""a85bb5a7-d354-4c06-b6b3-d92eb0e1350f"",
+    ""852e7053-8f1e-4ab2-9af0-d364cccd475d"",
+    ""2c0da719-9cce-4c29-be60-feeb61af5468""
+  ]
+}"
+C01,research,clear_positive,dev,2,a127b962-af0e-41bf-8c5b-acb0a12afcd9,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,6,6,0,3,3,0,0,m6;m4;m1;m2;m5;m3,,3,8,0,0,15762,9,13575,1983,20,184,8040,863,0.001724,0,10233,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would buy it. There are no significant concerns raised by multiple individuals, and the positive purchase intent supports a recommendation to produce the item.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would buy it. There are no significant concerns raised by multiple individuals, and the positive purchase intent supports a recommendation to produce the item."",
+  ""evidenceIds"": [
+    ""802a6820-3e61-4df2-971f-1fd1e386f167"",
+    ""e7873c1d-a380-400a-bb3b-df49866bd585"",
+    ""f0565c2d-e300-43b4-b742-6448210aa3c5"",
+    ""a85bb5a7-d354-4c06-b6b3-d92eb0e1350f"",
+    ""852e7053-8f1e-4ab2-9af0-d364cccd475d"",
+    ""2c0da719-9cce-4c29-be60-feeb61af5468""
+  ]
+}"
+C01,research,clear_positive,dev,3,acb2f14e-9046-4ff0-b095-80efa4cd6412,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,6,6,0,3,3,0,0,m6;m4;m1;m2;m5;m3,,3,8,0,0,18457,9,16402,1816,16,223,8039,863,0.001724,0,10233,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would buy it. There are no significant concerns raised about the product, and the positive purchase intent supports a recommendation to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""c412907a-58ad-49d3-8594-0ba7543e1741"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""e03b0dfe-56bf-416b-ba86-809ebe391f70"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade linen shirt V1 is overwhelmingly positive, with 11 out of 12 people liking the sample and 9 out of 11 indicating they would buy it. There are no significant concerns raised about the product, and the positive purchase intent supports a recommendation to proceed with production."",
+  ""evidenceIds"": [
+    ""802a6820-3e61-4df2-971f-1fd1e386f167"",
+    ""e7873c1d-a380-400a-bb3b-df49866bd585"",
+    ""f0565c2d-e300-43b4-b742-6448210aa3c5"",
+    ""a85bb5a7-d354-4c06-b6b3-d92eb0e1350f"",
+    ""852e7053-8f1e-4ab2-9af0-d364cccd475d"",
+    ""2c0da719-9cce-4c29-be60-feeb61af5468""
+  ]
+}"
+C04,research,clear_positive,dev,1,5ac491f3-b748-41a0-88c3-00e00cf113ff,SUCCEEDED,,PRODUCE,PRODUCE,REVISE,0,0,5,5,0,3,3,0,0,m5;m2;m1;m4;m3,,3,8,0,0,16883,11,13322,3325,18,218,7319,767,0.001558,0,9756,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The overall feedback is positive, with a majority indicating they would purchase the scarf (9 out of 11 votes). However, there is a concern raised by two different people regarding slight shedding, which is a fixable defect. This takes precedence over the positive purchase intent.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""就是有一丢丢掉毛"",
+      ""evidenceIds"": [
+        ""ab437cc5-171d-4067-9703-91488455c0d2""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""The overall feedback is positive, with a majority indicating they would purchase the scarf (9 out of 11 votes). However, there is a concern raised by two different people regarding slight shedding, which is a fixable defect. This takes precedence over the positive purchase intent."",
+  ""evidenceIds"": [
+    ""2e0f3f3f-7ac5-4440-a249-3d1fe676342d"",
+    ""ca54be34-7e4b-4469-b2c4-3c16d2ba655a"",
+    ""d4dd55cb-cd4b-46d5-890b-df464b004302"",
+    ""ab437cc5-171d-4067-9703-91488455c0d2"",
+    ""a9abb788-4aaf-46d8-a069-b0f708438b4f""
+  ]
+}"
+C04,research,clear_positive,dev,2,438cab13-7462-4ebd-bda4-826ddd5957a6,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m1;m4;m3,,5,13,0,0,21258,8,19058,1883,29,288,17550,982,0.003222,0,20185,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The overall feedback is positive, with a majority indicating they would purchase the scarf (9 out of 11 votes). The only concern raised was a minor issue of shedding, mentioned by one person, which does not outweigh the strong purchase intent. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""就是有一丢丢掉毛"",
+      ""evidenceIds"": [
+        ""ab437cc5-171d-4067-9703-91488455c0d2""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The overall feedback is positive, with a majority indicating they would purchase the scarf (9 out of 11 votes). The only concern raised was a minor issue of shedding, mentioned by one person, which does not outweigh the strong purchase intent. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""2e0f3f3f-7ac5-4440-a249-3d1fe676342d"",
+    ""ca54be34-7e4b-4469-b2c4-3c16d2ba655a"",
+    ""d4dd55cb-cd4b-46d5-890b-df464b004302"",
+    ""ab437cc5-171d-4067-9703-91488455c0d2"",
+    ""a9abb788-4aaf-46d8-a069-b0f708438b4f""
+  ]
+}"
+C04,research,clear_positive,dev,3,30742f91-e967-4a57-8266-207c23a7bb49,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m1;m4;m3,,5,13,0,0,20258,14,18171,1746,29,312,17547,977,0.003218,0,20176,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The overall feedback is positive, with a strong purchase intent (9 out of 11 votes indicating they would buy). The only concern raised is a minor issue of slight shedding, mentioned by one person, which does not outweigh the overall positive sentiment and intent to purchase.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""就是有一丢丢掉毛"",
+      ""evidenceIds"": [
+        ""ab437cc5-171d-4067-9703-91488455c0d2""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The overall feedback is positive, with a strong purchase intent (9 out of 11 votes indicating they would buy). The only concern raised is a minor issue of slight shedding, mentioned by one person, which does not outweigh the overall positive sentiment and intent to purchase."",
+  ""evidenceIds"": [
+    ""2e0f3f3f-7ac5-4440-a249-3d1fe676342d"",
+    ""ca54be34-7e4b-4469-b2c4-3c16d2ba655a"",
+    ""d4dd55cb-cd4b-46d5-890b-df464b004302"",
+    ""ab437cc5-171d-4067-9703-91488455c0d2"",
+    ""a9abb788-4aaf-46d8-a069-b0f708438b4f""
+  ]
+}"
+C04,research,clear_positive,dev,4,d2353d8d-c757-46a8-adca-63ba9fb51217,SUCCEEDED,,PRODUCE,PRODUCE,TRIAL,0,0,5,5,0,3,3,0,0,m5;m2;m1;m4;m3,,3,8,0,0,15581,9,12938,2481,10,152,7318,785,0.001569,0,9756,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates a strong purchase intent with 9 out of 11 votes in favor of buying the scarf. However, there is a concern raised by three different people about slight shedding. This suggests that while the product is generally well-received, there is a minor issue that could affect customer satisfaction. Therefore, a trial production is recommended to gauge market response further.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""就是有一丢丢掉毛"",
+      ""evidenceIds"": [
+        ""ab437cc5-171d-4067-9703-91488455c0d2""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""The feedback indicates a strong purchase intent with 9 out of 11 votes in favor of buying the scarf. However, there is a concern raised by three different people about slight shedding. This suggests that while the product is generally well-received, there is a minor issue that could affect customer satisfaction. Therefore, a trial production is recommended to gauge market response further."",
+  ""evidenceIds"": [
+    ""2e0f3f3f-7ac5-4440-a249-3d1fe676342d"",
+    ""ca54be34-7e4b-4469-b2c4-3c16d2ba655a"",
+    ""d4dd55cb-cd4b-46d5-890b-df464b004302"",
+    ""ab437cc5-171d-4067-9703-91488455c0d2"",
+    ""a9abb788-4aaf-46d8-a069-b0f708438b4f""
+  ]
+}"
+C04,research,clear_positive,dev,5,bd296315-cd86-45dc-9730-373926970d62,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m2;m1;m4;m3,,3,8,0,0,14535,7,12534,1820,22,159,7318,772,0.001561,0,9755,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates a strong purchase intent with 9 out of 11 votes in favor of buying the scarf. Although there is a minor concern about slight shedding raised by one person, it does not outweigh the overall positive reception and intent to purchase. Therefore, the recommendation is to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""b1d403ed-e6bf-49ff-881c-73f82118bb76"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""就是有一丢丢掉毛"",
+      ""evidenceIds"": [
+        ""ab437cc5-171d-4067-9703-91488455c0d2""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback indicates a strong purchase intent with 9 out of 11 votes in favor of buying the scarf. Although there is a minor concern about slight shedding raised by one person, it does not outweigh the overall positive reception and intent to purchase. Therefore, the recommendation is to proceed with production."",
+  ""evidenceIds"": [
+    ""2e0f3f3f-7ac5-4440-a249-3d1fe676342d"",
+    ""ca54be34-7e4b-4469-b2c4-3c16d2ba655a"",
+    ""d4dd55cb-cd4b-46d5-890b-df464b004302"",
+    ""ab437cc5-171d-4067-9703-91488455c0d2"",
+    ""a9abb788-4aaf-46d8-a069-b0f708438b4f""
+  ]
+}"
+C08,research,revise_attribute,dev,1,1908dcb5-f79b-4c49-b94b-e336916dbb27,SUCCEEDED,,REVISE,REVISE,TRIAL,0,0,6,6,0,3,3,0,0,m6;m2;m1;m4;m3;m5,,3,8,0,0,18801,9,14760,3887,10,144,8025,978,0.001791,0,10173,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这款棉麻阔腿裤，但购买意向较低，主要是因为面料容易皱的问题被多位用户提及。尽管有些人认为价格合理和颜色好看，但整体购买意向显示出较多的顾客不愿意购买，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""不会买"",
+      ""votes"": 7,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料太容易皱了"",
+      ""evidenceIds"": [
+        ""b680d169-23b3-45e0-b5a0-b32a69eb7743"",
+        ""62839170-26fd-4c35-b3b8-de62952d2ccf"",
+        ""ce035055-18eb-493a-a18a-4c460301159a""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这款棉麻阔腿裤，但购买意向较低，主要是因为面料容易皱的问题被多位用户提及。尽管有些人认为价格合理和颜色好看，但整体购买意向显示出较多的顾客不愿意购买，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""841f65ad-fade-4feb-baa4-4f80e13f661a"",
+    ""d2541859-68d0-49c7-b727-89d53e17860e"",
+    ""1be82bf8-88d4-47ce-8541-4b0165933439"",
+    ""ce035055-18eb-493a-a18a-4c460301159a"",
+    ""b680d169-23b3-45e0-b5a0-b32a69eb7743"",
+    ""62839170-26fd-4c35-b3b8-de62952d2ccf""
+  ]
+}"
+C08,research,revise_attribute,dev,2,2bd6560c-ec83-4569-9c78-019cd68d1f08,SUCCEEDED,,REVISE,REVISE,REVISE,1,1,6,6,0,3,3,0,0,m6;m2;m1;m4;m3;m5,,3,8,0,0,20534,7,18541,1827,11,155,8025,1050,0.001834,0,10174,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大部分人喜欢这个版本的棉麻阔腿裤，但购买意向较低，且有多个用户提到面料容易皱的问题，这被多位用户反复提及，构成了一个具体的可修正缺陷，因此建议进行修正后再考虑量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""不会买"",
+      ""votes"": 7,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料太容易皱了"",
+      ""evidenceIds"": [
+        ""b680d169-23b3-45e0-b5a0-b32a69eb7743""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""坐一会儿就全是褶子😓"",
+      ""evidenceIds"": [
+        ""ce035055-18eb-493a-a18a-4c460301159a""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""皱得跟咸菜似的，熨都熨不平"",
+      ""evidenceIds"": [
+        ""62839170-26fd-4c35-b3b8-de62952d2ccf""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""REVISE"",
+  ""summary"": ""虽然大部分人喜欢这个版本的棉麻阔腿裤，但购买意向较低，且有多个用户提到面料容易皱的问题，这被多位用户反复提及，构成了一个具体的可修正缺陷，因此建议进行修正后再考虑量产。"",
+  ""evidenceIds"": [
+    ""841f65ad-fade-4feb-baa4-4f80e13f661a"",
+    ""d2541859-68d0-49c7-b727-89d53e17860e"",
+    ""1be82bf8-88d4-47ce-8541-4b0165933439"",
+    ""ce035055-18eb-493a-a18a-4c460301159a"",
+    ""b680d169-23b3-45e0-b5a0-b32a69eb7743"",
+    ""62839170-26fd-4c35-b3b8-de62952d2ccf""
+  ]
+}"
+C08,research,revise_attribute,dev,3,4e1fdce0-0ffd-425b-b84c-bf371746e8b1,SUCCEEDED,,REVISE,REVISE,TRIAL,0,0,6,6,0,3,3,0,0,m6;m2;m1;m4;m3;m5,,3,8,0,0,16573,7,14561,1826,14,172,8027,976,0.001790,0,10175,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这款棉麻阔腿裤，但购买意向较低，主要是因为面料容易皱的问题被多位用户提及。尽管有些人对颜色和价格表示满意，但整体购买意向显示出较多的用户不愿意购买，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""82e6540b-4f15-4fbe-ba70-eae127cf3fc2"",
+      ""option"": ""一般"",
+      ""votes"": 3,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""会买"",
+      ""votes"": 4,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d5084d66-f91a-4957-a73c-bc9c301aeb71"",
+      ""option"": ""不会买"",
+      ""votes"": 7,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""面料太容易皱了"",
+      ""evidenceIds"": [
+        ""b680d169-23b3-45e0-b5a0-b32a69eb7743"",
+        ""62839170-26fd-4c35-b3b8-de62952d2ccf"",
+        ""ce035055-18eb-493a-a18a-4c460301159a""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这款棉麻阔腿裤，但购买意向较低，主要是因为面料容易皱的问题被多位用户提及。尽管有些人对颜色和价格表示满意，但整体购买意向显示出较多的用户不愿意购买，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""841f65ad-fade-4feb-baa4-4f80e13f661a"",
+    ""d2541859-68d0-49c7-b727-89d53e17860e"",
+    ""1be82bf8-88d4-47ce-8541-4b0165933439"",
+    ""ce035055-18eb-493a-a18a-4c460301159a"",
+    ""b680d169-23b3-45e0-b5a0-b32a69eb7743"",
+    ""62839170-26fd-4c35-b3b8-de62952d2ccf""
+  ]
+}"
+C12,research,trial_low_intent,dev,1,603ab701-7e68-4006-8553-af8cbbdc8a0d,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,3,8,0,0,16467,8,13216,3087,9,155,7420,959,0.001689,0,9828,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个香薰座的外观，但购买意向较低，尤其是有两人提到他们不会购买，因为不常使用香薰。虽然有一个人提到家里放不下，但这并不构成普遍的缺陷。整体来看，建议进行小规模试产以测试市场需求。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""家里放不下了"",
+      ""evidenceIds"": [
+        ""efb609dc-84f8-4474-b415-3fb54417ae9a""
+      ],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""不会买，不怎么用香薰"",
+      ""evidenceIds"": [
+        ""1ced81ad-52ae-4812-85c0-1b78f549fccb""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个香薰座的外观，但购买意向较低，尤其是有两人提到他们不会购买，因为不常使用香薰。虽然有一个人提到家里放不下，但这并不构成普遍的缺陷。整体来看，建议进行小规模试产以测试市场需求。"",
+  ""evidenceIds"": [
+    ""c591f697-a8b4-4cbb-86a1-6ba49d136091"",
+    ""efb609dc-84f8-4474-b415-3fb54417ae9a"",
+    ""42226972-561d-4c45-87fc-ce2d21d1ddde"",
+    ""c1ba323f-ac18-4343-905b-1ca3c40e13f6"",
+    ""1ced81ad-52ae-4812-85c0-1b78f549fccb""
+  ]
+}"
+C12,research,trial_low_intent,dev,2,ea1b5358-485e-4b49-a6e0-21417682b21a,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,4,13,0,0,20374,6,18241,1924,14,195,12746,1147,0.002601,0,15247,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人喜欢这个香薰座的外观，但购买意向较低，只有3人表示会买，8人表示不会买。主要原因是一些人不使用香薰，另一些人则表示没有空间放置。建议进行小规模试产以测试市场需求。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""不会买，不怎么用香薰"",
+      ""evidenceIds"": [""1ced81ad-52ae-4812-85c0-1b78f549fccb""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""家里放不下了"",
+      ""evidenceIds"": [""efb609dc-84f8-4474-b415-3fb54417ae9a""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人喜欢这个香薰座的外观，但购买意向较低，只有3人表示会买，8人表示不会买。主要原因是一些人不使用香薰，另一些人则表示没有空间放置。建议进行小规模试产以测试市场需求。"",
+  ""evidenceIds"": [
+    ""c591f697-a8b4-4cbb-86a1-6ba49d136091"",
+    ""efb609dc-84f8-4474-b415-3fb54417ae9a"",
+    ""42226972-561d-4c45-87fc-ce2d21d1ddde"",
+    ""c1ba323f-ac18-4343-905b-1ca3c40e13f6"",
+    ""1ced81ad-52ae-4812-85c0-1b78f549fccb""
+  ]
+}"
+C12,research,trial_low_intent,dev,3,61036556-ee24-4261-929d-51f74f0a34d1,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,2,2,0,0,m5;m3;m1;m2;m4,,4,13,0,0,18185,6,16283,1707,13,182,12744,1161,0.002609,0,15247,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然大多数人对陶瓷香薰座 V1 表达了喜欢，但购买意向较低，尤其是有些人提到不使用香薰或没有空间放置。尽管有些人认为造型好看，但整体购买意向显示出较大的犹豫，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""喜欢"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""c6fdd6c2-9ebe-4576-8a49-cc473dce75b0"",
+      ""option"": ""一般"",
+      ""votes"": 2,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""会买"",
+      ""votes"": 3,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""1beafa88-3544-4e48-8bb0-e2f4b07cbad4"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""不会买，不怎么用香薰"",
+      ""evidenceIds"": [""1ced81ad-52ae-4812-85c0-1b78f549fccb""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""家里放不下了"",
+      ""evidenceIds"": [""efb609dc-84f8-4474-b415-3fb54417ae9a""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然大多数人对陶瓷香薰座 V1 表达了喜欢，但购买意向较低，尤其是有些人提到不使用香薰或没有空间放置。尽管有些人认为造型好看，但整体购买意向显示出较大的犹豫，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""c591f697-a8b4-4cbb-86a1-6ba49d136091"",
+    ""efb609dc-84f8-4474-b415-3fb54417ae9a"",
+    ""42226972-561d-4c45-87fc-ce2d21d1ddde"",
+    ""c1ba323f-ac18-4343-905b-1ca3c40e13f6"",
+    ""1ced81ad-52ae-4812-85c0-1b78f549fccb""
+  ]
+}"
+C15,research,trial_low_intent,dev,1,209e4d19-1765-425a-a5be-2d34eeca7a95,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m1;m4;m2;m5;m3,,3,8,0,0,16642,6,13441,3074,8,119,7140,911,0.001618,0,9665,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然有一些正面的反馈（如质感很好和颜色高级），但大多数人表示不会购买，主要原因是产品被认为不实用以及尺寸不适合他们的家居环境。购买意向调查显示，8人表示不会购买，只有2人表示会购买，因此建议进行小规模试产以测试市场反应。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""好看但不实用"",
+      ""evidenceIds"": [
+        ""4f39a153-1c49-402d-84b2-eb15dac3344d""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""家里没有那么大的桌子😂"",
+      ""evidenceIds"": [
+        ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""估计不会买"",
+      ""evidenceIds"": [
+        ""63d1921f-2619-4081-8fc5-2be06b0017eb""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然有一些正面的反馈（如质感很好和颜色高级），但大多数人表示不会购买，主要原因是产品被认为不实用以及尺寸不适合他们的家居环境。购买意向调查显示，8人表示不会购买，只有2人表示会购买，因此建议进行小规模试产以测试市场反应。"",
+  ""evidenceIds"": [
+    ""e67ab76e-8bd3-498f-acd7-fb7afa4303b9"",
+    ""4f39a153-1c49-402d-84b2-eb15dac3344d"",
+    ""ae3963a5-9de6-487d-b494-b7f7d0d08458"",
+    ""63d1921f-2619-4081-8fc5-2be06b0017eb"",
+    ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+  ]
+}"
+C15,research,trial_low_intent,dev,2,82ab48d8-6b14-4946-b42a-41f494ddfce2,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m1;m4;m2;m5;m3,,3,8,0,0,14465,8,12605,1728,8,124,7140,852,0.001582,0,9664,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,虽然有一些正面的反馈（如质感很好和颜色高级），但大多数人表示不会购买，主要因为产品被认为不实用以及尺寸不适合他们的家居环境。购买意向调查显示，8人表示不会购买，只有2人表示会购买，因此建议进行小规模试产以测试市场需求。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""好看但不实用"",
+      ""evidenceIds"": [
+        ""4f39a153-1c49-402d-84b2-eb15dac3344d""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""家里没有那么大的桌子😂"",
+      ""evidenceIds"": [
+        ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""虽然有一些正面的反馈（如质感很好和颜色高级），但大多数人表示不会购买，主要因为产品被认为不实用以及尺寸不适合他们的家居环境。购买意向调查显示，8人表示不会购买，只有2人表示会购买，因此建议进行小规模试产以测试市场需求。"",
+  ""evidenceIds"": [
+    ""e67ab76e-8bd3-498f-acd7-fb7afa4303b9"",
+    ""4f39a153-1c49-402d-84b2-eb15dac3344d"",
+    ""ae3963a5-9de6-487d-b494-b7f7d0d08458"",
+    ""63d1921f-2619-4081-8fc5-2be06b0017eb"",
+    ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+  ]
+}"
+C15,research,trial_low_intent,dev,3,32311506-9eb8-4776-8b62-ac8c4616c66f,SUCCEEDED,,TRIAL,TRIAL,TRIAL,1,1,5,5,0,3,3,0,0,m1;m4;m2;m5;m3,,3,8,0,0,14720,12,12713,1854,13,140,7139,847,0.001579,0,9664,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The overall feedback indicates that while the product has a good texture and color, many users find it impractical and are unlikely to purchase it. The purchase intent poll shows a significant majority (80%) indicating they would not buy it. Concerns about practicality and size were raised by multiple users, suggesting a trial could help gauge real demand.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""会买"",
+      ""votes"": 2,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""f0353383-7d6b-4ef6-9e69-bf120a2fcdc6"",
+      ""option"": ""不会买"",
+      ""votes"": 8,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""好看但不实用"",
+      ""evidenceIds"": [
+        ""4f39a153-1c49-402d-84b2-eb15dac3344d""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""家里没有那么大的桌子😂"",
+      ""evidenceIds"": [
+        ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""TRIAL"",
+  ""summary"": ""The overall feedback indicates that while the product has a good texture and color, many users find it impractical and are unlikely to purchase it. The purchase intent poll shows a significant majority (80%) indicating they would not buy it. Concerns about practicality and size were raised by multiple users, suggesting a trial could help gauge real demand."",
+  ""evidenceIds"": [
+    ""e67ab76e-8bd3-498f-acd7-fb7afa4303b9"",
+    ""4f39a153-1c49-402d-84b2-eb15dac3344d"",
+    ""ae3963a5-9de6-487d-b494-b7f7d0d08458"",
+    ""63d1921f-2619-4081-8fc5-2be06b0017eb"",
+    ""961af6ea-4f09-4b08-8a5a-8ffa19d66099""
+  ]
+}"
+C16,research,hold_sparse,dev,1,3e06924f-7d35-4802-a0db-8525d288b371,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m1;m2,,4,10,0,0,13489,6,10976,2360,11,142,8584,693,0.001704,0,12438,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mostly neutral with a question about the availability of actual photos. There are no strong opinions or clear purchase intent, leading to a recommendation to hold production.","{
+  ""pollReadings"": [],
+  ""concerns"": [
+    {
+      ""text"": ""有实拍吗？"",
+      ""evidenceIds"": [""8260c2da-f90e-4330-8465-485307d1f422""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mostly neutral with a question about the availability of actual photos. There are no strong opinions or clear purchase intent, leading to a recommendation to hold production."",
+  ""evidenceIds"": [
+    ""3e5627a3-89a7-4bfe-85b1-195b2df5aad2"",
+    ""8260c2da-f90e-4330-8465-485307d1f422""
+  ]
+}"
+C16,research,hold_sparse,dev,2,1c36b304-e58b-4574-81c9-d640c4ce98d9,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m1;m2,,4,10,0,0,13375,6,11437,1748,14,176,8584,672,0.001691,0,12438,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"Feedback is limited and mostly consists of vague remarks. There is one concern about the lack of actual photos, raised by one person. No clear majority in purchase intent or overall opinion was found, leading to a HOLD recommendation.","{""pollReadings"":[],""concerns"":[{""text"":""有实拍吗？"",""evidenceIds"":[""8260c2da-f90e-4330-8465-485307d1f422""],""mentionedBy"":1}],""recommendation"":""HOLD"",""summary"":""Feedback is limited and mostly consists of vague remarks. There is one concern about the lack of actual photos, raised by one person. No clear majority in purchase intent or overall opinion was found, leading to a HOLD recommendation."",""evidenceIds"":[""3e5627a3-89a7-4bfe-85b1-195b2df5aad2"",""8260c2da-f90e-4330-8465-485307d1f422""]}"
+C16,research,hold_sparse,dev,3,97fb45b2-92b2-41eb-a17d-06adbd3171e1,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m1;m2,,4,10,0,0,13143,7,11317,1668,12,146,8584,697,0.001706,0,12439,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mostly neutral, with one person asking for actual photos of the product. There are no strong opinions or clear purchase intent, leading to a HOLD recommendation.","{
+  ""pollReadings"": [],
+  ""concerns"": [
+    {
+      ""text"": ""有实拍吗？"",
+      ""evidenceIds"": [
+        ""8260c2da-f90e-4330-8465-485307d1f422""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mostly neutral, with one person asking for actual photos of the product. There are no strong opinions or clear purchase intent, leading to a HOLD recommendation."",
+  ""evidenceIds"": [
+    ""3e5627a3-89a7-4bfe-85b1-195b2df5aad2"",
+    ""8260c2da-f90e-4330-8465-485307d1f422""
+  ]
+}"

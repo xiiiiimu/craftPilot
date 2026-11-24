@@ -47,6 +47,11 @@ public class RuntimeMetrics {
                 .increment();
     }
 
+    /** Round 3 final-answer consistency check: RETRY, PASSED, CORRECTED_SAME/CHANGED_RECOMMENDATION, FAILED. */
+    public void finalConsistency(String loop, String outcome) {
+        registry.counter("craftpilot.agent.final.consistency", "loop", loop, "outcome", outcome).increment();
+    }
+
     public static int millis(long nanos) {
         return (int) Math.min(Integer.MAX_VALUE, Math.max(0, nanos / 1_000_000));
     }

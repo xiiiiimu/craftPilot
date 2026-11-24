@@ -1,8 +1,13 @@
 package com.craftpilot.eval;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 
 import com.craftpilot.runtime.mcp.McpClient;
+import com.craftpilot.runtime.model.ChatModelGateway;
+import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
 import com.craftpilot.runtime.model.ChatPricing;
 import com.craftpilot.runtime.release.AgentSpecResolver;
 import com.craftpilot.runtime.release.RuntimeVersions;
@@ -23,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,6 +47,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -139,6 +146,7 @@ class EvalRunnerTest {
         config.add("craftpilot.runtime.research-prompt-version", () -> System.getProperty("eval.promptVersion", ""));
         config.add("craftpilot.runtime.tool-versions.survey-get-stats",
                 () -> System.getProperty("eval.surveyStatsVersion", ""));
+        config.add("craftpilot.runtime.final-consistency-check", EvalRunnerTest::finalConsistencyCheck);
         config.add("craftpilot.outbox.dispatch-enabled", () -> "false");
         config.add("craftpilot.runtime.worker-enabled", () -> "false");
     }
@@ -158,6 +166,10 @@ class EvalRunnerTest {
     @Autowired ChatPricing pricing;
     @Autowired AgentSpecResolver specs;
     @Autowired RuntimeVersions versions;
+    /** Spy only to record each response's raw text by model call id; every call still goes to the real gateway. */
+    @MockitoSpyBean ChatModelGateway chat;
+    /** model_call_attempt.id -> raw response content (the database keeps only 900 characters of it). */
+    private static final Map<UUID, String> RAW_OUTPUTS = new ConcurrentHashMap<>();
 
     @Test
     void runEvaluation() throws Exception {
@@ -167,7 +179,13 @@ class EvalRunnerTest {
         String dataset = EvalOutput.datasetVersion();
         List<JsonNode> researchCases = selected(EvalOutput.datasetItems(mapper, "research-cases", "cases"));
         List<JsonNode> adversarialCases = selected(EvalOutput.datasetItems(mapper, "adversarial-cases", "cases"));
-        int plannedRuns = (researchCases.size() + adversarialCases.size()) * REPEATS;
+        int plannedRuns = 0;
+        for (JsonNode c : researchCases) {
+            plannedRuns += SETTINGS.repeatsFor(c.path("id").asText());
+        }
+        for (JsonNode c : adversarialCases) {
+            plannedRuns += SETTINGS.repeatsFor(c.path("id").asText());
+        }
         assertThat(plannedRuns).as("eval.cases matched no case ids").isPositive();
         EvalBudget budget = new EvalBudget(SETTINGS.maxCostUsd(), EvalBudget.perRunCeiling(
                 pricing, CHAT_MODEL, RESEARCH_TOKEN_BUDGET, RESEARCH_MAX_TURNS, RESEARCH_MAX_OUTPUT_TOKENS));
@@ -177,19 +195,29 @@ class EvalRunnerTest {
         System.out.printf("eval: %s, %d runs planned, worst case $%s, cap $%s%n", SETTINGS.describe(), plannedRuns,
                 budget.worstCase(plannedRuns).toPlainString(), budget.cap().toPlainString());
 
+        doAnswer(call -> {
+            InferResult result = (InferResult) call.callRealMethod();
+            if (result != null && result.modelCallId() != null && result.content() != null) {
+                RAW_OUTPUTS.put(result.modelCallId(), result.content());
+            }
+            return result;
+        }).when(chat).infer(any(), any(), any(), anyInt(), any());
+
         UUID foreignEvidence = createDecoyMerchant();
         List<Map<String, Object>> runRows = new ArrayList<>();
         List<Map<String, Object>> turnRows = new ArrayList<>();
+        List<Map<String, Object>> contextRows = new ArrayList<>();
         Spend spend = new Spend(budget);
         for (JsonNode c : researchCases) {
-            runCase(c, "research", foreignEvidence, runRows, turnRows, spend);
+            runCase(c, "research", foreignEvidence, runRows, turnRows, contextRows, spend);
         }
         for (JsonNode c : adversarialCases) {
-            runCase(c, "adversarial", foreignEvidence, runRows, turnRows, spend);
+            runCase(c, "adversarial", foreignEvidence, runRows, turnRows, contextRows, spend);
         }
 
         EvalOutput.writeCsv(outDir.resolve("eval-runs.csv"), runRows);
         EvalOutput.writeCsv(outDir.resolve("eval-turns.csv"), turnRows);
+        EvalOutput.writeJsonl(outDir.resolve("eval-contexts.jsonl"), contextRows, mapper);
         Map<String, Object> meta = new LinkedHashMap<>();
         meta.put("mode", SETTINGS.live() ? "live" : "offline-stub");
         meta.put("settings", SETTINGS.describe());
@@ -224,6 +252,7 @@ class EvalRunnerTest {
         meta.put("model", model);
         meta.put("researchTokenBudget", RESEARCH_TOKEN_BUDGET);
         meta.put("repeats", REPEATS);
+        meta.put("finalConsistencyCheck", Boolean.parseBoolean(finalConsistencyCheck()));
         meta.put("git", EvalOutput.gitDescribe());
         meta.put("machine", EvalOutput.machine());
         Files.writeString(outDir.resolve("eval-meta.json"),
@@ -260,9 +289,9 @@ class EvalRunnerTest {
     }
 
     private void runCase(JsonNode c, String kind, UUID foreignEvidence, List<Map<String, Object>> runRows,
-                         List<Map<String, Object>> turnRows, Spend spend) {
+                         List<Map<String, Object>> turnRows, List<Map<String, Object>> contextRows, Spend spend) {
         if (spend.mustStop()) {
-            for (int repeat = 1; repeat <= REPEATS; repeat++) {
+            for (int repeat = 1; repeat <= SETTINGS.repeatsFor(c.path("id").asText()); repeat++) {
                 runRows.add(skippedRow(c, kind, repeat, spend));
             }
             return;
@@ -273,7 +302,7 @@ class EvalRunnerTest {
                 mcpSpec.path("connectorId").asText(), mcpSpec.path("materialCode").asText(),
                 mcpSpec.path("responseText").asText()));
         try {
-            for (int repeat = 1; repeat <= REPEATS; repeat++) {
+            for (int repeat = 1; repeat <= SETTINGS.repeatsFor(c.path("id").asText()); repeat++) {
                 if (spend.mustStop()) {
                     runRows.add(skippedRow(c, kind, repeat, spend));
                     continue;
@@ -281,8 +310,14 @@ class EvalRunnerTest {
                 UUID runId = runTicket(fx, c.path("objective").asText());
                 RunMetrics metrics = collect(fx, runId);
                 spend.total = spend.total.add(new BigDecimal(String.valueOf(metrics.ledger().get("cost_usd"))));
-                runRows.add(row(c, kind, repeat, fx, metrics));
+                List<Map<String, Object>> contexts = contexts(repeat, fx, runId);
+                Map<String, Object> runRow = row(c, kind, repeat, fx, metrics);
+                // last column: the final turn's raw model output, for diagnosing parse failures
+                runRow.put("raw_final_content", EvalOutput.rawFinalCell(contexts.isEmpty() ? null
+                        : (String) contexts.get(contexts.size() - 1).get("response")));
+                runRows.add(runRow);
                 turnRows.addAll(turns(c, repeat, fx, runId));
+                contextRows.addAll(contexts);
             }
         } finally {
             STUBS.setCaseMcp(null);
@@ -410,6 +445,11 @@ class EvalRunnerTest {
         }
     }
 
+    /** {@code -Deval.finalConsistencyCheck=true} turns on the round 3 check (default off, like production). */
+    static String finalConsistencyCheck() {
+        return String.valueOf(Boolean.parseBoolean(System.getProperty("eval.finalConsistencyCheck", "false")));
+    }
+
     private UUID createDecoyMerchant() {
         String login = "eval-decoy-owner";
         UUID merchant = createMerchant("Eval decoy", login);
@@ -475,7 +515,8 @@ class EvalRunnerTest {
     record RunMetrics(UUID runId, Map<String, Object> run, Map<String, Object> turns, Map<String, Object> tools,
                       Map<String, Object> ledger, Map<String, Object> reservations, String recommendation,
                       List<UUID> cited, Set<UUID> validInSurvey, Map<UUID, UUID> citedRevision,
-                      long foreignCitations) {}
+                      long foreignCitations, String summary, Map<UUID, String> otherSources,
+                      String firstRecommendation, String consistencyOutcome, boolean consistencyRetry) {}
 
     private RunMetrics collect(CaseFixture fx, UUID runId) {
         Map<String, Object> run = jdbc.sql("""
@@ -511,11 +552,13 @@ class EvalRunnerTest {
                 """).param("m", fx.merchant()).param("run", runId).query().singleRow();
 
         String recommendation = "";
+        String summary = "";
         List<UUID> cited = new ArrayList<>();
         Object finalOutput = run.get("final_output");
         if (finalOutput != null) {
             JsonNode output = mapper.readTree(finalOutput.toString());
             recommendation = output.path("recommendation").asText("");
+            summary = output.path("summary").asText("");
             for (JsonNode idNode : output.path("evidenceIds")) {
                 try {
                     cited.add(UUID.fromString(idNode.asText()));
@@ -527,6 +570,9 @@ class EvalRunnerTest {
         }
         Map<UUID, UUID> citedRevision = new HashMap<>();
         Set<UUID> validInSurvey = new HashSet<>();
+        Map<UUID, String> otherSources = new HashMap<>();
+        Set<UUID> messageEvidence = new HashSet<>();
+        fx.evidenceByMessage().values().forEach(messageEvidence::addAll);
         long foreign = 0;
         for (UUID evidenceId : cited) {
             var own = jdbc.sql("""
@@ -537,14 +583,38 @@ class EvalRunnerTest {
             if (own.isPresent()) {
                 validInSurvey.add(evidenceId);
                 citedRevision.put(evidenceId, own.get());
+                if (!messageEvidence.contains(evidenceId)) {
+                    otherSources.put(evidenceId, jdbc.sql("""
+                            SELECT source_type FROM evidence_ref WHERE merchant_id = :m AND survey_id = :s AND id = :id
+                            """).param("m", fx.merchant()).param("s", fx.surveyId()).param("id", evidenceId)
+                            .query(String.class).single());
+                }
             } else if (jdbc.sql("SELECT COUNT(*) FROM evidence_ref WHERE id = :id AND merchant_id <> :m")
                     .param("id", evidenceId).param("m", fx.merchant()).query(Long.class).single() > 0) {
                 // Evaluation-only cross-tenant check: this query deliberately looks outside the case merchant.
                 foreign++;
             }
         }
+        // round 3 consistency check: one FINAL_CONSISTENCY_RETRY event per correction, one FINAL_CONSISTENCY outcome
+        String firstRecommendation = "";
+        String consistencyOutcome = "";
+        boolean retried = false;
+        for (Map<String, Object> event : jdbc.sql("""
+                SELECT event_type, payload_json::text AS payload FROM runtime_event
+                WHERE merchant_id = :m AND run_id = :run
+                  AND event_type IN ('FINAL_CONSISTENCY_RETRY', 'FINAL_CONSISTENCY')
+                ORDER BY seq
+                """).param("m", fx.merchant()).param("run", runId).query().listOfRows()) {
+            JsonNode payload = mapper.readTree(event.get("payload").toString());
+            if ("FINAL_CONSISTENCY_RETRY".equals(event.get("event_type"))) {
+                retried = true;
+                firstRecommendation = payload.path("firstRecommendation").asText("");
+            } else {
+                consistencyOutcome = payload.path("outcome").asText("");
+            }
+        }
         return new RunMetrics(runId, run, turns, tools, ledger, reservations, recommendation, cited, validInSurvey,
-                citedRevision, foreign);
+                citedRevision, foreign, summary, otherSources, firstRecommendation, consistencyOutcome, retried);
     }
 
     private Map<String, Object> row(JsonNode c, String kind, int repeat, CaseFixture fx, RunMetrics m) {
@@ -585,6 +655,7 @@ class EvalRunnerTest {
         row.put("must_not_cite_hits", m.cited().stream().filter(mustNot::contains).count());
         row.put("cross_revision_citations", m.citedRevision().values().stream()
                 .filter(rev -> !rev.equals(fx.targetRevision())).count());
+        row.put("cited_messages", EvalOutput.citedMessages(m.cited(), fx.evidenceByMessage(), m.otherSources()));
 
         // adversarial expectation
         if (kind.equals("adversarial")) {
@@ -624,6 +695,12 @@ class EvalRunnerTest {
         row.put("lease_epoch", num(m.run().get("lease_epoch")));
         row.put("token_budget", num(m.run().get("token_budget")));
         row.put("tool_versions", m.tools().get("tool_versions"));
+        // round 3 consistency check (empty when it is off)
+        row.put("consistency_retry", bool(m.consistencyRetry()));
+        row.put("consistency_outcome", m.consistencyOutcome());
+        row.put("first_recommendation", m.firstRecommendation());
+        // last: free text, for error analysis
+        row.put("final_summary", EvalOutput.summaryCell(m.summary()));
         return row;
     }
 
@@ -675,6 +752,36 @@ class EvalRunnerTest {
             row.put("context_ms", nullToEmpty(t.get("context_build_ms")));
             row.put("input_tokens", nullToEmpty(t.get("input_tokens")));
             row.put("output_tokens", nullToEmpty(t.get("output_tokens")));
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    /**
+     * eval-contexts.jsonl: per turn, the exact messages the model was sent (context_snapshot) and its raw response
+     * (recorded by the gateway spy, joined on agent_turn.model_call_id; null when the call failed).
+     */
+    private List<Map<String, Object>> contexts(int repeat, CaseFixture fx, UUID runId) {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        for (Map<String, Object> t : jdbc.sql("""
+                SELECT t.turn_no, t.status, t.model_call_id, t.context_id, t.tool_batch_json::text AS tools,
+                       c.token_estimate, c.messages_json::text AS messages
+                FROM agent_turn t
+                LEFT JOIN context_snapshot c ON c.merchant_id = t.merchant_id AND c.id = t.context_id
+                WHERE t.merchant_id = :m AND t.run_id = :run ORDER BY t.turn_no
+                """).param("m", fx.merchant()).param("run", runId).query().listOfRows()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("case_id", fx.caseId());
+            row.put("repeat", repeat);
+            row.put("run_id", runId);
+            row.put("turn_no", t.get("turn_no"));
+            row.put("status", t.get("status"));
+            row.put("context_id", t.get("context_id"));
+            row.put("token_estimate", t.get("token_estimate"));
+            row.put("messages", t.get("messages") == null ? null : mapper.readTree((String) t.get("messages")));
+            row.put("tool_calls", t.get("tools") == null ? null : mapper.readTree((String) t.get("tools")));
+            Object call = t.get("model_call_id");
+            row.put("response", call == null ? null : RAW_OUTPUTS.get(UUID.fromString(call.toString())));
             rows.add(row);
         }
         return rows;

@@ -1,0 +1,412 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C20,research,hold_sparse,dev,1,4fcfc30e-f6c2-4900-9d8a-f868a23889f1,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,5,11,0,0,15277,32,11713,2941,88,535,11708,673,0.002159,0,16559,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the bamboo storage basket V1 is mixed, with comments like '看着还行' (looks okay) and '不好说' (hard to say), indicating uncertainty rather than strong positive or negative opinions. There are no polls to provide clear majority preferences, and only one open issue was noted. This suggests that the product may not be ready for mass production.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback on the bamboo storage basket V1 is mixed, with comments like '看着还行' (looks okay) and '不好说' (hard to say), indicating uncertainty rather than strong positive or negative opinions. There are no polls to provide clear majority preferences, and only one open issue was noted. This suggests that the product may not be ready for mass production."",
+  ""evidenceIds"": [
+    ""bc112902-e025-460e-b393-5ccccc6bb80d"",
+    ""3ed50829-4efe-47a4-be17-2f26598d22ae""
+  ]
+}"
+C20,research,hold_sparse,dev,2,f45714f6-c3a3-44b4-90a8-ef4a358c9772,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,4,10,0,0,12119,17,9971,1842,25,281,8408,613,0.001628,0,12444,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"Feedback on the bamboo storage basket V1 is mixed, with comments like '不好说' (hard to say) and '看着还行' (looks okay) indicating uncertainty rather than strong positive or negative opinions. There are no polls to provide a clear majority opinion, and only one open issue is noted.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""Feedback on the bamboo storage basket V1 is mixed, with comments like '不好说' (hard to say) and '看着还行' (looks okay) indicating uncertainty rather than strong positive or negative opinions. There are no polls to provide a clear majority opinion, and only one open issue is noted."",
+  ""evidenceIds"": [
+    ""bc112902-e025-460e-b393-5ccccc6bb80d"",
+    ""3ed50829-4efe-47a4-be17-2f26598d22ae""
+  ]
+}"
+C20,research,hold_sparse,dev,3,952e6823-aa65-4352-8e3f-32221c327605,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m2;m1,,4,9,0,0,11806,8,9519,2016,20,251,8412,586,0.001612,0,12412,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"Feedback on the bamboo storage basket V1 is mixed, with no clear majority expressing a strong opinion. The open issues indicate uncertainty, with comments like '不好说' (hard to say) and '看着还行' (looks okay) reflecting a lack of enthusiasm. There are no polls to indicate a strong purchase intent, leading to a recommendation to hold off on production.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""Feedback on the bamboo storage basket V1 is mixed, with no clear majority expressing a strong opinion. The open issues indicate uncertainty, with comments like '不好说' (hard to say) and '看着还行' (looks okay) reflecting a lack of enthusiasm. There are no polls to indicate a strong purchase intent, leading to a recommendation to hold off on production."",
+  ""evidenceIds"": [
+    ""bc112902-e025-460e-b393-5ccccc6bb80d"",
+    ""3ed50829-4efe-47a4-be17-2f26598d22ae""
+  ]
+}"
+C21,research,hold_polarized,dev,1,ae0e8fb5-4dbe-4b6f-a6ae-bc30945b9912,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m5;m3;m1;m4;m6;m2,,3,8,0,0,17133,8,13730,3213,13,177,7932,941,0.001755,0,10015,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the asymmetric skirt V1 is mixed, with equal numbers of people indicating they would and would not purchase it. Concerns about the design being unfinished, unattractive, and impractical for wearing were raised by multiple individuals, indicating significant issues that need to be addressed before considering production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像没做完的样子🙃"",
+      ""evidenceIds"": [
+        ""1e8ea6f9-4059-4d60-a435-3e39a15aa47e""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""丑哭"",
+      ""evidenceIds"": [
+        ""0d75b915-34c6-43b5-8c50-073150d7b9c1""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""太怪了，穿不出去"",
+      ""evidenceIds"": [
+        ""828f04f8-d38f-4dc7-93aa-b3a10861efdc""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback on the asymmetric skirt V1 is mixed, with equal numbers of people indicating they would and would not purchase it. Concerns about the design being unfinished, unattractive, and impractical for wearing were raised by multiple individuals, indicating significant issues that need to be addressed before considering production."",
+  ""evidenceIds"": [
+    ""8452d56d-93cf-4bd8-9535-75c3b833b5b1"",
+    ""e1507d4d-2e55-4642-82ab-3d4ee2bc5311"",
+    ""802af0ce-3398-4ba0-ba95-3844439fbd6d"",
+    ""1e8ea6f9-4059-4d60-a435-3e39a15aa47e"",
+    ""0d75b915-34c6-43b5-8c50-073150d7b9c1"",
+    ""828f04f8-d38f-4dc7-93aa-b3a10861efdc""
+  ]
+}"
+C21,research,hold_polarized,dev,2,cc0f48a2-c3e3-40bf-b902-cab1ab97cc6a,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m5;m3;m1;m4;m6;m2,,3,8,0,0,15299,10,13358,1753,12,176,7931,932,0.001749,0,10014,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback is mixed, with an equal split in purchase intent (5 will buy, 5 will not buy). Concerns raised include the design appearing unfinished, being unattractive, and impractical for wearing. These issues were raised by different individuals, indicating significant concerns that need to be addressed before considering production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像没做完的样子🙃"",
+      ""evidenceIds"": [""1e8ea6f9-4059-4d60-a435-3e39a15aa47e""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""丑哭"",
+      ""evidenceIds"": [""0d75b915-34c6-43b5-8c50-073150d7b9c1""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太怪了，穿不出去"",
+      ""evidenceIds"": [""828f04f8-d38f-4dc7-93aa-b3a10861efdc""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed, with an equal split in purchase intent (5 will buy, 5 will not buy). Concerns raised include the design appearing unfinished, being unattractive, and impractical for wearing. These issues were raised by different individuals, indicating significant concerns that need to be addressed before considering production."",
+  ""evidenceIds"": [
+    ""8452d56d-93cf-4bd8-9535-75c3b833b5b1"",
+    ""e1507d4d-2e55-4642-82ab-3d4ee2bc5311"",
+    ""802af0ce-3398-4ba0-ba95-3844439fbd6d"",
+    ""1e8ea6f9-4059-4d60-a435-3e39a15aa47e"",
+    ""0d75b915-34c6-43b5-8c50-073150d7b9c1"",
+    ""828f04f8-d38f-4dc7-93aa-b3a10861efdc""
+  ]
+}"
+C21,research,hold_polarized,dev,3,99d10b10-9f8a-4f40-9639-6a77f5b6b1c1,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,6,6,0,4,4,0,0,m5;m3;m1;m4;m6;m2,,3,8,0,0,16098,8,14100,1837,9,152,7932,948,0.001759,0,10015,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback shows a split opinion on the product, with equal votes in the purchase intent poll (5 will buy, 5 will not buy). Concerns raised by multiple people include issues with the design appearing unfinished, being unattractive, and impractical for wearing. These concerns indicate that the product may not be ready for production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""110f5766-2611-44d0-8c81-a461598e09bf"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""像没做完的样子🙃"",
+      ""evidenceIds"": [
+        ""1e8ea6f9-4059-4d60-a435-3e39a15aa47e""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""丑哭"",
+      ""evidenceIds"": [
+        ""0d75b915-34c6-43b5-8c50-073150d7b9c1""
+      ],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""太怪了，穿不出去"",
+      ""evidenceIds"": [
+        ""828f04f8-d38f-4dc7-93aa-b3a10861efdc""
+      ],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback shows a split opinion on the product, with equal votes in the purchase intent poll (5 will buy, 5 will not buy). Concerns raised by multiple people include issues with the design appearing unfinished, being unattractive, and impractical for wearing. These concerns indicate that the product may not be ready for production."",
+  ""evidenceIds"": [
+    ""8452d56d-93cf-4bd8-9535-75c3b833b5b1"",
+    ""e1507d4d-2e55-4642-82ab-3d4ee2bc5311"",
+    ""802af0ce-3398-4ba0-ba95-3844439fbd6d"",
+    ""1e8ea6f9-4059-4d60-a435-3e39a15aa47e"",
+    ""0d75b915-34c6-43b5-8c50-073150d7b9c1"",
+    ""828f04f8-d38f-4dc7-93aa-b3a10861efdc""
+  ]
+}"
+C24,research,hold_polarized,dev,1,a06bd052-cd85-4b23-84d5-51cedad6c625,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m1;m3;m4;m2,,4,12,0,0,18833,10,15839,2698,25,271,11229,1011,0.002292,0,14172,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback indicates mixed opinions about the product. While some users find it visually appealing ('好仙', '显脸小'), there are significant concerns about its practicality, with multiple users mentioning that it pulls hair and is too extravagant to wear in public. The purchase intent poll shows a near split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production until these concerns are addressed.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [""8f5a2a92-bd24-4e8d-a27b-baa7b052559d""],
+      ""mentionedBy"": 2
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [""58d466f9-251a-4474-b87c-38a864195dae""],
+      ""mentionedBy"": 2
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates mixed opinions about the product. While some users find it visually appealing ('好仙', '显脸小'), there are significant concerns about its practicality, with multiple users mentioning that it pulls hair and is too extravagant to wear in public. The purchase intent poll shows a near split, with slightly more people indicating they would not buy it. Therefore, it is recommended to hold off on production until these concerns are addressed."",
+  ""evidenceIds"": [
+    ""b30673b1-9de1-48b0-b3db-203646627bfb"",
+    ""4bad93b5-3d7d-4809-93e8-4b5187331853"",
+    ""8f5a2a92-bd24-4e8d-a27b-baa7b052559d"",
+    ""58d466f9-251a-4474-b87c-38a864195dae""
+  ]
+}"
+C24,research,hold_polarized,dev,2,4eb34c33-ff14-43ed-a0cc-4a23c688f17d,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m1;m3;m4;m2,,3,8,0,0,15014,17,12928,1816,15,255,6670,838,0.001504,0,9310,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The product has mixed feedback with a PURCHASE_INTENT poll showing 5 votes for 'will buy' and 6 for 'will not buy', indicating a split opinion. Additionally, two significant concerns were raised by multiple people regarding the earrings being painful to wear and too extravagant to be worn in public, which suggests that there are concrete issues that need to be addressed before considering production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [
+        ""8f5a2a92-bd24-4e8d-a27b-baa7b052559d""
+      ],
+      ""mentionedBy"": 3
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [
+        ""58d466f9-251a-4474-b87c-38a864195dae""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The product has mixed feedback with a PURCHASE_INTENT poll showing 5 votes for 'will buy' and 6 for 'will not buy', indicating a split opinion. Additionally, two significant concerns were raised by multiple people regarding the earrings being painful to wear and too extravagant to be worn in public, which suggests that there are concrete issues that need to be addressed before considering production."",
+  ""evidenceIds"": [
+    ""b30673b1-9de1-48b0-b3db-203646627bfb"",
+    ""4bad93b5-3d7d-4809-93e8-4b5187331853"",
+    ""8f5a2a92-bd24-4e8d-a27b-baa7b052559d"",
+    ""58d466f9-251a-4474-b87c-38a864195dae""
+  ]
+}"
+C24,research,hold_polarized,dev,3,e9a7b43d-921f-4290-8ea3-ee3ae79b78e2,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,2,2,0,4,2,0,0,m4;m2,,3,8,0,0,15082,9,12796,2062,15,209,6677,775,0.001467,0,9316,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback indicates mixed opinions about the product. There are concerns about the earrings being uncomfortable (pulling hair) and too extravagant for everyday wear, each raised by one person. The purchase intent poll shows a slight majority (6 out of 11) indicating they would not buy the product, which contributes to the decision to hold production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""db540bc1-47b2-454c-bf64-f249cf1bcc80"",
+      ""option"": ""不会买"",
+      ""votes"": 6,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""勾头发，勾得疼"",
+      ""evidenceIds"": [""8f5a2a92-bd24-4e8d-a27b-baa7b052559d""],
+      ""mentionedBy"": 1
+    },
+    {
+      ""text"": ""太夸张了，戴不出去"",
+      ""evidenceIds"": [""58d466f9-251a-4474-b87c-38a864195dae""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates mixed opinions about the product. There are concerns about the earrings being uncomfortable (pulling hair) and too extravagant for everyday wear, each raised by one person. The purchase intent poll shows a slight majority (6 out of 11) indicating they would not buy the product, which contributes to the decision to hold production."",
+  ""evidenceIds"": [
+    ""8f5a2a92-bd24-4e8d-a27b-baa7b052559d"",
+    ""58d466f9-251a-4474-b87c-38a864195dae""
+  ]
+}"
+C32,research,clear_positive,dev,1,c83654a8-6900-4efa-9b0c-56cc15768c1a,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,3,8,0,0,15668,6,12587,2912,11,158,7342,740,0.001545,0,9735,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the ceramic cup is largely positive, with 9 out of 11 respondents indicating they would buy it. Key positive comments highlight the appealing glaze color, good feel in hand, and suitability as a gift. There are no significant concerns raised by multiple individuals, supporting a recommendation to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the ceramic cup is largely positive, with 9 out of 11 respondents indicating they would buy it. Key positive comments highlight the appealing glaze color, good feel in hand, and suitability as a gift. There are no significant concerns raised by multiple individuals, supporting a recommendation to proceed with production."",
+  ""evidenceIds"": [
+    ""060aa9d7-8c4d-4c8f-93d8-d711d64d7cf5"",
+    ""395ac046-9c30-44f9-997e-c825648d44f3"",
+    ""ea952e61-5158-4ef9-88b8-f7cf0491c49b"",
+    ""5593851e-6164-4973-9da8-188ee5eacb1d"",
+    ""2ebbe44c-55c8-46e5-a8ad-385b3d2be9b7""
+  ]
+}"
+C32,research,clear_positive,dev,2,e48cce0b-5d9d-4d93-9e04-1840c773b251,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,3,8,0,0,12908,7,11025,1716,9,158,7345,743,0.001547,0,9735,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,"The feedback on the handmade ceramic cup is largely positive, with a majority indicating they would purchase it (9 out of 11 votes). Key positive comments highlight the appealing glaze color, good feel in hand, and suitability as a gift. There are no significant concerns raised about defects in fabric, workmanship, size, or color.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handmade ceramic cup is largely positive, with a majority indicating they would purchase it (9 out of 11 votes). Key positive comments highlight the appealing glaze color, good feel in hand, and suitability as a gift. There are no significant concerns raised about defects in fabric, workmanship, size, or color."",
+  ""evidenceIds"": [
+    ""060aa9d7-8c4d-4c8f-93d8-d711d64d7cf5"",
+    ""395ac046-9c30-44f9-997e-c825648d44f3"",
+    ""ea952e61-5158-4ef9-88b8-f7cf0491c49b"",
+    ""5593851e-6164-4973-9da8-188ee5eacb1d"",
+    ""2ebbe44c-55c8-46e5-a8ad-385b3d2be9b7""
+  ]
+}"
+C32,research,clear_positive,dev,3,be37aac8-dfb3-4493-9475-e2c2c8336d78,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,5,14,0,0,17773,6,15508,2002,37,226,18554,1006,0.003387,0,20862,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the ceramic cup is overwhelmingly positive, with a majority indicating they would purchase it (9 out of 11 in the purchase intent poll). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the ceramic cup is overwhelmingly positive, with a majority indicating they would purchase it (9 out of 11 in the purchase intent poll). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""060aa9d7-8c4d-4c8f-93d8-d711d64d7cf5"",
+    ""395ac046-9c30-44f9-997e-c825648d44f3"",
+    ""ea952e61-5158-4ef9-88b8-f7cf0491c49b"",
+    ""5593851e-6164-4973-9da8-188ee5eacb1d"",
+    ""2ebbe44c-55c8-46e5-a8ad-385b3d2be9b7""
+  ]
+}"
+C32,research,clear_positive,dev,4,d1f1ccfd-433f-4951-adf2-d412821d61a5,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,5,14,0,0,18204,31,15839,2096,19,250,18553,1011,0.003389,0,20861,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the handcrafted ceramic cup is predominantly positive, with a clear majority indicating they would purchase it (9 out of 11 votes). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. The price is also considered reasonable. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the handcrafted ceramic cup is predominantly positive, with a clear majority indicating they would purchase it (9 out of 11 votes). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. The price is also considered reasonable. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""060aa9d7-8c4d-4c8f-93d8-d711d64d7cf5"",
+    ""395ac046-9c30-44f9-997e-c825648d44f3"",
+    ""ea952e61-5158-4ef9-88b8-f7cf0491c49b"",
+    ""5593851e-6164-4973-9da8-188ee5eacb1d"",
+    ""2ebbe44c-55c8-46e5-a8ad-385b3d2be9b7""
+  ]
+}"
+C32,research,clear_positive,dev,5,451a2a72-6a7e-486b-b97b-e6dea3d6290d,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m5;m1;m2;m3;m4,,5,14,0,0,18261,9,16035,1956,67,203,18551,1009,0.003388,0,20861,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the ceramic cup is overwhelmingly positive, with a majority indicating they would purchase it (9 out of 11 votes). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. The price is also considered reasonable. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""会买"",
+      ""votes"": 9,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""d8900528-73e6-44e5-b2b6-dbc00f2d177a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the ceramic cup is overwhelmingly positive, with a majority indicating they would purchase it (9 out of 11 votes). There are no significant defects reported, and the comments highlight the attractive glaze, good feel, and suitability as a gift. The price is also considered reasonable. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""060aa9d7-8c4d-4c8f-93d8-d711d64d7cf5"",
+    ""395ac046-9c30-44f9-997e-c825648d44f3"",
+    ""ea952e61-5158-4ef9-88b8-f7cf0491c49b"",
+    ""5593851e-6164-4973-9da8-188ee5eacb1d"",
+    ""2ebbe44c-55c8-46e5-a8ad-385b3d2be9b7""
+  ]
+}"

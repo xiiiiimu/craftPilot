@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -246,6 +247,66 @@ class ResearchReleaseV2Test {
         assertThat(specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("3c")).instructions())
                 .contains("Polarized opinions");
         assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
+    void promptV4IsStoredAsARevisionWithoutChangingTheDefault() {
+        AgentSpecResolver.ResolvedSpec v4 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4"));
+        assertThat(v4.contentHash()).isEqualTo("sha256:research-agent-r3-v4");
+        assertThat(v4.instructions()).startsWith("You are CraftPilot research agent.")
+                .contains("pollReadings", "concerns", "mentionedBy", "Buying as a gift counts as buying")
+                // v4 judges purchase intent as a whole instead of triggering TRIAL on keywords
+                .doesNotContain("\"用不上\"", "\"放不下\"");
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
+    void promptV41OnlyChangesTheOutputInstructionsOfV4() {
+        String v4 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4")).instructions();
+        AgentSpecResolver.ResolvedSpec v41 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.1"));
+        assertThat(v41.contentHash()).isEqualTo("sha256:research-agent-r3-v4.1");
+        assertThat(v41.instructions())
+                .doesNotContain("Before deciding, write down the numbers")
+                .contains("3. When you give the final answer, fill pollReadings by copying every option of every poll")
+                .contains("5. Your final message must be exactly one JSON object and nothing else: no Markdown, "
+                        + "no headings, no text before or after it. Put your reasoning in summary.");
+        // the decision rules (step 4) are word for word the same as v4
+        assertThat(section(v41.instructions(), "4. ", "5. ")).isEqualTo(section(v4, "4. ", "5. "));
+        assertThat(section(v41.instructions(), "", "3. ")).isEqualTo(section(v4, "", "3. "));
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
+    void promptV42OnlyChangesConcernGroupingAndTheReviseRuleOfV41() {
+        List<String> v41 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.1")).instructions()
+                .lines().toList();
+        AgentSpecResolver.ResolvedSpec v42 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.2"));
+        assertThat(v42.contentHash()).isEqualTo("sha256:research-agent-r3-v4.2");
+        List<String> lines = v42.instructions().lines().toList();
+        assertThat(lines).hasSameSizeAs(v41);
+        List<Integer> changed = new ArrayList<>();
+        for (int i = 0; i < lines.size(); i++) {
+            if (!lines.get(i).equals(v41.get(i))) {
+                changed.add(i);
+            }
+        }
+        // (a) concerns grouped by attribute: step 3, the REVISE rule and the concerns field; (b) REVISE beats split polls
+        assertThat(changed).extracting(lines::get).satisfiesExactly(
+                step3 -> assertThat(step3).startsWith("3. ").contains("one entry per attribute"),
+                revise -> assertThat(revise).startsWith("- REVISE: ")
+                        .contains("count people per attribute, not per specific problem")
+                        .contains("choose REVISE even if a PURCHASE_INTENT poll is split (40% to 60% \"will buy\")"),
+                concerns -> assertThat(concerns).startsWith("- concerns: ")
+                        .contains("at most one entry per attribute (fabric, workmanship, size, color)"));
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    private static String section(String text, String from, String to) {
+        int start = from.isEmpty() ? 0 : text.indexOf("\n" + from);
+        int end = text.indexOf("\n" + to, Math.max(start, 0) + 1);
+        assertThat(start).isGreaterThanOrEqualTo(0);
+        assertThat(end).isGreaterThan(start);
+        return text.substring(start, end);
     }
 
     @Test

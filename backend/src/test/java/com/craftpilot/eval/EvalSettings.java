@@ -19,7 +19,7 @@ import java.util.function.Function;
  */
 record EvalSettings(String mode, BigDecimal maxCostUsd, int repeats, int researchTokenBudget, long stubLatencyMs,
                     Set<String> caseFilter, String chatBaseUrl, String chatKey, String chatModel,
-                    String embeddingsBaseUrl, String embeddingsKey) {
+                    String embeddingsBaseUrl, String embeddingsKey, Map<String, Integer> repeatsByCase) {
 
     static final String STUB = "stub";
     static final String LIVE = "live";
@@ -30,6 +30,11 @@ record EvalSettings(String mode, BigDecimal maxCostUsd, int repeats, int researc
 
     boolean includes(String caseId) {
         return caseFilter.isEmpty() || caseFilter.contains(caseId);
+    }
+
+    /** Repeats for one case: {@code eval.repeatsFor} (e.g. {@code C04:5,C32:5}) overrides {@code eval.repeats}. */
+    int repeatsFor(String caseId) {
+        return repeatsByCase.getOrDefault(caseId, repeats);
     }
 
     static EvalSettings fromEnvironment() {
@@ -60,9 +65,11 @@ record EvalSettings(String mode, BigDecimal maxCostUsd, int repeats, int researc
         Set<String> cases = new LinkedHashSet<>();
         Arrays.stream(value(props.apply("eval.cases"), "").split(","))
                 .map(String::trim).filter(s -> !s.isEmpty()).forEach(cases::add);
+        Map<String, Integer> repeatsByCase = parseRepeatsFor(value(props.apply("eval.repeatsFor"), ""));
 
         if (!mode.equals(LIVE)) {
-            return new EvalSettings(mode, cap, repeats, budget, latency, cases, null, null, "gpt-4o-mini", null, null);
+            return new EvalSettings(mode, cap, repeats, budget, latency, cases, null, null, "gpt-4o-mini", null, null,
+                    repeatsByCase);
         }
         String openaiKey = env.apply("CRAFTPILOT_OPENAI_API_KEY");
         String chatKey = first(env.apply("CRAFTPILOT_CHAT_API_KEY"), openaiKey);
@@ -77,7 +84,30 @@ record EvalSettings(String mode, BigDecimal maxCostUsd, int repeats, int researc
         String chatBase = first(env.apply("CRAFTPILOT_CHAT_BASE_URL"), openaiBase);
         String chatModel = first(env.apply("CRAFTPILOT_CHAT_MODEL"), "gpt-4o-mini");
         return new EvalSettings(mode, cap, repeats, budget, latency, cases, chatBase, chatKey, chatModel,
-                openaiBase, openaiKey);
+                openaiBase, openaiKey, repeatsByCase);
+    }
+
+    private static Map<String, Integer> parseRepeatsFor(String raw) {
+        Map<String, Integer> out = new LinkedHashMap<>();
+        for (String entry : raw.split(",")) {
+            String item = entry.trim();
+            if (item.isEmpty()) {
+                continue;
+            }
+            int colon = item.indexOf(':');
+            String caseId = colon < 0 ? "" : item.substring(0, colon).trim();
+            int count;
+            try {
+                count = colon < 0 ? 0 : Integer.parseInt(item.substring(colon + 1).trim());
+            } catch (NumberFormatException ex) {
+                count = 0;
+            }
+            if (caseId.isEmpty() || count < 1) {
+                throw new IllegalStateException("eval.repeatsFor entries look like CASE:N with N >= 1, got '" + item + "'");
+            }
+            out.put(caseId, count);
+        }
+        return Map.copyOf(out);
     }
 
     /** Safe to log and to write into eval-meta.json: no keys. */
@@ -86,6 +116,10 @@ record EvalSettings(String mode, BigDecimal maxCostUsd, int repeats, int researc
         out.put("mode", mode);
         out.put("maxCostUsd", maxCostUsd);
         out.put("cases", caseFilter.isEmpty() ? "all" : String.join(",", caseFilter));
+        if (!repeatsByCase.isEmpty()) {
+            out.put("repeatsFor", String.join(",", repeatsByCase.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                    .map(e -> e.getKey() + ":" + e.getValue()).toList()));
+        }
         if (live()) {
             out.put("chatBaseUrl", chatBaseUrl);
             out.put("chatKey", "CONFIGURED");

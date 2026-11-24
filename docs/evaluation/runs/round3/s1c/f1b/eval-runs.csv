@@ -1,0 +1,383 @@
+case_id,kind,scenario,split,repeat,run_id,status,terminal_reason,expected_recommendation,acceptable_recommendations,predicted_recommendation,recommendation_correct,recommendation_acceptable,cited_count,cited_valid_count,foreign_citations,key_evidence_total,key_evidence_cited,must_not_cite_hits,cross_revision_citations,cited_messages,adversarial_pass,turns,tool_calls,failed_tool_calls,duplicate_tool_calls,e2e_ms,queue_ms,model_ms,tool_ms,context_ms,overhead_ms,tokens_in,tokens_out,cost_usd,estimated_usage_calls,reserved_tokens,held_reservations,lease_epoch,token_budget,tool_versions,consistency_retry,consistency_outcome,first_recommendation,final_summary,raw_final_content
+C19,research,hold_sparse,dev,1,639f3e4c-a51d-47ff-942d-e72dcee26bde,SUCCEEDED,,HOLD,HOLD,HOLD,1,1,2,2,0,2,2,0,0,m1;m2,,4,10,0,0,14603,27,11422,2565,89,527,8737,600,0.001671,0,12918,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"There is insufficient clear opinion on the product, with only one open issue and no polls indicating a majority preference. Feedback primarily consists of questions about price and color options, indicating uncertainty rather than strong opinions.","{
+  ""pollReadings"": [],
+  ""concerns"": [],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""There is insufficient clear opinion on the product, with only one open issue and no polls indicating a majority preference. Feedback primarily consists of questions about price and color options, indicating uncertainty rather than strong opinions."",
+  ""evidenceIds"": [
+    ""9c16feaa-c157-48b8-992d-e867659ae8be"",
+    ""697943c9-429c-4536-af8b-5000ce77224d""
+  ]
+}"
+C19,research,hold_sparse,dev,2,b78a1db1-ab43-4ced-beab-9e2107b8c71b,FAILED,TOKEN_BUDGET_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,2,0,0,0,,,7,14,0,0,16818,9,13619,2796,57,346,19493,664,0.003323,0,26196,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C19,research,hold_sparse,dev,3,62bd797f-d1c5-493c-8e3f-5c10805b3cb9,FAILED,TOKEN_BUDGET_EXCEEDED,HOLD,HOLD,,0,0,0,0,0,2,0,0,0,,,7,14,0,0,17755,9,14476,2926,42,311,19493,664,0.003323,0,26198,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C23,research,hold_polarized,dev,1,24d88e27-7bb2-493d-b9dc-1db1156c17d0,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m2;m1;m4;m3,,5,12,0,0,21126,10,17489,3352,28,257,16341,986,0.003043,0,19569,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback shows mixed opinions about the product, with a split purchase intent poll (5 will buy vs 4 will not buy). Additionally, there is a concern raised about the surface being uneven and difficult to clean, which affects the overall perception of the product. Therefore, it is recommended to hold off on production until these issues are addressed.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""不会买"",
+      ""votes"": 4,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""表面坑坑洼洼的，不好洗"",
+      ""evidenceIds"": [
+        ""49db2d21-ee1e-4c4c-8c23-24ea789100a4""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback shows mixed opinions about the product, with a split purchase intent poll (5 will buy vs 4 will not buy). Additionally, there is a concern raised about the surface being uneven and difficult to clean, which affects the overall perception of the product. Therefore, it is recommended to hold off on production until these issues are addressed."",
+  ""evidenceIds"": [
+    ""00310813-2028-44b6-b405-345d3298c525"",
+    ""9d4027e7-4590-4533-9219-010809d953d8"",
+    ""49db2d21-ee1e-4c4c-8c23-24ea789100a4"",
+    ""abae9f66-fa91-45de-8062-951164c4ba0d""
+  ]
+}"
+C23,research,hold_polarized,dev,2,9a2167b8-9d99-4cbe-b971-63b5b0d64c9f,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m2;m1;m4;m3,,4,12,0,0,18890,8,16886,1776,17,211,11896,977,0.002371,0,14802,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然购买意向的投票显示有5人会买，但存在关于产品表面质量的具体问题，且只有1人提出了此问题，导致整体反馈不够明确。由于缺乏足够的支持性意见，建议暂时不进行量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""不会买"",
+      ""votes"": 4,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""表面坑坑洼洼的，不好洗"",
+      ""evidenceIds"": [
+        ""49db2d21-ee1e-4c4c-8c23-24ea789100a4""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然购买意向的投票显示有5人会买，但存在关于产品表面质量的具体问题，且只有1人提出了此问题，导致整体反馈不够明确。由于缺乏足够的支持性意见，建议暂时不进行量产。"",
+  ""evidenceIds"": [
+    ""00310813-2028-44b6-b405-345d3298c525"",
+    ""9d4027e7-4590-4533-9219-010809d953d8"",
+    ""49db2d21-ee1e-4c4c-8c23-24ea789100a4"",
+    ""abae9f66-fa91-45de-8062-951164c4ba0d""
+  ]
+}"
+C23,research,hold_polarized,dev,3,5c894401-7772-43e9-914d-383796ed7166,SUCCEEDED,,HOLD,HOLD|TRIAL,HOLD,1,1,4,4,0,4,4,0,0,m2;m1;m4;m3,,4,12,0,0,17911,7,16058,1644,14,195,11896,956,0.002358,0,14802,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,虽然有5票表示会买，但也有4票表示不会买，且存在关于表面质量的问题，导致整体反馈不够明确，因此建议暂时不量产。,"{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 9
+    },
+    {
+      ""pollId"": ""5ab9fb5d-5f9f-4c4f-a8ae-fe58e76f36bf"",
+      ""option"": ""不会买"",
+      ""votes"": 4,
+      ""total"": 9
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""表面坑坑洼洼的，不好洗"",
+      ""evidenceIds"": [
+        ""49db2d21-ee1e-4c4c-8c23-24ea789100a4""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""虽然有5票表示会买，但也有4票表示不会买，且存在关于表面质量的问题，导致整体反馈不够明确，因此建议暂时不量产。"",
+  ""evidenceIds"": [
+    ""00310813-2028-44b6-b405-345d3298c525"",
+    ""9d4027e7-4590-4533-9219-010809d953d8"",
+    ""49db2d21-ee1e-4c4c-8c23-24ea789100a4"",
+    ""abae9f66-fa91-45de-8062-951164c4ba0d""
+  ]
+}"
+C27,research,version_mix,dev,1,4aacdf8c-a894-4ed7-afdb-75312ea8f7c7,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,3,3,0,2,2,0,0,m4;m5;m3,,4,11,0,0,17783,10,14696,2824,17,246,10420,867,0.002083,0,14026,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the V2 linen dress indicates mixed opinions, with a split purchase intent poll (50% would buy, 50% would not). There is a concern raised by one person regarding the dress being somewhat wrinkled, but this is not enough to classify it as a defect. Therefore, the recommendation is to hold off on production until further feedback can clarify the overall opinion.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""V2 还是有点皱"",
+      ""evidenceIds"": [
+        ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback on the V2 linen dress indicates mixed opinions, with a split purchase intent poll (50% would buy, 50% would not). There is a concern raised by one person regarding the dress being somewhat wrinkled, but this is not enough to classify it as a defect. Therefore, the recommendation is to hold off on production until further feedback can clarify the overall opinion."",
+  ""evidenceIds"": [
+    ""01d8c3bc-4bf7-4209-84b8-dcdb5540faa2"",
+    ""13d998e7-d734-4215-b92f-099eb560a78c"",
+    ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+  ]
+}"
+C27,research,version_mix,dev,2,86e3d2df-9af2-4b61-8db0-76e4db6076ab,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,3,3,0,2,2,0,0,m4;m5;m3,,4,11,0,0,16986,9,15004,1759,15,208,10424,837,0.002066,0,14029,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback indicates that while there are some positive comments about the design, there are also significant concerns regarding the fabric, specifically that the dress is still somewhat wrinkled. The purchase intent poll is split evenly, indicating uncertainty among potential buyers.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""V2 还是有点皱"",
+      ""evidenceIds"": [
+        ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+      ],
+      ""mentionedBy"": 3
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback indicates that while there are some positive comments about the design, there are also significant concerns regarding the fabric, specifically that the dress is still somewhat wrinkled. The purchase intent poll is split evenly, indicating uncertainty among potential buyers."",
+  ""evidenceIds"": [
+    ""01d8c3bc-4bf7-4209-84b8-dcdb5540faa2"",
+    ""13d998e7-d734-4215-b92f-099eb560a78c"",
+    ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+  ]
+}"
+C27,research,version_mix,dev,3,159b6e08-efda-4371-8daf-3007d901f02c,SUCCEEDED,,REVISE,REVISE,HOLD,0,0,3,3,0,2,2,0,0,m4;m5;m3,,4,11,0,0,18601,6,16540,1901,14,146,10424,842,0.002069,0,14028,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is mixed with equal purchase intent (5 will buy, 5 will not buy). There is a concern about the fabric being wrinkled, but it was raised by only one person. Therefore, the evidence is thin, leading to a HOLD recommendation.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""会买"",
+      ""votes"": 5,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""9fabd0ba-2e30-40c7-bd33-3fa6c9f73f78"",
+      ""option"": ""不会买"",
+      ""votes"": 5,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""V2 还是有点皱"",
+      ""evidenceIds"": [
+        ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""HOLD"",
+  ""summary"": ""The feedback is mixed with equal purchase intent (5 will buy, 5 will not buy). There is a concern about the fabric being wrinkled, but it was raised by only one person. Therefore, the evidence is thin, leading to a HOLD recommendation."",
+  ""evidenceIds"": [
+    ""01d8c3bc-4bf7-4209-84b8-dcdb5540faa2"",
+    ""13d998e7-d734-4215-b92f-099eb560a78c"",
+    ""61542c91-d826-4ca6-b609-45e6c64f4db2""
+  ]
+}"
+C30,research,version_mix,dev,1,84c9827a-095b-44d9-8674-c32021fb1637,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,2,2,0,0,m2;m4;m3,,4,11,0,0,23219,8,20514,2514,14,177,10440,849,0.002075,0,13950,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback on the V2 ceramic vase is largely positive, with a strong purchase intent (80% would buy). The only concern raised is about the uneven bottom, which was mentioned by one person. However, this minor issue does not outweigh the overall positive reception and intent to purchase.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""底部有点不平，会晃"",
+      ""evidenceIds"": [
+        ""396b1752-3160-4b5d-919f-256a600c3b37""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback on the V2 ceramic vase is largely positive, with a strong purchase intent (80% would buy). The only concern raised is about the uneven bottom, which was mentioned by one person. However, this minor issue does not outweigh the overall positive reception and intent to purchase."",
+  ""evidenceIds"": [
+    ""20d39fbb-622d-4bbb-8645-0f3f9938cf39"",
+    ""396b1752-3160-4b5d-919f-256a600c3b37"",
+    ""16b0bd92-396f-417e-b690-29b7986f5a39""
+  ]
+}"
+C30,research,version_mix,dev,2,ac787a33-8fac-451b-abc6-4c628cfb6d05,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,2,2,0,0,m2;m4;m3,,4,11,0,0,16835,6,14917,1750,13,155,10444,851,0.002076,0,13952,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback indicates a strong purchase intent with 80% of respondents stating they would buy the product. While there is a concern about the uneven bottom causing instability, this issue was raised by only one person and does not outweigh the overall positive reception. Therefore, the recommendation is to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""底部有点不平，会晃"",
+      ""evidenceIds"": [
+        ""396b1752-3160-4b5d-919f-256a600c3b37""
+      ],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback indicates a strong purchase intent with 80% of respondents stating they would buy the product. While there is a concern about the uneven bottom causing instability, this issue was raised by only one person and does not outweigh the overall positive reception. Therefore, the recommendation is to proceed with production."",
+  ""evidenceIds"": [
+    ""20d39fbb-622d-4bbb-8645-0f3f9938cf39"",
+    ""396b1752-3160-4b5d-919f-256a600c3b37"",
+    ""16b0bd92-396f-417e-b690-29b7986f5a39""
+  ]
+}"
+C30,research,version_mix,dev,3,3a743787-fde6-40f7-bcd4-5d21dadeb714,SUCCEEDED,,PRODUCE,PRODUCE|TRIAL,PRODUCE,1,1,3,3,0,2,2,0,0,m2;m4;m3,,4,11,0,0,18840,6,17002,1666,12,160,10442,847,0.002074,0,13950,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback indicates a strong purchase intent with 80% of respondents stating they would buy the product. While there is a concern about the uneven bottom causing instability, this issue was raised by only one person and does not outweigh the overall positive reception. Therefore, the recommendation is to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""会买"",
+      ""votes"": 8,
+      ""total"": 10
+    },
+    {
+      ""pollId"": ""c74dcabe-2b3b-48b8-9b91-bb57624b183a"",
+      ""option"": ""不会买"",
+      ""votes"": 2,
+      ""total"": 10
+    }
+  ],
+  ""concerns"": [
+    {
+      ""text"": ""底部有点不平，会晃"",
+      ""evidenceIds"": [""396b1752-3160-4b5d-919f-256a600c3b37""],
+      ""mentionedBy"": 1
+    }
+  ],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback indicates a strong purchase intent with 80% of respondents stating they would buy the product. While there is a concern about the uneven bottom causing instability, this issue was raised by only one person and does not outweigh the overall positive reception. Therefore, the recommendation is to proceed with production."",
+  ""evidenceIds"": [
+    ""20d39fbb-622d-4bbb-8645-0f3f9938cf39"",
+    ""396b1752-3160-4b5d-919f-256a600c3b37"",
+    ""16b0bd92-396f-417e-b690-29b7986f5a39""
+  ]
+}"
+C31,research,clear_positive,dev,1,41646409-ef1b-4f90-9010-5e5683032326,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m2;m4;m1;m5;m3,,4,13,0,0,19450,14,16224,2992,18,216,12884,898,0.002471,0,15587,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 10 out of 11 votes indicating a preference for the product. There are no reported concerns regarding fabric, workmanship, size, or color. The purchase intent is also strong, with multiple comments expressing a desire to buy the product. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""ae748257-b86d-43b6-80b6-aca161091afe"",
+      ""option"": ""喜欢"",
+      ""votes"": 10,
+      ""total"": 11
+    },
+    {
+      ""pollId"": ""ae748257-b86d-43b6-80b6-aca161091afe"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 11
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 10 out of 11 votes indicating a preference for the product. There are no reported concerns regarding fabric, workmanship, size, or color. The purchase intent is also strong, with multiple comments expressing a desire to buy the product. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""059b499d-1983-4524-891c-7b499224bf56"",
+    ""8ed442f0-18e1-4ff3-a3b7-5266a41429f4"",
+    ""af92fae6-ae12-4772-b609-fc957d3836f7"",
+    ""4a504b8f-ee88-4125-8c38-cd082b4fdfa8"",
+    ""ffc45bcd-f42d-4d37-8342-64bf1a2f0717""
+  ]
+}"
+C31,research,clear_positive,dev,2,76791dc2-5821-4435-9f06-0769aa9f7e37,FAILED,TOKEN_BUDGET_EXCEEDED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,5,14,0,0,14357,7,12154,1898,27,278,17793,607,0.003033,0,20692,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C31,research,clear_positive,dev,3,ddc9b4e5-6575-45a6-b605-79e112c554bc,FAILED,TOKEN_BUDGET_EXCEEDED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,5,15,0,0,15493,8,13068,2167,22,236,18724,650,0.003200,0,21443,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,,
+C34,research,clear_positive,dev,1,477e5981-26d1-4ab8-b9f3-f962ded15122,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m4;m5;m1;m2;m3,,4,13,0,0,19035,6,15727,3008,59,241,12903,906,0.002479,0,15689,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive with 11 out of 12 votes indicating that people like the design. There are no significant concerns raised about the product attributes, and the evidence supports a strong purchase intent. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""e5722ca8-378d-4a87-9f5f-f438628fe993"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""e5722ca8-378d-4a87-9f5f-f438628fe993"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive with 11 out of 12 votes indicating that people like the design. There are no significant concerns raised about the product attributes, and the evidence supports a strong purchase intent. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""e5f825ba-e673-4c23-8185-527220ae3a6c"",
+    ""e916a7c7-a1fd-437f-9e56-22422dce3c11"",
+    ""c042de04-b773-4cfd-861b-a459e162d1b3"",
+    ""0693897e-fde6-4082-9724-b04f2c83c6d0"",
+    ""7de84bd2-f412-41a2-9c50-9186265a63ca""
+  ]
+}"
+C34,research,clear_positive,dev,2,eac4fc3c-164d-4b27-aeee-331bbc5d9067,SUCCEEDED,,PRODUCE,PRODUCE,PRODUCE,1,1,5,5,0,3,3,0,0,m4;m5;m1;m2;m3,,4,13,0,0,27588,7,25166,2216,14,192,12903,907,0.002480,0,15689,0,1,24000,evidence_search:1;evidence_verify:1;survey_get_stats:2,0,,,"The feedback is overwhelmingly positive, with 11 out of 12 votes indicating that people like the sample. There are no significant concerns raised about the product, and the evidence supports a clear intent to purchase. Therefore, it is recommended to proceed with production.","{
+  ""pollReadings"": [
+    {
+      ""pollId"": ""e5722ca8-378d-4a87-9f5f-f438628fe993"",
+      ""option"": ""喜欢"",
+      ""votes"": 11,
+      ""total"": 12
+    },
+    {
+      ""pollId"": ""e5722ca8-378d-4a87-9f5f-f438628fe993"",
+      ""option"": ""一般"",
+      ""votes"": 1,
+      ""total"": 12
+    }
+  ],
+  ""concerns"": [],
+  ""recommendation"": ""PRODUCE"",
+  ""summary"": ""The feedback is overwhelmingly positive, with 11 out of 12 votes indicating that people like the sample. There are no significant concerns raised about the product, and the evidence supports a clear intent to purchase. Therefore, it is recommended to proceed with production."",
+  ""evidenceIds"": [
+    ""e5f825ba-e673-4c23-8185-527220ae3a6c"",
+    ""e916a7c7-a1fd-437f-9e56-22422dce3c11"",
+    ""c042de04-b773-4cfd-861b-a459e162d1b3"",
+    ""0693897e-fde6-4082-9724-b04f2c83c6d0"",
+    ""7de84bd2-f412-41a2-9c50-9186265a63ca""
+  ]
+}"
+C34,research,clear_positive,dev,3,7b8fd7e2-8444-41eb-a518-01d7f03200e4,FAILED,TOKEN_BUDGET_EXCEEDED,PRODUCE,PRODUCE,,0,0,0,0,0,3,0,0,0,,,5,11,0,0,13669,8,10905,2507,33,224,18580,507,0.003092,0,21245,0,1,24000,evidence_search:1;survey_get_stats:2,0,,,,
