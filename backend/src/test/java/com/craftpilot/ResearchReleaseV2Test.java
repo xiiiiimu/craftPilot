@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -272,6 +273,31 @@ class ResearchReleaseV2Test {
         // the decision rules (step 4) are word for word the same as v4
         assertThat(section(v41.instructions(), "4. ", "5. ")).isEqualTo(section(v4, "4. ", "5. "));
         assertThat(section(v41.instructions(), "", "3. ")).isEqualTo(section(v4, "", "3. "));
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    @Test
+    void promptV42OnlyChangesConcernGroupingAndTheReviseRuleOfV41() {
+        List<String> v41 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.1")).instructions()
+                .lines().toList();
+        AgentSpecResolver.ResolvedSpec v42 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.2"));
+        assertThat(v42.contentHash()).isEqualTo("sha256:research-agent-r3-v4.2");
+        List<String> lines = v42.instructions().lines().toList();
+        assertThat(lines).hasSameSizeAs(v41);
+        List<Integer> changed = new ArrayList<>();
+        for (int i = 0; i < lines.size(); i++) {
+            if (!lines.get(i).equals(v41.get(i))) {
+                changed.add(i);
+            }
+        }
+        // (a) concerns grouped by attribute: step 3, the REVISE rule and the concerns field; (b) REVISE beats split polls
+        assertThat(changed).extracting(lines::get).satisfiesExactly(
+                step3 -> assertThat(step3).startsWith("3. ").contains("one entry per attribute"),
+                revise -> assertThat(revise).startsWith("- REVISE: ")
+                        .contains("count people per attribute, not per specific problem")
+                        .contains("choose REVISE even if a PURCHASE_INTENT poll is split (40% to 60% \"will buy\")"),
+                concerns -> assertThat(concerns).startsWith("- concerns: ")
+                        .contains("at most one entry per attribute (fabric, workmanship, size, color)"));
         assertThat(specs.research().version()).isEqualTo("2");
     }
 
