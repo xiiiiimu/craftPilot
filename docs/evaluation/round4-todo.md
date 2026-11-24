@@ -12,6 +12,8 @@
 | ② | 历史固定只保留最近 6 轮。第 8 轮时第 1 轮（通常是 `survey_get_stats`）被丢掉，模型看不到投票数，而一致性校验对比的是整个 Run 的工具结果，纠正提示也让模型"重读 survey_get_stats" | C18 第 8 轮输入 token 从 1790 降到 1754 | 始终保留 `survey_get_stats` 的结果（或第 1 轮），或改成按 token 预算裁剪，并把丢掉的轮次记进快照（见 ⑤） | 约 40 行 + 2 个测试 |
 | ③ | 上下文里没有剩余轮数信号，最后一轮也不强制给最终答案；模型在证据稀少时一直搜索直到耗尽轮数或 token。**改变业务行为，需要先确认** | C18 在 v2 / v4 / v4.1 / v4.2 都跑满 8 轮；step 1c 有 18 个 Run 因 MAX_TURNS / TOKEN_BUDGET / MAX_TOOL_CALLS 停止，hold_sparse 因此 13 → 6 | 在系统或用户消息里写"第 N / 8 轮"，最后一轮不提供工具（`tool_choice: none`）或明确要求给出最终答案 | 约 20 行 + 1 个测试 |
 
+| ⑨ | 一致性校验开关 `craftpilot.runtime.final-consistency-check` 目前可以和不支持结构化字段的提示词（如默认的 v2）一起打开。v2 不输出 `pollReadings` / `concerns`，只要 Run 看到过投票，每个最终答案都会被判为不一致：先重试一轮，再以 `INCONSISTENT_FINAL` 失败 | `FinalConsistencyCheck` 把缺少的 `pollReadings` 当作空数组，看到投票时报 "pollReadings is empty but survey_get_stats returned N poll(s)" | 启动时校验当前（或固定的）research 提示词是否支持 `pollReadings` / `concerns`（例如在 `agent_spec_revision` 上记录能力标记，或检查提示词版本），不支持就拒绝启动（fail fast），并给出明确的错误信息 | 约 30 行 + 2 个测试（v2 + 开关 → 启动失败；v4.x + 开关 → 正常） |
+
 ## 影响可调试性
 
 | 编号 | 问题 | 建议改法 | 改动量 |
@@ -28,4 +30,4 @@
 
 ## 建议顺序
 
-① → ⑥（先有测试兜底）→ ② → ⑤ → ⑧ → ⑦；③ 改变业务行为，单独确认后再做。①②③ 做完后，用 v2 在 dev 上重跑一次作为新的参照，再决定是否重新评估一致性校验（需要能输出 `pollReadings` / `concerns` 的提示词）。
+① → ⑨ → ⑥（先有测试兜底）→ ② → ⑤ → ⑧ → ⑦；③ 改变业务行为，单独确认后再做。①②③ 做完后，用 v2 在 dev 上重跑一次作为新的参照，再决定是否重新评估一致性校验（需要能输出 `pollReadings` / `concerns` 的提示词）。
