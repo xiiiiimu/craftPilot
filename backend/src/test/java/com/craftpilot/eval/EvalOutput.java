@@ -121,6 +121,36 @@ final class EvalOutput {
         return summary == null ? "" : summary.replaceAll("\\s*[\\r\\n]+\\s*", " ").trim();
     }
 
+    static final int RAW_FINAL_MAX_CHARS = 4000;
+
+    /**
+     * The {@code raw_final_content} cell: the model's last response exactly as returned (line breaks kept, CSV quoting
+     * handles them), cut to {@value #RAW_FINAL_MAX_CHARS} characters without splitting a surrogate pair.
+     */
+    static String rawFinalCell(String content) {
+        if (content == null) {
+            return "";
+        }
+        if (content.length() <= RAW_FINAL_MAX_CHARS) {
+            return content;
+        }
+        int end = RAW_FINAL_MAX_CHARS;
+        if (Character.isHighSurrogate(content.charAt(end - 1))) {
+            end--;
+        }
+        return content.substring(0, end);
+    }
+
+    /** One compact JSON object per line (eval-contexts.jsonl). */
+    static void writeJsonl(Path file, List<? extends Map<String, Object>> records, ObjectMapper mapper)
+            throws IOException {
+        StringBuilder out = new StringBuilder();
+        for (Map<String, Object> record : records) {
+            out.append(mapper.writeValueAsString(record)).append('\n');
+        }
+        Files.writeString(file, out, StandardCharsets.UTF_8);
+    }
+
     static Map<String, Object> gitDescribe() {
         Map<String, Object> git = new LinkedHashMap<>();
         git.put("commit", run("git", "rev-parse", "--short", "HEAD"));

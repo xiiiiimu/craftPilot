@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 /** Runs in the default build: the per-run detail columns written to eval-runs.csv. */
 class EvalOutputTest {
@@ -54,5 +55,37 @@ class EvalOutputTest {
 
         assertThat(Files.readString(file, StandardCharsets.UTF_8)).isEqualTo(
                 "case_id,final_summary,cited_messages\nC01,\"喜欢的人多, \"\"想买\"\"的也多 建议量产\",m1;m2\n");
+    }
+
+    @Test
+    void rawFinalContentKeepsTheModelOutputVerbatimUpTo4000Characters() {
+        String twoObjects = "{\"pollReadings\":[]}\n{\"recommendation\":\"PRODUCE\"}";
+        assertThat(EvalOutput.rawFinalCell(twoObjects)).isEqualTo(twoObjects);
+        assertThat(EvalOutput.rawFinalCell(null)).isEmpty();
+        assertThat(EvalOutput.rawFinalCell("x".repeat(5000))).hasSize(4000);
+        // never cuts a surrogate pair in half
+        String emoji = "x".repeat(3999) + new String(Character.toChars(0x1F600)) + "tail";
+        assertThat(EvalOutput.rawFinalCell(emoji)).isEqualTo("x".repeat(3999));
+    }
+
+    @Test
+    void contextsAreWrittenAsOneJsonObjectPerLine() throws Exception {
+        Path file = Files.createTempFile("eval-contexts", ".jsonl");
+        Map<String, Object> first = new LinkedHashMap<>();
+        first.put("case_id", "C01");
+        first.put("turn_no", 1);
+        first.put("response", "line one\nline two");
+        Map<String, Object> second = new LinkedHashMap<>();
+        second.put("case_id", "C01");
+        second.put("turn_no", 2);
+        second.put("response", null);
+        ObjectMapper mapper = new ObjectMapper();
+
+        EvalOutput.writeJsonl(file, List.of(first, second), mapper);
+
+        List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+        assertThat(lines).hasSize(2);
+        assertThat(mapper.readTree(lines.get(0)).path("response").asText()).isEqualTo("line one\nline two");
+        assertThat(mapper.readTree(lines.get(1)).path("turn_no").asInt()).isEqualTo(2);
     }
 }

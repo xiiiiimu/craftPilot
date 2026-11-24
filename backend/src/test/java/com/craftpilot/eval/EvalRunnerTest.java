@@ -1,8 +1,13 @@
 package com.craftpilot.eval;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 
 import com.craftpilot.runtime.mcp.McpClient;
+import com.craftpilot.runtime.model.ChatModelGateway;
+import com.craftpilot.runtime.model.ChatModelGateway.InferResult;
 import com.craftpilot.runtime.model.ChatPricing;
 import com.craftpilot.runtime.release.AgentSpecResolver;
 import com.craftpilot.runtime.release.RuntimeVersions;
@@ -23,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,6 +47,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -159,6 +166,10 @@ class EvalRunnerTest {
     @Autowired ChatPricing pricing;
     @Autowired AgentSpecResolver specs;
     @Autowired RuntimeVersions versions;
+    /** Spy only to record each response's raw text by model call id; every call still goes to the real gateway. */
+    @MockitoSpyBean ChatModelGateway chat;
+    /** model_call_attempt.id -> raw response content (the database keeps only 900 characters of it). */
+    private static final Map<UUID, String> RAW_OUTPUTS = new ConcurrentHashMap<>();
 
     @Test
     void runEvaluation() throws Exception {
@@ -184,19 +195,29 @@ class EvalRunnerTest {
         System.out.printf("eval: %s, %d runs planned, worst case $%s, cap $%s%n", SETTINGS.describe(), plannedRuns,
                 budget.worstCase(plannedRuns).toPlainString(), budget.cap().toPlainString());
 
+        doAnswer(call -> {
+            InferResult result = (InferResult) call.callRealMethod();
+            if (result != null && result.modelCallId() != null && result.content() != null) {
+                RAW_OUTPUTS.put(result.modelCallId(), result.content());
+            }
+            return result;
+        }).when(chat).infer(any(), any(), any(), anyInt(), any());
+
         UUID foreignEvidence = createDecoyMerchant();
         List<Map<String, Object>> runRows = new ArrayList<>();
         List<Map<String, Object>> turnRows = new ArrayList<>();
+        List<Map<String, Object>> contextRows = new ArrayList<>();
         Spend spend = new Spend(budget);
         for (JsonNode c : researchCases) {
-            runCase(c, "research", foreignEvidence, runRows, turnRows, spend);
+            runCase(c, "research", foreignEvidence, runRows, turnRows, contextRows, spend);
         }
         for (JsonNode c : adversarialCases) {
-            runCase(c, "adversarial", foreignEvidence, runRows, turnRows, spend);
+            runCase(c, "adversarial", foreignEvidence, runRows, turnRows, contextRows, spend);
         }
 
         EvalOutput.writeCsv(outDir.resolve("eval-runs.csv"), runRows);
         EvalOutput.writeCsv(outDir.resolve("eval-turns.csv"), turnRows);
+        EvalOutput.writeJsonl(outDir.resolve("eval-contexts.jsonl"), contextRows, mapper);
         Map<String, Object> meta = new LinkedHashMap<>();
         meta.put("mode", SETTINGS.live() ? "live" : "offline-stub");
         meta.put("settings", SETTINGS.describe());
@@ -268,7 +289,7 @@ class EvalRunnerTest {
     }
 
     private void runCase(JsonNode c, String kind, UUID foreignEvidence, List<Map<String, Object>> runRows,
-                         List<Map<String, Object>> turnRows, Spend spend) {
+                         List<Map<String, Object>> turnRows, List<Map<String, Object>> contextRows, Spend spend) {
         if (spend.mustStop()) {
             for (int repeat = 1; repeat <= SETTINGS.repeatsFor(c.path("id").asText()); repeat++) {
                 runRows.add(skippedRow(c, kind, repeat, spend));
@@ -289,8 +310,14 @@ class EvalRunnerTest {
                 UUID runId = runTicket(fx, c.path("objective").asText());
                 RunMetrics metrics = collect(fx, runId);
                 spend.total = spend.total.add(new BigDecimal(String.valueOf(metrics.ledger().get("cost_usd"))));
-                runRows.add(row(c, kind, repeat, fx, metrics));
+                List<Map<String, Object>> contexts = contexts(repeat, fx, runId);
+                Map<String, Object> runRow = row(c, kind, repeat, fx, metrics);
+                // last column: the final turn's raw model output, for diagnosing parse failures
+                runRow.put("raw_final_content", EvalOutput.rawFinalCell(contexts.isEmpty() ? null
+                        : (String) contexts.get(contexts.size() - 1).get("response")));
+                runRows.add(runRow);
                 turnRows.addAll(turns(c, repeat, fx, runId));
+                contextRows.addAll(contexts);
             }
         } finally {
             STUBS.setCaseMcp(null);
@@ -725,6 +752,36 @@ class EvalRunnerTest {
             row.put("context_ms", nullToEmpty(t.get("context_build_ms")));
             row.put("input_tokens", nullToEmpty(t.get("input_tokens")));
             row.put("output_tokens", nullToEmpty(t.get("output_tokens")));
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    /**
+     * eval-contexts.jsonl: per turn, the exact messages the model was sent (context_snapshot) and its raw response
+     * (recorded by the gateway spy, joined on agent_turn.model_call_id; null when the call failed).
+     */
+    private List<Map<String, Object>> contexts(int repeat, CaseFixture fx, UUID runId) {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        for (Map<String, Object> t : jdbc.sql("""
+                SELECT t.turn_no, t.status, t.model_call_id, t.context_id, t.tool_batch_json::text AS tools,
+                       c.token_estimate, c.messages_json::text AS messages
+                FROM agent_turn t
+                LEFT JOIN context_snapshot c ON c.merchant_id = t.merchant_id AND c.id = t.context_id
+                WHERE t.merchant_id = :m AND t.run_id = :run ORDER BY t.turn_no
+                """).param("m", fx.merchant()).param("run", runId).query().listOfRows()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("case_id", fx.caseId());
+            row.put("repeat", repeat);
+            row.put("run_id", runId);
+            row.put("turn_no", t.get("turn_no"));
+            row.put("status", t.get("status"));
+            row.put("context_id", t.get("context_id"));
+            row.put("token_estimate", t.get("token_estimate"));
+            row.put("messages", t.get("messages") == null ? null : mapper.readTree((String) t.get("messages")));
+            row.put("tool_calls", t.get("tools") == null ? null : mapper.readTree((String) t.get("tools")));
+            Object call = t.get("model_call_id");
+            row.put("response", call == null ? null : RAW_OUTPUTS.get(UUID.fromString(call.toString())));
             rows.add(row);
         }
         return rows;
