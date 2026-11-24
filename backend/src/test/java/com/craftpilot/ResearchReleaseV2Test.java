@@ -260,6 +260,30 @@ class ResearchReleaseV2Test {
     }
 
     @Test
+    void promptV41OnlyChangesTheOutputInstructionsOfV4() {
+        String v4 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4")).instructions();
+        AgentSpecResolver.ResolvedSpec v41 = specs.resolve(AgentSpecResolver.RESEARCH_AGENT, Optional.of("4.1"));
+        assertThat(v41.contentHash()).isEqualTo("sha256:research-agent-r3-v4.1");
+        assertThat(v41.instructions())
+                .doesNotContain("Before deciding, write down the numbers")
+                .contains("3. When you give the final answer, fill pollReadings by copying every option of every poll")
+                .contains("5. Your final message must be exactly one JSON object and nothing else: no Markdown, "
+                        + "no headings, no text before or after it. Put your reasoning in summary.");
+        // the decision rules (step 4) are word for word the same as v4
+        assertThat(section(v41.instructions(), "4. ", "5. ")).isEqualTo(section(v4, "4. ", "5. "));
+        assertThat(section(v41.instructions(), "", "3. ")).isEqualTo(section(v4, "", "3. "));
+        assertThat(specs.research().version()).isEqualTo("2");
+    }
+
+    private static String section(String text, String from, String to) {
+        int start = from.isEmpty() ? 0 : text.indexOf("\n" + from);
+        int end = text.indexOf("\n" + to, Math.max(start, 0) + 1);
+        assertThat(start).isGreaterThanOrEqualTo(0);
+        assertThat(end).isGreaterThan(start);
+        return text.substring(start, end);
+    }
+
+    @Test
     void researchRunUsesTheLatestPromptAndAsksForStructuredFinalOutput() throws Exception {
         double parsedBefore = meters.counter("craftpilot.agent.final.parse", "loop", "research", "outcome", "parsed")
                 .count();
